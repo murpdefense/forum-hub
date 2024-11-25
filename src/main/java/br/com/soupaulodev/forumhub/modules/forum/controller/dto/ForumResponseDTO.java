@@ -1,0 +1,20 @@
+package br.com.soupaulodev.forumhub.modules.forum.controller.dto;
+
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+public class ForumResponseDTO {
+
+    private UUID id;
+    private String name;
+    private String description;
+    private UserResponseDTO owner;
+    private List<TopicResponseDTO> topics;
+}
