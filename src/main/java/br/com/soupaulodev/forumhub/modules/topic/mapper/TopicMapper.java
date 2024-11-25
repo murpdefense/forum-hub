@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.mapper;
 
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.CreateTopicRequestDTO;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
@@ -12,14 +12,14 @@ public class TopicMapper {
         UserEntity user = null;
         ForumEntity forum = null;
 
-        if (t instanceof CreateTopicRequestDTO) {
-            user = ((CreateTopicRequestDTO) t).getAuthor();
-            forum = ((CreateTopicRequestDTO) t).getForum();
+        if (t instanceof TopicRequestDTO) {
+            user = ((TopicRequestDTO) t).getAuthor();
+            forum = ((TopicRequestDTO) t).getForum();
         }
 
         return new TopicEntity(
-            ((CreateTopicRequestDTO) t).getTitle(),
-            ((CreateTopicRequestDTO) t).getMessage(),
+            ((TopicRequestDTO) t).getTitle(),
+            ((TopicRequestDTO) t).getMessage(),
             user,
             forum
         );

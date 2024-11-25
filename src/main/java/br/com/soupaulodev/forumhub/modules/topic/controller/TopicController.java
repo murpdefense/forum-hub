@@ -1,8 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller;
 
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.CreateTopicRequestDTO;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.UpdateTopicRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
 import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
@@ -40,7 +39,7 @@ public class TopicController {
     }
 
     @PostMapping
-    public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody CreateTopicRequestDTO requestDTO) {
+    public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicRequestDTO requestDTO) {
         TopicEntity topicCreated = createTopicUsecase.execute(TopicMapper.toEntity(requestDTO));
         URI location = URI.create("/topics/" + topicCreated.getId());
         return ResponseEntity.created(location).body(TopicMapper.toResponseDTO(topicCreated));
@@ -67,7 +66,7 @@ public class TopicController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TopicResponseDTO> updateTopic(@PathVariable UUID id,
-                                                        @Valid @RequestBody UpdateTopicRequestDTO requestDTO) {
+                                                        @Valid @RequestBody(required = false) TopicRequestDTO requestDTO) {
         TopicEntity topicUpdated = updateTopicUsecase.execute(id, TopicMapper.toEntity(requestDTO));
         return ResponseEntity.ok(TopicMapper.toResponseDTO(topicUpdated));
     }

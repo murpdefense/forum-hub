@@ -6,8 +6,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +38,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(TopicNotFoundException.class)
     public ResponseEntity<?> handleTopicNotFoundException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(TopicIllegalArgumentException.class)
+    public ResponseEntity<?> handleTopicIllegalArgumentException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

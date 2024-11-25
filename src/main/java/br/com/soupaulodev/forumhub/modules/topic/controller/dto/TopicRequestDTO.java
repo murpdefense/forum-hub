@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller.dto;
 
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Data
 @AllArgsConstructor
-public class CreateTopicRequestDTO {
+public class TopicRequestDTO {
 
     @NotBlank
     @Length(min = 3, max = 50)
