@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.CreateUserRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody CreateUserRequestDTO requestDTO) {
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO requestDTO) {
         UserEntity userCreated = createUserUsecase.execute(UserMapper.toEntity(requestDTO));
         URI uri = URI.create("/user/" + userCreated.getId());
         return ResponseEntity.created(uri).body(UserMapper.toResponseDTO(userCreated));
@@ -54,7 +54,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
-                                      @Valid @RequestBody UpdateUserUsecase requestDTO) {
+                                      @Valid @RequestBody(required = false) UserRequestDTO requestDTO) {
         UserEntity userUpdated = updateUserUsecase.execute(id, UserMapper.toEntity(requestDTO));
         return ResponseEntity.ok(UserMapper.toResponseDTO(userUpdated));
     }

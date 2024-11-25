@@ -1,8 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.exception;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserAlreadyExistsException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -31,6 +29,11 @@ public class ExceptionHandlerController {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<?> handleUserAlreadyExistsException(Exception e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserIllegalArgumentException.class)
+    public ResponseEntity<?> handleUserIllegalArgumentException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(TopicNotFoundException.class)

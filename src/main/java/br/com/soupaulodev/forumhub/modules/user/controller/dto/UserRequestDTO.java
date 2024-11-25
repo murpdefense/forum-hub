@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Data
 @AllArgsConstructor
-public class CreateUserRequestDTO {
+public class UserRequestDTO {
 
     @NotBlank
     @Length(min = 3, max = 50, message = "Name must be between 3 and 50 characters")

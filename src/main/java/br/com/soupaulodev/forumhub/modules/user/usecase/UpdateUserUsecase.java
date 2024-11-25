@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
@@ -19,6 +20,20 @@ public class UpdateUserUsecase {
     public UserEntity execute(UUID id, UserEntity user) {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
+        if (user == null
+            || user.getName() == null
+            && user.getUsername() == null
+            && user.getEmail() == null
+            && user.getPassword() == null) {
+
+            throw new UserIllegalArgumentException("""
+                You must provide at least one field to update:
+                - name
+                - username
+                - email
+                - password
+                """);
+        }
         if (user.getName() != null) {
             userDB.setName(user.getName());
         }
