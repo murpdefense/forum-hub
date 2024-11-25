@@ -6,6 +6,7 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -46,6 +47,8 @@ public class UpdateUserUsecase {
         if (user.getPassword() != null) {
             userDB.setPassword(user.getPassword());
         }
+
+        userDB.setUpdatedAt(Instant.now());
 
         return userRepository.save(userDB);
     }
