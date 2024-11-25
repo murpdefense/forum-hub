@@ -6,6 +6,7 @@ import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -35,6 +36,7 @@ public class UpdateTopicUsecase {
         if (topic.getMessage() != null) {
             topicDB.setMessage(topic.getMessage());
         }
+        topicDB.setUpdatedAt(Instant.now());
 
         return topicRepository.save(topicDB);
     }
