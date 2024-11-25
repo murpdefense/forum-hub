@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class DeleteUserUsecase {
     }
 
     public void execute(UUID id) {
-        userRepository.findById(id)
+        UserEntity userDB = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        userRepository.deleteById(id);
+        userRepository.delete(userDB);
     }
 }
