@@ -14,6 +14,6 @@ public class FindUserByNameOrUsernameUsecase {
     }
 
     public UserEntity execute(String nameOrUsername) {
-        return userRepository.findByNameOrUsername(nameOrUsername);
+        return userRepository.findByNameOrUsername(nameOrUsername, nameOrUsername);
     }
 }

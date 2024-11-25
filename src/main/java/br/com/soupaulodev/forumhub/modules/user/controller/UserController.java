@@ -4,10 +4,7 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.CreateUserRequest
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
-import br.com.soupaulodev.forumhub.modules.user.usecase.CreateUserUsecase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUsecase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUsecase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +17,18 @@ import java.util.UUID;
 public class UserController {
     private final CreateUserUsecase createUserUsecase;
     private final GetUserUsecase getUserUsecase;
+    private final FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase;
     private final UpdateUserUsecase updateUserUsecase;
     private final DeleteUserUsecase deleteUserUsecase;
 
     public UserController(CreateUserUsecase createUserUsecase,
                           GetUserUsecase getUserUsecase,
+                          FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase,
                           UpdateUserUsecase updateUserUsecase,
                           DeleteUserUsecase deleteUserUsecase) {
         this.createUserUsecase = createUserUsecase;
         this.getUserUsecase = getUserUsecase;
+        this.findUserByNameOrUsernameUsecase = findUserByNameOrUsernameUsecase;
         this.updateUserUsecase = updateUserUsecase;
         this.deleteUserUsecase = deleteUserUsecase;
     }
@@ -43,6 +43,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
         UserEntity user = getUserUsecase.execute(id);
+        return ResponseEntity.ok(UserMapper.toResponseDTO(user));
+    }
+
+    @GetMapping("/{nameOrUsername}")
+    public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
+        UserEntity user = findUserByNameOrUsernameUsecase.execute(query);
         return ResponseEntity.ok(UserMapper.toResponseDTO(user));
     }
 
