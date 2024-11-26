@@ -56,6 +56,16 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(CommentIllegalArgumentException.class)
+    public ResponseEntity<?> handleCommentIllegalArgumentException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(TopicIllegalArgumentException.class)
     public ResponseEntity<?> handleTopicIllegalArgumentException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
