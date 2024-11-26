@@ -1,6 +1,5 @@
 package br.com.soupaulodev.forumhub.modules.like.controller;
 
-import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
 import br.com.soupaulodev.forumhub.modules.like.mapper.LikeMapper;
 import br.com.soupaulodev.forumhub.modules.like.usecase.LikeResourceUsecase;
