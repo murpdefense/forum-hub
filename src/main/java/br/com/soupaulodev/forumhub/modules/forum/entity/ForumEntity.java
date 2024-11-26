@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,14 +33,14 @@ public class ForumEntity implements Serializable {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private UserEntity owner;
 
-    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL)
-    private Set<TopicEntity> topics;
+    @ManyToMany(mappedBy = "participatingForums")
+    private Set<UserEntity> participants = new HashSet<>();
 
-    @ManyToMany(mappedBy = "forums")
-    private Set<UserEntity> users;
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TopicEntity> topics = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -50,13 +51,21 @@ public class ForumEntity implements Serializable {
     private Instant updatedAt;
 
     public ForumEntity() {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
     public ForumEntity(String name, String description, UserEntity owner) {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
         this.owner = owner;
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 }

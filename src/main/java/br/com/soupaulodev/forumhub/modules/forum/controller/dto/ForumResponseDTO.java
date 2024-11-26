@@ -1,11 +1,11 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller.dto;
 
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -16,5 +16,8 @@ public class ForumResponseDTO {
     private String name;
     private String description;
     private UserResponseDTO owner;
-    private List<TopicResponseDTO> topics;
+    private Set<UserResponseDTO> participants;
+    private int topicCount;
+    private Instant createdAt;
+    private Instant updatedAt;
 }

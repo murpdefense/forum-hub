@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller.dto;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Data
 @AllArgsConstructor
-public class ForumRequestDTO {
+public class ForumCreateRequestDTO {
     @NotBlank
     @Length(min = 3, max = 50)
     private String name;
@@ -18,5 +18,5 @@ public class ForumRequestDTO {
     private String description;
 
     @NotBlank
-    private UserRequestDTO owner;
+    private UserCreateRequestDTO owner;
 }
