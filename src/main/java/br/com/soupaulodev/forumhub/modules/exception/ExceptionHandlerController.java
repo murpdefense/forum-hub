@@ -41,6 +41,21 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(ForumNotFoundException.class)
+    public ResponseEntity<?> handleForumNotFoundException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(ForumAlreadyExistsException.class)
+    public ResponseEntity<?> handleForumAlreadyExistsException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ForumIllegalArgumentException.class)
+    public ResponseEntity<?> handleForumIllegalArgumentException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(TopicIllegalArgumentException.class)
     public ResponseEntity<?> handleTopicIllegalArgumentException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
