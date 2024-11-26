@@ -10,7 +10,7 @@ import java.util.UUID;
 @Service
 public class UnlikeResourceUsecase {
 
-    private LikeRepository likeRepository;
+    private final LikeRepository likeRepository;
 
     public UnlikeResourceUsecase(LikeRepository likeRepository) {
         this.likeRepository = likeRepository;
