@@ -13,7 +13,7 @@ services:
       - forumhub_pg_data:/bitnami/postgresql
 
   redis:
-    image: bitnami/redis:6
+    image: bitnami/redis:latest
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
