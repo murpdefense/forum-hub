@@ -1,6 +1,9 @@
 package br.com.soupaulodev.forumhub.modules.user.entity;
 
+import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
+import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
+import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,13 +39,25 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ForumEntity> ownedForums = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
-            name = "user_forum",
+            name = "forum_participants",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "forum_id")
     )
-    private Set<ForumEntity> forums;
+    private Set<ForumEntity> participatingForums = new HashSet<>();
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TopicEntity> topics = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CommentEntity> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LikeEntity> likes = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at")

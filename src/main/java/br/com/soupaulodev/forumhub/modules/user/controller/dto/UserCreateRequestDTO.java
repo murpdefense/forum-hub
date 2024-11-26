@@ -1,28 +1,34 @@
 package br.com.soupaulodev.forumhub.modules.user.controller.dto;
 
+import br.com.soupaulodev.forumhub.modules.user.entity.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 @AllArgsConstructor
-public class UserRequestDTO {
+public class UserCreateRequestDTO {
 
     @NotBlank
-    @Length(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @Size(max = 50)
     private String name;
 
     @NotBlank
-    @Length(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @Size(max = 50)
     private String username;
 
     @NotBlank
-    @Email(message = "Invalid email")
+    @Email
+    @Size(max = 50)
     private String email;
 
     @NotBlank
-    @Length(min = 8, max = 50, message = "Name must be between 3 and 50 characters")
+    @Size(min = 8, max = 50)
     private String password;
+
+    @NotNull
+    private UserRole role;
 }
