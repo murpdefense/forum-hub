@@ -14,5 +14,6 @@ public class CommentMapper {
         CommentResponseDTO commentResponseDTO = new CommentResponseDTO(commentEntity.getId(),
                 commentEntity.getMessage(),
                 CommentMapper.toResponseDTO(commentEntity.getParentComment()));
+        return commentResponseDTO;
     }
 }
