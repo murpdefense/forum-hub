@@ -17,8 +17,10 @@ public class DeleteTopicUsecase {
     }
 
     public void execute(UUID id) {
+
         TopicEntity topicDB = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
+
         topicRepository.delete(topicDB);
     }
 }

@@ -1,7 +1,10 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
+import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
+import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,15 @@ public class SearchTopicsUsecase {
         this.topicRepository = topicRepository;
     }
 
-    public List<TopicEntity> execute(String query, int page) {
+    public List<TopicResponseDTO> execute(String query, int page) {
 
-        return topicRepository
+        List<TopicEntity> entities = topicRepository
                 .findAllByTitleContainingIgnoreCaseOrMessageContainingIgnoreCaseOrderByCreatedAtDesc(
                         query,
                         query,
                         Pageable.ofSize(10).withPage(page));
+
+        return entities
+                .stream().map(TopicMapper::toResponseDTO).toList();
     }
 }

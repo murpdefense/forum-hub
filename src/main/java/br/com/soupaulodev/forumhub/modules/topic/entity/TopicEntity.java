@@ -2,6 +2,7 @@ package br.com.soupaulodev.forumhub.modules.topic.entity;
 
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
+import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,28 +32,25 @@ public class TopicEntity implements Serializable {
     private String title;
 
     @Column(nullable = false, length = 500)
-    private String message;
+    private String content;
 
-    @Column(nullable = false, length = 20)
-    private String state;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private UserEntity author;
-
-    @Column(nullable = false, length = 50)
-    private String course;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity creator;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TopicState state;
 
     @ManyToOne
     @JoinColumn(name = "forum_id", nullable = false)
     private ForumEntity forum;
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
-    private Set<CommentEntity> comments;
+    @ManyToOne
+    @JoinColumn(name = "creator_id", nullable = false)
+    private UserEntity creator;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CommentEntity> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LikeEntity> likes = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -62,16 +61,34 @@ public class TopicEntity implements Serializable {
     private Instant updatedAt;
 
     public TopicEntity() {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
-    public TopicEntity(String title, String message, UserEntity creator, ForumEntity forum) {
+    public TopicEntity(String title, String content, TopicState state) {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
         this.title = title;
-        this.message = message;
+        this.content = content;
         this.state = state;
-        this.course = course;
-        this.creator = creator;
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    public TopicEntity(String title, String content, UserEntity creator, ForumEntity forum) {
+        Instant now = Instant.now();
+
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.content = content;
+        this.state = TopicState.OPEN;
         this.forum = forum;
+        this.creator = creator;
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 }

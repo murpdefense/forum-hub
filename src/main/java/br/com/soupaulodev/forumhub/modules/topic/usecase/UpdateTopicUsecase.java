@@ -2,7 +2,10 @@ package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
+import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,26 +21,28 @@ public class UpdateTopicUsecase {
         this.topicRepository = topicRepository;
     }
 
-    public TopicEntity execute(UUID id, TopicEntity topic) {
+    public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO) {
+
         TopicEntity topicDB = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
 
-        if (topic.getTitle() == null && topic.getMessage() == null) {
+        if (requestDTO.getTitle() == null && requestDTO.getContent() == null) {
             throw new TopicIllegalArgumentException("""
                     You must provide at least one field to update:
                     - title
-                    - message
+                    - content
                     """);
         }
 
-        if (topic.getTitle() != null) {
-            topicDB.setTitle(topic.getTitle());
+        if (requestDTO.getTitle() != null) {
+            topicDB.setTitle(requestDTO.getTitle());
         }
-        if (topic.getMessage() != null) {
-            topicDB.setMessage(topic.getMessage());
+        if (requestDTO.getContent() != null) {
+            topicDB.setContent(requestDTO.getContent());
         }
         topicDB.setUpdatedAt(Instant.now());
 
-        return topicRepository.save(topicDB);
+        TopicEntity updatedTopic = topicRepository.save(topicDB);
+        return TopicMapper.toResponseDTO(updatedTopic);
     }
 }

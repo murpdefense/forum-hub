@@ -1,9 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller;
 
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicRequestDTO;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
-import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -39,40 +38,42 @@ public class TopicController {
     }
 
     @PostMapping
-    public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicRequestDTO requestDTO) {
-        TopicEntity topicCreated = createTopicUsecase.execute(TopicMapper.toEntity(requestDTO));
-        URI location = URI.create("/topics/" + topicCreated.getId());
-        return ResponseEntity.created(location).body(TopicMapper.toResponseDTO(topicCreated));
+    public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicCreateRequestDTO requestDTO) {
+
+        TopicResponseDTO responseDTO = createTopicUsecase.execute(requestDTO);
+
+        URI location = URI.create("/topics/" + responseDTO.getId());
+        return ResponseEntity.created(location).body(responseDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TopicResponseDTO> getTopic(@PathVariable UUID id) {
-        return ResponseEntity.ok(TopicMapper.toResponseDTO(getTopicUsecase.execute(id)));
+
+        return ResponseEntity.ok(getTopicUsecase.execute(id));
     }
 
     @GetMapping("/recents/{page}")
     public ResponseEntity<List<TopicResponseDTO>> getRecentTopics(@PathVariable int page) {
-        List<TopicResponseDTO> topics = getRecentTopicsUsecase.execute(page)
-                .stream().map(TopicMapper::toResponseDTO).toList();
-        return ResponseEntity.ok(topics);
+
+        return ResponseEntity.ok(getRecentTopicsUsecase.execute(page));
     }
 
     @GetMapping("/search/{query}/{page}")
     public ResponseEntity<List<TopicResponseDTO>> searchTopics(@PathVariable String query, @PathVariable int page) {
-        List<TopicResponseDTO> topics = searchTopicsUsecase.execute(query, page)
-                .stream().map(TopicMapper::toResponseDTO).toList();
-        return ResponseEntity.ok(topics);
+
+        return ResponseEntity.ok(searchTopicsUsecase.execute(query, page));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TopicResponseDTO> updateTopic(@PathVariable UUID id,
-                                                        @Valid @RequestBody(required = false) TopicRequestDTO requestDTO) {
-        TopicEntity topicUpdated = updateTopicUsecase.execute(id, TopicMapper.toEntity(requestDTO));
-        return ResponseEntity.ok(TopicMapper.toResponseDTO(topicUpdated));
+                                                        @Valid @RequestBody TopicUpdateRequestDTO requestDTO) {
+
+        return ResponseEntity.ok(updateTopicUsecase.execute(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTopic(@PathVariable UUID id) {
+
         deleteTopicUsecase.execute(id);
         return ResponseEntity.noContent().build();
     }
