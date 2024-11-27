@@ -28,15 +28,15 @@ public class UserMapper {
         );
     }
 
-    public static UserResponseDTO toResponseDTO(UserEntity user) {
+    public static UserResponseDTO toResponseDTO(UserEntity entity) {
         return new UserResponseDTO(
-            user.getId(),
-            user.getName(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getRole(),
-            user.getCreatedAt(),
-            user.getUpdatedAt()
+                entity.getId(),
+                entity.getName(),
+                entity.getUsername(),
+                entity.getEmail(),
+                entity.getRole(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

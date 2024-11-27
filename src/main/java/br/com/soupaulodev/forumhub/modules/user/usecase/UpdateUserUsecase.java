@@ -2,7 +2,10 @@ package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +21,14 @@ public class UpdateUserUsecase {
         this.userRepository = userRepository;
     }
 
-    public UserEntity execute(UUID id, UserEntity user) {
+    public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO) {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
-        if (user == null
-            || user.getName() == null
-            && user.getUsername() == null
-            && user.getEmail() == null
-            && user.getPassword() == null) {
+        if (requestDTO == null
+            || requestDTO.getName() == null
+            && requestDTO.getUsername() == null
+            && requestDTO.getEmail() == null
+            && requestDTO.getPassword() == null) {
 
             throw new UserIllegalArgumentException("""
                 You must provide at least one field to update:
@@ -35,21 +38,22 @@ public class UpdateUserUsecase {
                 - password
                 """);
         }
-        if (user.getName() != null) {
-            userDB.setName(user.getName());
+        if (requestDTO.getName() != null) {
+            userDB.setName(requestDTO.getName());
         }
-        if (user.getUsername() != null) {
-            userDB.setUsername(user.getUsername());
+        if (requestDTO.getUsername() != null) {
+            userDB.setUsername(requestDTO.getUsername());
         }
-        if (user.getEmail() != null) {
-            userDB.setEmail(user.getEmail());
+        if (requestDTO.getEmail() != null) {
+            userDB.setEmail(requestDTO.getEmail());
         }
-        if (user.getPassword() != null) {
-            userDB.setPassword(user.getPassword());
+        if (requestDTO.getPassword() != null) {
+            userDB.setPassword(requestDTO.getPassword());
         }
 
         userDB.setUpdatedAt(Instant.now());
 
-        return userRepository.save(userDB);
+        UserEntity userUpdated = userRepository.save(userDB);
+        return UserMapper.toResponseDTO(userUpdated);
     }
 }

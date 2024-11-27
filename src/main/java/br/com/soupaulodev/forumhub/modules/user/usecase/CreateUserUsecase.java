@@ -1,7 +1,10 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +17,16 @@ public class CreateUserUsecase {
         this.userRepository = userRepository;
     }
 
-    public UserEntity execute(UserEntity userEntity) {
+    public UserResponseDTO execute(UserCreateRequestDTO requestDTO) {
+
+        UserEntity userEntity = UserMapper.toEntity(requestDTO);
+
         userRepository.findByUsernameAndEmail(userEntity.getUsername(), userEntity.getEmail())
                 .ifPresent(user -> {
                     throw new UserAlreadyExistsException();
                 });
-        return userRepository.save(userEntity);
+
+        UserEntity userSaved = userRepository.save(userEntity);
+        return UserMapper.toResponseDTO(userSaved);
     }
 }

@@ -17,8 +17,10 @@ public class DeleteUserUsecase {
     }
 
     public void execute(UUID id) {
+
         UserEntity userDB = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
         userRepository.delete(userDB);
     }
 }

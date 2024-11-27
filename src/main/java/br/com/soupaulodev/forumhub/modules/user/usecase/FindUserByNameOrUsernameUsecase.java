@@ -1,7 +1,9 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,11 @@ public class FindUserByNameOrUsernameUsecase {
         this.userRepository = userRepository;
     }
 
-    public UserEntity execute(String nameOrUsername) {
-        return userRepository.findByNameOrUsername(nameOrUsername, nameOrUsername)
+    public UserResponseDTO execute(String nameOrUsername) {
+
+         UserEntity userFound = userRepository.findByNameOrUsername(nameOrUsername, nameOrUsername)
                 .orElseThrow(UserNotFoundException::new);
+
+        return UserMapper.toResponseDTO(userFound);
     }
 }

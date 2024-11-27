@@ -1,7 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.usecase.*;
@@ -34,33 +35,35 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO requestDTO) {
-        UserEntity userCreated = createUserUsecase.execute(UserMapper.toEntity(requestDTO));
-        URI uri = URI.create("/user/" + userCreated.getId());
-        return ResponseEntity.created(uri).body(UserMapper.toResponseDTO(userCreated));
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateRequestDTO requestDTO) {
+
+        UserResponseDTO responseDTO = createUserUsecase.execute(requestDTO);
+        URI uri = URI.create("/user/" + responseDTO.getId());
+        return ResponseEntity.created(uri).body(responseDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
-        UserEntity user = getUserUsecase.execute(id);
-        return ResponseEntity.ok(UserMapper.toResponseDTO(user));
+
+        return ResponseEntity.ok(getUserUsecase.execute(id));
     }
 
     @GetMapping("/{nameOrUsername}")
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
-        UserEntity user = findUserByNameOrUsernameUsecase.execute(query);
-        return ResponseEntity.ok(UserMapper.toResponseDTO(user));
+
+        return ResponseEntity.ok(findUserByNameOrUsernameUsecase.execute(query));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
-                                      @Valid @RequestBody(required = false) UserRequestDTO requestDTO) {
-        UserEntity userUpdated = updateUserUsecase.execute(id, UserMapper.toEntity(requestDTO));
-        return ResponseEntity.ok(UserMapper.toResponseDTO(userUpdated));
+                                      @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
+
+        return ResponseEntity.ok(updateUserUsecase.execute(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
+
         deleteUserUsecase.execute(id);
         return ResponseEntity.noContent().build();
     }
