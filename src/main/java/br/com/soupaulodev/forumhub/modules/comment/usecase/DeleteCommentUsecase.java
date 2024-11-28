@@ -18,8 +18,8 @@ public class DeleteCommentUsecase {
 
     public void execute(UUID id) {
 
-        CommentEntity commentDB = commentRepository.findById(id)
+        CommentEntity commentFound = commentRepository.findById(id)
                 .orElseThrow(CommentNotFoundException::new);
-        commentRepository.delete(commentDB);
+        commentRepository.delete(commentFound);
     }
 }

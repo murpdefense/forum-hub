@@ -10,11 +10,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_message")
+@Table(name = "tb_comment")
 @Getter
 @Setter
 public class CommentEntity implements Serializable {
@@ -25,22 +26,22 @@ public class CommentEntity implements Serializable {
     private UUID id;
 
     @Column(nullable = false, length = 500)
-    private String message;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity author;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
     private TopicEntity topic;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "parent_comment_id")
     private CommentEntity parentComment;
 
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
-    private Set<CommentEntity> responses;
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CommentEntity> replies = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -51,14 +52,30 @@ public class CommentEntity implements Serializable {
     private Instant updatedAt;
 
     public CommentEntity() {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
-    public CommentEntity(String message, UserEntity author, TopicEntity topic) {
+    public CommentEntity(String content, UserEntity user, TopicEntity topic) {
         Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
-        this.message = message;
-        this.author = author;
+        this.content = content;
+        this.user = user;
+        this.topic = topic;
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    public CommentEntity(String content, UserEntity user, TopicEntity topic, CommentEntity parentComment) {
+        Instant now = Instant.now();
+
+        this.id = UUID.randomUUID();
+        this.content = content;
+        this.user = user;
         this.topic = topic;
         this.createdAt = now;
         this.updatedAt = now;

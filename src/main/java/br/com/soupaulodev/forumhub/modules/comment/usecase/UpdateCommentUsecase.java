@@ -1,6 +1,9 @@
 package br.com.soupaulodev.forumhub.modules.comment.usecase;
 
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
+import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.CommentIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.CommentNotFoundException;
@@ -18,16 +21,23 @@ public class UpdateCommentUsecase {
         this.commentRepository = commentRepository;
     }
 
-    public CommentEntity execute(UUID id, CommentEntity newComment) {
-        CommentEntity commentDB = commentRepository.findById(id)
+    public CommentResponseDTO execute(UUID id, CommentUpdateRequestDTO requestDTO) {
+
+        CommentEntity commentFound = commentRepository.findById(id)
                 .orElseThrow(CommentNotFoundException::new);
 
-        if (newComment.getMessage() == commentDB.getMessage()) {
+        if (requestDTO.getContent().equals(commentFound.getContent())) {
             throw new CommentIllegalArgumentException();
         }
-        commentDB.setMessage(newComment.getMessage());
-        commentDB.setUpdatedAt(Instant.now());
 
-        return commentRepository.save(commentDB);
+        if (requestDTO.getContent().isEmpty()) {
+            throw new CommentIllegalArgumentException("Comment content cannot be empty");
+        }
+
+        commentFound.setContent(requestDTO.getContent());
+        commentFound.setUpdatedAt(Instant.now());
+
+        CommentEntity commentUpdated = commentRepository.save(commentFound);
+        return CommentMapper.toResponseDTO(commentUpdated);
     }
 }
