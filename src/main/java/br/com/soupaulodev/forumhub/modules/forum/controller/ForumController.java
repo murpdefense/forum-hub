@@ -3,8 +3,6 @@ package br.com.soupaulodev.forumhub.modules.forum.controller;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
