@@ -11,8 +11,19 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 
+/**
+ * Mapper class for converting between TopicEntity and various DTOs.
+ */
 public class TopicMapper {
 
+    /**
+     * Converts a TopicCreateRequestDTO to a TopicEntity.
+     *
+     * @param dto the TopicCreateRequestDTO containing the topic creation data
+     * @param forum the ForumEntity to which the topic belongs
+     * @param creator the UserEntity who created the topic
+     * @return the TopicEntity created from the DTO
+     */
     public static TopicEntity toEntity(TopicCreateRequestDTO dto, ForumEntity forum, UserEntity creator) {
         return new TopicEntity(
                 dto.getTitle(),
@@ -22,6 +33,12 @@ public class TopicMapper {
         );
     }
 
+    /**
+     * Converts a TopicUpdateRequestDTO to a TopicEntity.
+     *
+     * @param dto the TopicUpdateRequestDTO containing the topic update data
+     * @return the TopicEntity created from the DTO
+     */
     public static TopicEntity toEntity(TopicUpdateRequestDTO dto) {
         return new TopicEntity(
                 dto.getTitle(),
@@ -30,6 +47,12 @@ public class TopicMapper {
         );
     }
 
+    /**
+     * Converts a TopicEntity to a TopicResponseDTO.
+     *
+     * @param topic the TopicEntity to be converted
+     * @return the TopicResponseDTO created from the entity
+     */
     public static TopicResponseDTO toResponseDTO(TopicEntity topic) {
 
         UserResponseDTO creator = UserMapper.toResponseDTO(topic.getCreator());
