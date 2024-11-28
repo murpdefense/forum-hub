@@ -12,15 +12,32 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Use case for updating a forum.
+ */
 @Service
 public class UpdateForumUsecase {
 
     private final ForumRepository forumRepository;
 
+    /**
+     * Constructs a new UpdateForumUsecase with the specified repository.
+     *
+     * @param forumRepository the repository for managing forums
+     */
     public UpdateForumUsecase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 
+    /**
+     * Executes the use case to update a forum.
+     *
+     * @param id the unique identifier of the forum to be updated
+     * @param requestDTO the data transfer object containing the forum update data
+     * @return the response data transfer object containing the updated forum data
+     * @throws ForumNotFoundException if the forum with the specified ID is not found
+     * @throws ForumIllegalArgumentException if the provided data is invalid
+     */
     public ForumResponseDTO execute(UUID id, ForumUpdateRequestDTO requestDTO) {
         ForumEntity forumFound = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);

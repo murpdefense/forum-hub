@@ -9,15 +9,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Use case for retrieving the details of a forum.
+ */
 @Service
 public class GetForumDetailsUsecase {
 
     private final ForumRepository forumRepository;
 
+    /**
+     * Constructs a new GetForumDetailsUsecase with the specified repository.
+     *
+     * @param forumRepository the repository for managing forums
+     */
     public GetForumDetailsUsecase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 
+    /**
+     * Executes the use case to retrieve the details of a forum by its unique identifier.
+     *
+     * @param id the unique identifier of the forum
+     * @return the response data transfer object containing the forum details
+     * @throws ForumNotFoundException if the forum with the specified ID is not found
+     */
     public ForumResponseDTO execute(UUID id) {
 
         ForumEntity forumFound = forumRepository.findById(id)

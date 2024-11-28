@@ -10,18 +10,34 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case for creating a new forum.
+ */
 @Service
 public class CreateForumUsecase {
 
     private final ForumRepository forumRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a new CreateForumUsecase with the specified repositories.
+     *
+     * @param forumRepository the repository for managing forums
+     * @param userRepository the repository for managing users
+     */
     public CreateForumUsecase(ForumRepository forumRepository,
                               UserRepository userRepository) {
         this.forumRepository = forumRepository;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Executes the use case to create a new forum.
+     *
+     * @param requestDTO the data transfer object containing the forum creation data
+     * @return the response data transfer object containing the created forum data
+     * @throws ForumAlreadyExistsException if a forum with the same name already exists
+     */
     public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO) {
 
         forumRepository.findByName(requestDTO.getName()).ifPresent(forum -> {
