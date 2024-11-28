@@ -8,6 +8,9 @@ import lombok.Data;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for like requests.
+ */
 @Data
 @AllArgsConstructor
 public class LikeResponseDTO {
