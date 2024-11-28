@@ -21,7 +21,7 @@ public class SearchTopicsUsecase {
     public List<TopicResponseDTO> execute(String query, int page) {
 
         List<TopicEntity> entities = topicRepository
-                .findAllByTitleContainingIgnoreCaseOrMessageContainingIgnoreCaseOrderByCreatedAtDesc(
+                .findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(
                         query,
                         query,
                         Pageable.ofSize(10).withPage(page));

@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface TopicRepository extends JpaRepository<TopicEntity, UUID> {
     List<TopicEntity> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    List<TopicEntity> findAllByTitleContainingIgnoreCaseOrMessageContainingIgnoreCaseOrderByCreatedAtDesc(String title, String message, Pageable pageable);
+    List<TopicEntity> findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(String title, String message, Pageable pageable);
 }
