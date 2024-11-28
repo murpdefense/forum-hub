@@ -9,6 +9,9 @@ import lombok.Data;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for representing a topic response.
+ */
 @Data
 @AllArgsConstructor
 public class TopicResponseDTO {

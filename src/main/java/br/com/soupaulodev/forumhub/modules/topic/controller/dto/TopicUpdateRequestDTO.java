@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Data Transfer Object for updating an existing topic.
+ */
 @Data
 @AllArgsConstructor
 public class TopicUpdateRequestDTO {
