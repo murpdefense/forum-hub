@@ -16,7 +16,7 @@ import java.util.UUID;
  * Entity representing a like on a topic.
  */
 @Entity
-@Table(name = "likes")
+@Table(name = "tb_likes")
 @Data
 @AllArgsConstructor
 public class LikeEntity implements Serializable {
