@@ -9,6 +9,9 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for comment responses.
+ */
 @Data
 @AllArgsConstructor
 public class CommentResponseDTO {

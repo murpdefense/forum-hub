@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Data Transfer Object for updating a comment.
+ */
 @Data
 @AllArgsConstructor
 public class CommentUpdateRequestDTO {
