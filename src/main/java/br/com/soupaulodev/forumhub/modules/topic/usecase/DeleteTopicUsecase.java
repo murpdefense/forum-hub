@@ -7,15 +7,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Use case for deleting a topic.
+ */
 @Service
 public class DeleteTopicUsecase {
 
     private final TopicRepository topicRepository;
 
+    /**
+     * Constructs a new DeleteTopicUsecase with the specified repository.
+     *
+     * @param topicRepository the repository for managing topics
+     */
     public DeleteTopicUsecase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
+    /**
+     * Executes the use case to delete a topic.
+     *
+     * @param id the unique identifier of the topic to be deleted
+     * @throws TopicNotFoundException if the topic specified by the id does not exist
+     */
     public void execute(UUID id) {
 
         TopicEntity topicDB = topicRepository.findById(id)

@@ -13,6 +13,9 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case for creating a new topic.
+ */
 @Service
 public class CreateTopicUsecase {
 
@@ -20,6 +23,13 @@ public class CreateTopicUsecase {
     private final ForumRepository forumRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a new CreateTopicUsecase with the specified repositories.
+     *
+     * @param topicRepository the repository for managing topics
+     * @param forumRepository the repository for managing forums
+     * @param userRepository the repository for managing users
+     */
     public CreateTopicUsecase(TopicRepository topicRepository,
                               ForumRepository forumRepository,
                               UserRepository userRepository) {
@@ -28,6 +38,14 @@ public class CreateTopicUsecase {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Executes the use case to create a new topic.
+     *
+     * @param requestDTO the data transfer object containing the topic creation data
+     * @return the response data transfer object containing the created topic data
+     * @throws ForumNotFoundException if the forum specified in the request does not exist
+     * @throws UserNotFoundException if the user specified in the request does not exist
+     */
     public TopicResponseDTO execute(TopicCreateRequestDTO requestDTO) {
 
         ForumEntity forum = forumRepository.findById(requestDTO.getForumId())

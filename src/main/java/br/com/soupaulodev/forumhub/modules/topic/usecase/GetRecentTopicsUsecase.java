@@ -9,15 +9,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Use case for retrieving recent topics.
+ */
 @Service
 public class GetRecentTopicsUsecase {
 
     private final TopicRepository topicRepository;
 
+    /**
+     * Constructs a new GetRecentTopicsUsecase with the specified repository.
+     *
+     * @param topicRepository the repository for managing topics
+     */
     public GetRecentTopicsUsecase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
+    /**
+     * Executes the use case to retrieve recent topics.
+     *
+     * @param page the page number to retrieve
+     * @return a list of TopicResponseDTO containing the recent topics
+     */
     public List<TopicResponseDTO> execute(int page) {
 
         List<TopicEntity> entities = topicRepository

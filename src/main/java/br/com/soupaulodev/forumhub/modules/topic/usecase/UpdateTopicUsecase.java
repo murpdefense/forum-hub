@@ -12,15 +12,32 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Use case for updating an existing topic.
+ */
 @Service
 public class UpdateTopicUsecase {
 
     private final TopicRepository topicRepository;
 
+    /**
+     * Constructs a new UpdateTopicUsecase with the specified repository.
+     *
+     * @param topicRepository the repository for managing topics
+     */
     public UpdateTopicUsecase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
+    /**
+     * Executes the use case to update an existing topic.
+     *
+     * @param id the unique identifier of the topic to be updated
+     * @param requestDTO the data transfer object containing the topic update data
+     * @return the response data transfer object containing the updated topic data
+     * @throws TopicNotFoundException if the topic specified by the id does not exist
+     * @throws TopicIllegalArgumentException if neither title nor content is provided for update
+     */
     public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO) {
 
         TopicEntity topicDB = topicRepository.findById(id)
