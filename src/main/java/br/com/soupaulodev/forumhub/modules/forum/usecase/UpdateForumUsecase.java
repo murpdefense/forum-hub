@@ -2,7 +2,10 @@ package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
+import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,22 +21,24 @@ public class UpdateForumUsecase {
         this.forumRepository = forumRepository;
     }
 
-    public ForumEntity execute(UUID id, ForumEntity forumEntity) {
-        ForumEntity forumDB = forumRepository.findById(id)
+    public ForumResponseDTO execute(UUID id, ForumUpdateRequestDTO requestDTO) {
+        ForumEntity forumFound = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);
 
-        if(forumDB.equals(forumEntity)) {
+        if(requestDTO.getName().equals(forumFound.getName())
+                && requestDTO.getDescription().equals(forumFound.getDescription())) {
             throw new ForumIllegalArgumentException("Data is the same");
         }
-        if((forumEntity.getName() == null || forumEntity.getName().isEmpty())
-                && (forumEntity.getDescription() == null || forumEntity.getDescription().isEmpty())) {
+
+        if((requestDTO.getName().isEmpty()) || requestDTO.getDescription().isEmpty()) {
             throw new ForumIllegalArgumentException("Name and description are empty");
         }
 
-        forumDB.setName(forumEntity.getName());
-        forumDB.setDescription(forumEntity.getDescription());
-        forumDB.setUpdatedAt(Instant.now());
+        forumFound.setName(requestDTO.getName());
+        forumFound.setDescription(requestDTO.getDescription());
+        forumFound.setUpdatedAt(Instant.now());
 
-        return forumRepository.save(forumEntity);
+        ForumEntity forumUpdated = forumRepository.save(forumFound);
+        return ForumMapper.toResponseDTO(forumUpdated);
     }
 }

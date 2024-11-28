@@ -1,6 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
+import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,13 @@ public class ListForumsByNamePageableUsecase {
         this.forumRepository = forumRepository;
     }
 
-    public List<ForumEntity> execute(String name, int page) {
-        return forumRepository.findAllByNameContainingOrderByCreatedAtDesc(name, Pageable.ofSize(10).withPage(page));
+    public List<ForumResponseDTO> execute(String name, int page) {
+
+        List<ForumEntity> entities = forumRepository.findAllByNameContainingOrderByCreatedAtDesc(name, Pageable.ofSize(10).withPage(page));
+
+        return entities
+                .stream()
+                .map(ForumMapper::toResponseDTO)
+                .toList();
     }
 }

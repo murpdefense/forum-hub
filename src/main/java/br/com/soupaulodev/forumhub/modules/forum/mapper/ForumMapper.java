@@ -2,9 +2,8 @@ package br.com.soupaulodev.forumhub.modules.forum.mapper;
 
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
-import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
@@ -15,9 +14,15 @@ import java.util.stream.Stream;
 
 public class ForumMapper {
 
-    public static ForumEntity toEntity(ForumCreateRequestDTO forumRequestDTO, UserEntity owner) {
-        return new ForumEntity(forumRequestDTO.getName(),
-                forumRequestDTO.getDescription(),
+    public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
+        return new ForumEntity(dto.getName(),
+                dto.getDescription(),
+                owner);
+    }
+
+    public static ForumEntity toEntity(ForumUpdateRequestDTO dto, UserEntity owner) {
+        return new ForumEntity(dto.getName(),
+                dto.getDescription(),
                 owner);
     }
 

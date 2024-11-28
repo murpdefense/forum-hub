@@ -1,7 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller;
 
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumRequestDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
@@ -39,10 +40,11 @@ public class ForumController {
     }
 
     @PostMapping
-    public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumRequestDTO forumResponseDTO) {
-        ForumEntity forumCreated = createForumUsecase.execute(ForumMapper.toEntity(forumResponseDTO));
-        URI uri = URI.create("/forums/" + forumCreated.getId());
-        return ResponseEntity.created(uri).body(ForumMapper.toResponseDTO(forumCreated));
+    public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumCreateRequestDTO requestDTO) {
+        ForumResponseDTO responseDTO = createForumUsecase.execute(requestDTO);
+
+        URI uri = URI.create("/forums/" + responseDTO.getId());
+        return ResponseEntity.created(uri).body(responseDTO);
     }
 
     @GetMapping("/{id}")
@@ -50,20 +52,21 @@ public class ForumController {
                                                             @PathVariable
                                                             @org.hibernate.validator.constraints.UUID
                                                             UUID id) {
-        return ResponseEntity.ok(ForumMapper.toResponseDTO(getForumDetailsUsecase.execute(id)));
+
+        return ResponseEntity.ok(getForumDetailsUsecase.execute(id));
     }
 
     @GetMapping("/all/{page}")
     public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@PathVariable int page) {
-        List<ForumEntity> forums = listForumsPageableUsecase.execute(page);
-        return ResponseEntity.ok(forums.stream().map(ForumMapper::toResponseDTO).toList());
+
+        return ResponseEntity.ok(listForumsPageableUsecase.execute(page));
     }
 
     @GetMapping("/{name}/{page}")
     public ResponseEntity<List<ForumResponseDTO>> listForumsByNamePageable(@PathVariable String name,
                                                                            @PathVariable int page) {
-        List<ForumEntity> forums = listForumsByNamePageableUsecase.execute(name, page);
-        return ResponseEntity.ok(forums.stream().map(ForumMapper::toResponseDTO).toList());
+
+        return ResponseEntity.ok(listForumsByNamePageableUsecase.execute(name, page));
     }
 
     @PutMapping("/{id}")
@@ -73,9 +76,9 @@ public class ForumController {
                                                         UUID id,
                                                         @Valid
                                                         @RequestBody
-                                                        ForumRequestDTO forumRequestDTO) {
-        ForumEntity forumUpdated = updateForumUsecase.execute(id, ForumMapper.toEntity(forumRequestDTO));
-        return ResponseEntity.ok(ForumMapper.toResponseDTO(forumUpdated));
+                                                        ForumUpdateRequestDTO forumRequestDTO) {
+
+        return ResponseEntity.ok(updateForumUsecase.execute(id, forumRequestDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -83,6 +86,7 @@ public class ForumController {
                                            @PathVariable
                                            @org.hibernate.validator.constraints.UUID
                                            UUID id) {
+
         deleteForumUsecase.execute(id);
         return ResponseEntity.noContent().build();
     }

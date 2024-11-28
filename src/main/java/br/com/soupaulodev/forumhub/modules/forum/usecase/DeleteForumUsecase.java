@@ -17,8 +17,10 @@ public class DeleteForumUsecase {
     }
 
     public void execute(UUID id) {
+
         ForumEntity forumDB = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);
+
         forumRepository.delete(forumDB);
     }
 }
