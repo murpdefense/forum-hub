@@ -7,9 +7,13 @@ import lombok.Data;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for creating a new user.
+ */
 @AllArgsConstructor
 @Data
 public class UserResponseDTO {
+
     private UUID id;
     private String name;
     private String username;
