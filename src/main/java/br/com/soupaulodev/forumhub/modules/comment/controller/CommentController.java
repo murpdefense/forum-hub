@@ -3,8 +3,6 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
-import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
