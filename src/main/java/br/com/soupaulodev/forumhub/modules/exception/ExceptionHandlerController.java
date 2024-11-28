@@ -21,28 +21,13 @@ public class ExceptionHandlerController {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(Exception e) {
+    @ExceptionHandler(CommentIllegalArgumentException.class)
+    public ResponseEntity<?> handleCommentIllegalArgumentException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExistsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    @ExceptionHandler(UserIllegalArgumentException.class)
-    public ResponseEntity<?> handleUserIllegalArgumentException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(TopicNotFoundException.class)
-    public ResponseEntity<?> handleTopicNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(ForumNotFoundException.class)
-    public ResponseEntity<?> handleForumNotFoundException(Exception e) {
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
@@ -56,18 +41,43 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
+    @ExceptionHandler(ForumNotFoundException.class)
+    public ResponseEntity<?> handleForumNotFoundException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(CommentIllegalArgumentException.class)
-    public ResponseEntity<?> handleCommentIllegalArgumentException(Exception e) {
+    @ExceptionHandler(LikeAlreadyExistsException.class)
+    public ResponseEntity<?> handleLikeAlreadyExistsException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(LikeNotFoundException.class)
+    public ResponseEntity<?> handleLikeNotFoundException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(TopicIllegalArgumentException.class)
     public ResponseEntity<?> handleTopicIllegalArgumentException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(TopicNotFoundException.class)
+    public ResponseEntity<?> handleTopicNotFoundException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<?> handleUserAlreadyExistsException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserIllegalArgumentException.class)
+    public ResponseEntity<?> handleUserIllegalArgumentException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
