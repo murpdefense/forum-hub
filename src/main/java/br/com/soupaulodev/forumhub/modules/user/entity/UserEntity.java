@@ -15,6 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Forums the user is participating in.
+ */
 @Entity
 @Table(name = "tb_user")
 @Getter
@@ -36,12 +39,21 @@ public class UserEntity {
     @Column(nullable = false, length = 50)
     private String password;
 
+    /**
+     * Role of the user.
+     */
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    /**
+     * Forums owned by the user.
+     */
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ForumEntity> ownedForums = new HashSet<>();
 
+    /**
+     * Forums the user is participating in.
+     */
     @ManyToMany
     @JoinTable(
             name = "forum_participants",
@@ -50,27 +62,59 @@ public class UserEntity {
     )
     private Set<ForumEntity> participatingForums = new HashSet<>();
 
+    /**
+     * Topics created by the user.
+     */
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TopicEntity> topics = new HashSet<>();
 
+    /**
+     * Comments made by the user.
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentEntity> comments = new HashSet<>();
 
+    /**
+     * Likes given by the user.
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LikeEntity> likes = new HashSet<>();
 
+    /**
+     * Timestamp of when the user was created.
+     */
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 
+    /**
+     * Timestamp of when the user was last updated.
+     */
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    /**
+     * Default constructor that initializes the user ID and timestamps.
+     */
     public UserEntity() {
+        Instant now = Instant.now();
+
         this.id = UUID.randomUUID();
+
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
+    /**
+     * Constructor to create a user with the specified details.
+     *
+     * @param name the name of the user
+     * @param username the username of the user
+     * @param email the email of the user
+     * @param password the password of the user
+     * @param role the role of the user
+     */
     public UserEntity(String name, String username, String email, String password, UserRole role) {
         this();
         this.name = name;
@@ -78,20 +122,8 @@ public class UserEntity {
         this.email = email;
         this.password = password;
         this.role = role;
-    }
 
-    public void validate() {
-        if (this.name == null || this.name.isBlank()) {
-            throw new IllegalArgumentException("Name is required");
-        }
-        if (this.email == null || this.email.isBlank()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (this.password == null || this.password.isBlank()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        if (this.role == null) {
-            throw new IllegalArgumentException("Role is required");
-        }
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 }
