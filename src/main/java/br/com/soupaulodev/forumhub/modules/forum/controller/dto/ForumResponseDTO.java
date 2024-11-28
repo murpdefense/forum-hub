@@ -8,6 +8,9 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for creating a forum.
+ */
 @Data
 @AllArgsConstructor
 public class ForumResponseDTO {

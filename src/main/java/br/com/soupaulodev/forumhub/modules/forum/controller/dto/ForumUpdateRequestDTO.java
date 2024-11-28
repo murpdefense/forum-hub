@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.UUID;
 
+/**
+ * Data Transfer Object for updating a forum.
+ */
 @Data
 @AllArgsConstructor
 public class ForumUpdateRequestDTO {
