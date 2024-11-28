@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.like.controller;
 
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
-import br.com.soupaulodev.forumhub.modules.like.mapper.LikeMapper;
 import br.com.soupaulodev.forumhub.modules.like.usecase.LikeResourceUsecase;
 import br.com.soupaulodev.forumhub.modules.like.usecase.UnlikeResourceUsecase;
 import jakarta.validation.Valid;
@@ -23,13 +22,15 @@ public class LikeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> like(@Valid @RequestBody LikeRequestDTO likeRequestDTO) {
-        likeResourceUsecase.execute(LikeMapper.toEntity(likeRequestDTO));
+    public ResponseEntity<Void> like(@Valid @RequestBody LikeRequestDTO requestDTO) {
+
+        likeResourceUsecase.execute(requestDTO);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> unlike(@PathVariable UUID id) {
+
         unlikeResourceUsecase.execute(id);
         return ResponseEntity.ok().build();
     }

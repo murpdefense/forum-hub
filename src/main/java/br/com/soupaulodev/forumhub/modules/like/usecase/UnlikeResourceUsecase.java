@@ -18,8 +18,9 @@ public class UnlikeResourceUsecase {
 
     public void execute(UUID likeId) {
 
-        LikeEntity likeDB = likeRepository.findById(likeId)
+        LikeEntity likeFound = likeRepository.findById(likeId)
                 .orElseThrow(LikeNotFoundException::new);
-        likeRepository.delete(likeDB);
+
+        likeRepository.delete(likeFound);
     }
 }
