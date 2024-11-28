@@ -8,14 +8,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    format-sql: true
     properties:
       hibernate:
+        format-sql: true
         dialect: org.hibernate.dialect.H2Dialect
     h2:
-        console:
-            enabled: true
-        path: /h2-console
+      console:
+        enabled: true
+      path: /h2-console
 logging:
   level:
     org:
