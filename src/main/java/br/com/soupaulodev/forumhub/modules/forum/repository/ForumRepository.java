@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface ForumRepository extends JpaRepository<ForumEntity, UUID> {
     Optional<ForumEntity> findByName(String name);
-    List<ForumEntity> findAllOrderByCreatedAt(Pageable pageable);
+    List<ForumEntity> findAllBy(Pageable pageable);
     List<ForumEntity> findAllByNameContainingOrderByCreatedAtDesc(String name, Pageable pageable);
 }

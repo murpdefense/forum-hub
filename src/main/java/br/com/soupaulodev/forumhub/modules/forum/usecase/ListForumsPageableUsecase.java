@@ -20,7 +20,7 @@ public class ListForumsPageableUsecase {
 
     public List<ForumResponseDTO> execute(int page) {
 
-        List<ForumEntity> entities = forumRepository.findAllOrderByCreatedAt(Pageable.ofSize(10).withPage(page));
+        List<ForumEntity> entities = forumRepository.findAllBy(Pageable.ofSize(10).withPage(page));
 
         return entities
                 .stream()
