@@ -14,14 +14,31 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Mapper class for converting between CommentEntity and DTOs.
+ */
 public class CommentMapper {
 
+    /**
+     * Converts a CommentCreateRequestDTO to a CommentEntity.
+     *
+     * @param dto the CommentCreateRequestDTO containing the comment data
+     * @param userEntity the UserEntity representing the user who made the comment
+     * @param topicEntity the TopicEntity representing the topic to which the comment belongs
+     * @return a new CommentEntity with the provided data
+     */
     public static CommentEntity toEntity(CommentCreateRequestDTO dto,
                                          UserEntity userEntity,
                                          TopicEntity topicEntity) {
         return new CommentEntity(dto.getContent(), userEntity, topicEntity);
     }
 
+    /**
+     * Converts a CommentEntity to a CommentResponseDTO.
+     *
+     * @param commentEntity the CommentEntity to convert
+     * @return a new CommentResponseDTO with the data from the CommentEntity
+     */
     public static CommentResponseDTO toResponseDTO(CommentEntity commentEntity) {
 
         UserResponseDTO user = UserMapper.toResponseDTO(commentEntity.getUser());
