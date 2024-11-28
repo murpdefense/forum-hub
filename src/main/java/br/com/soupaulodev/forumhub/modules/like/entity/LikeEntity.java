@@ -12,6 +12,9 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Entity representing a like on a topic.
+ */
 @Entity
 @Table(name = "likes")
 @Data
@@ -23,23 +26,43 @@ public class LikeEntity implements Serializable {
     @Id
     private UUID id;
 
+    /**
+     * The user who liked the topic.
+     */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    /**
+     * The topic that was liked.
+     */
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
     private TopicEntity topic;
 
+    /**
+     * The timestamp when the like was created.
+     */
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 
+    /**
+     * Default constructor.
+     * Initializes the id and createdAt fields.
+     */
     public LikeEntity() {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
     }
 
+    /**
+     * Constructs a new LikeEntity with the specified user and topic.
+     * Initializes the id and createdAt fields.
+     *
+     * @param user the user who liked the topic
+     * @param topic the topic that was liked
+     */
     public LikeEntity(UserEntity user, TopicEntity topic) {
         this.id = UUID.randomUUID();
         this.user = user;
