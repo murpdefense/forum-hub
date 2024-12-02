@@ -43,6 +43,7 @@ public class UserEntity {
      * Role of the user.
      */
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     /**
