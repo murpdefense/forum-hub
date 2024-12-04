@@ -1,5 +1,6 @@
-package br.com.soupaulodev.forumhub.security;
+package br.com.soupaulodev.forumhub.security.filters;
 
+import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
