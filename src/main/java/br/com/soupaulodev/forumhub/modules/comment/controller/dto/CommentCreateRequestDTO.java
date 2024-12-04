@@ -3,15 +3,11 @@ package br.com.soupaulodev.forumhub.modules.comment.controller.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import java.util.UUID;
 
 /**
  * Data Transfer Object for creating a comment.
  */
-@Data
-@AllArgsConstructor
 public class CommentCreateRequestDTO {
 
     /**
@@ -41,4 +37,36 @@ public class CommentCreateRequestDTO {
      * Can be null.
      */
     private UUID parentCommentId;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public UUID getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(UUID topicId) {
+        this.topicId = topicId;
+    }
+
+    public UUID getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(UUID parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
 }
