@@ -4,50 +4,68 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequest
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
-import br.com.soupaulodev.forumhub.modules.user.entity.UserRole;
 
 /**
- * Mapper class for converting between User DTOs and User entities.
+ * Mapper class for converting between {@link UserEntity} and Data Transfer Objects (DTOs).
+ * <p>
+ * This class provides static methods to convert between {@link UserEntity} objects and
+ * various DTO representations such as {@link UserCreateRequestDTO}, {@link UserUpdateRequestDTO},
+ * and {@link UserResponseDTO}. These transformations help decouple the domain model from
+ * the API layer, ensuring proper data transfer between different components of the application.
+ * </p>
+ *
+ * @author soupaulodev
  */
 public class UserMapper {
 
     /**
-     * Converts a UserCreateRequestDTO to a UserEntity.
+     * Converts a {@link UserCreateRequestDTO} to a {@link UserEntity}.
+     * <p>
+     * This method maps the user creation DTO, which contains the details of the new user,
+     * to a corresponding {@link UserEntity} for persistence in the database.
+     * </p>
      *
-     * @param dto the UserCreateRequestDTO containing user creation data
-     * @return a UserEntity created from the provided DTO
+     * @param dto the {@link UserCreateRequestDTO} containing user data to be converted.
+     * @return the corresponding {@link UserEntity} with the mapped user data.
      */
     public static UserEntity toEntity(UserCreateRequestDTO dto) {
         return new UserEntity(
-            dto.getName(),
-            dto.getUsername(),
-            dto.getEmail(),
-            dto.getPassword(),
-            UserRole.USER
+            dto.name(),
+            dto.username(),
+            dto.email(),
+            dto.password()
         );
     }
 
     /**
-     * Converts a UserUpdateRequestDTO to a UserEntity.
+     * Converts a {@link UserUpdateRequestDTO} to a {@link UserEntity}.
+     * <p>
+     * This method maps the user update DTO, which contains updated details of the user,
+     * to a corresponding {@link UserEntity} for modifying the user's information in the database.
+     * </p>
      *
-     * @param dto the UserUpdateRequestDTO containing user update data
-     * @return a UserEntity created from the provided DTO
+     * @param dto the {@link UserUpdateRequestDTO} containing updated user data to be converted.
+     * @return the corresponding {@link UserEntity} with the updated user data.
      */
     public static UserEntity toEntity(UserUpdateRequestDTO dto) {
         return new UserEntity(
-                dto.getName(),
-                dto.getUsername(),
-                dto.getEmail(),
-                dto.getPassword(),
-                UserRole.USER
+                dto.name(),
+                dto.username(),
+                dto.email(),
+                dto.password()
         );
     }
 
     /**
-     * Converts a UserEntity to a UserResponseDTO.
+     * Converts a {@link UserEntity} to a {@link UserResponseDTO}.
+     * <p>
+     * This method maps a {@link UserEntity} to a {@link UserResponseDTO}, which contains
+     * user data that is ready to be sent in the response of an API call. The response DTO
+     * typically includes information such as the user ID, name, username, email, and timestamps.
+     * </p>
      *
-     * @param entity the UserEntity containing user data
-     * @return a UserResponseDTO created from the provided entity
+     * @param entity the {@link UserEntity} object containing user data to be converted.
+     * @return the corresponding {@link UserResponseDTO} with the user's details.
      */
     public static UserResponseDTO toResponseDTO(UserEntity entity) {
         return new UserResponseDTO(
@@ -55,7 +73,6 @@ public class UserMapper {
                 entity.getName(),
                 entity.getUsername(),
                 entity.getEmail(),
-                entity.getRole(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

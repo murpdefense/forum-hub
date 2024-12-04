@@ -1,10 +1,12 @@
 package br.com.soupaulodev.forumhub.modules.exception;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.*;
+import org.apache.coyote.BadRequestException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -106,6 +108,11 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(TokenExpiredCustomException.class)
+    public ResponseEntity<?> handleTokenExpiredCustomException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
     /**
      * Handles TopicIllegalArgumentException.
      *
@@ -158,6 +165,17 @@ public class ExceptionHandlerController {
      */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    /**
+     * Handles BadRequestException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a bad request status and the exception message
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadRequestException(BadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
