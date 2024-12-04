@@ -3,18 +3,15 @@ package br.com.soupaulodev.forumhub.modules.auth.usecase;
 import br.com.soupaulodev.forumhub.modules.auth.controller.dto.LoginRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
-import br.com.soupaulodev.forumhub.security.CookieUtil;
-import br.com.soupaulodev.forumhub.security.CustomUserDetailsService;
+import br.com.soupaulodev.forumhub.security.utils.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**

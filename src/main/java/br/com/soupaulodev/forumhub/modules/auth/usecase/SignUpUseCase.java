@@ -4,7 +4,7 @@ import br.com.soupaulodev.forumhub.modules.exception.usecase.UserAlreadyExistsEx
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
-import br.com.soupaulodev.forumhub.security.CookieUtil;
+import br.com.soupaulodev.forumhub.security.utils.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

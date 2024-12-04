@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.security;
 
+import br.com.soupaulodev.forumhub.security.filters.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

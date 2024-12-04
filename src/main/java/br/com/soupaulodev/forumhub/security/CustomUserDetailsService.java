@@ -2,6 +2,7 @@ package br.com.soupaulodev.forumhub.security;
 
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
+import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

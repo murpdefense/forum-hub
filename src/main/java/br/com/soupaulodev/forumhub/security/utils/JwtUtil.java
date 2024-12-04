@@ -1,4 +1,4 @@
-package br.com.soupaulodev.forumhub.security;
+package br.com.soupaulodev.forumhub.security.utils;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TokenExpiredCustomException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
