@@ -5,8 +5,6 @@ import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,8 +20,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "tb_topic")
-@Getter
-@Setter
 public class TopicEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -140,5 +136,85 @@ public class TopicEntity implements Serializable {
         this.creator = creator;
         this.createdAt = now;
         this.updatedAt = now;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public TopicState getState() {
+        return state;
+    }
+
+    public void setState(TopicState state) {
+        this.state = state;
+    }
+
+    public ForumEntity getForum() {
+        return forum;
+    }
+
+    public void setForum(ForumEntity forum) {
+        this.forum = forum;
+    }
+
+    public UserEntity getCreator() {
+        return creator;
+    }
+
+    public void setCreator(UserEntity creator) {
+        this.creator = creator;
+    }
+
+    public Set<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<CommentEntity> comments) {
+        this.comments = comments;
+    }
+
+    public Set<LikeEntity> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<LikeEntity> likes) {
+        this.likes = likes;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

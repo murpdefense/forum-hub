@@ -3,16 +3,12 @@ package br.com.soupaulodev.forumhub.modules.topic.controller.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.util.UUID;
 
 /**
  * Data Transfer Object for creating a new topic.
  */
-@Data
-@AllArgsConstructor
 public class TopicCreateRequestDTO {
 
     /**
@@ -44,4 +40,36 @@ public class TopicCreateRequestDTO {
      */
     @NotNull
     private UUID creatorId;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public UUID getForumId() {
+        return forumId;
+    }
+
+    public void setForumId(UUID forumId) {
+        this.forumId = forumId;
+    }
+
+    public UUID getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(UUID creatorId) {
+        this.creatorId = creatorId;
+    }
 }

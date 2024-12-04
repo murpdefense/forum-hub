@@ -2,14 +2,10 @@ package br.com.soupaulodev.forumhub.modules.topic.controller.dto;
 
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicState;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  * Data Transfer Object for updating an existing topic.
  */
-@Data
-@AllArgsConstructor
 public class TopicUpdateRequestDTO {
 
     @Size(max = 50)
@@ -19,4 +15,28 @@ public class TopicUpdateRequestDTO {
     private String content;
 
     private TopicState state;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public TopicState getState() {
+        return state;
+    }
+
+    public void setState(TopicState state) {
+        this.state = state;
+    }
 }
