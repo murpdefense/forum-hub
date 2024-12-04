@@ -54,7 +54,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateRequestDTO requestDTO) {
 
         UserResponseDTO responseDTO = createUserUsecase.execute(requestDTO);
-        URI uri = URI.create("/user/" + responseDTO.getId());
+        URI uri = URI.create("/user/" + responseDTO.id());
         return ResponseEntity.created(uri).body(responseDTO);
     }
 

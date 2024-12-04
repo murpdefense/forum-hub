@@ -43,10 +43,10 @@ public class UpdateUserUsecase {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         if (requestDTO == null
-            || requestDTO.getName() == null
-            && requestDTO.getUsername() == null
-            && requestDTO.getEmail() == null
-            && requestDTO.getPassword() == null) {
+            || requestDTO.name() == null
+            && requestDTO.username() == null
+            && requestDTO.email() == null
+            && requestDTO.password() == null) {
 
             throw new UserIllegalArgumentException("""
                 You must provide at least one field to update:
@@ -56,17 +56,17 @@ public class UpdateUserUsecase {
                 - password
                 """);
         }
-        if (requestDTO.getName() != null) {
-            userDB.setName(requestDTO.getName());
+        if (requestDTO.name() != null) {
+            userDB.setName(requestDTO.name());
         }
-        if (requestDTO.getUsername() != null) {
-            userDB.setUsername(requestDTO.getUsername());
+        if (requestDTO.username() != null) {
+            userDB.setUsername(requestDTO.username());
         }
-        if (requestDTO.getEmail() != null) {
-            userDB.setEmail(requestDTO.getEmail());
+        if (requestDTO.email() != null) {
+            userDB.setEmail(requestDTO.email());
         }
-        if (requestDTO.getPassword() != null) {
-            userDB.setPassword(requestDTO.getPassword());
+        if (requestDTO.password() != null) {
+            userDB.setPassword(requestDTO.password());
         }
 
         userDB.setUpdatedAt(Instant.now());
