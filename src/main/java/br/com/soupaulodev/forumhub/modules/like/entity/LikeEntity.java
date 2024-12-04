@@ -3,8 +3,6 @@ package br.com.soupaulodev.forumhub.modules.like.entity;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
@@ -17,8 +15,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "tb_likes")
-@Data
-@AllArgsConstructor
 public class LikeEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -68,5 +64,37 @@ public class LikeEntity implements Serializable {
         this.user = user;
         this.topic = topic;
         this.createdAt = Instant.now();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public TopicEntity getTopic() {
+        return topic;
+    }
+
+    public void setTopic(TopicEntity topic) {
+        this.topic = topic;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }
