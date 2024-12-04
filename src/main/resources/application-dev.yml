@@ -1,16 +1,16 @@
 spring:
   datasource:
     url: jdbc:h2:mem:forumhub
-    username: sa
-    password:
+    username: sa # Your username to access the h2 database
+    password: # Your password to access the h2 database
     driver-class-name: org.h2.Driver
   jpa:
+    show-sql: true
+    open-in-view: true
     hibernate:
       ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
-        format-sql: true
         dialect: org.hibernate.dialect.H2Dialect
     h2:
       console:
@@ -22,3 +22,12 @@ logging:
       hibernate:
         SQL: debug
         type: trace
+jwt:
+  issuer: your-issue
+  secret: your-secret
+  expiration: 3000 # Your expiration time in seconds
+cors:
+  allowed:
+    origins: "*" # Your allowed origins separated by ","
+server:
+  port: 8080 # Your server port
