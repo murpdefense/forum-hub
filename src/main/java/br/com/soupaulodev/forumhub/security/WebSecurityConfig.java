@@ -77,7 +77,7 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/user", "/forums", "/topics").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/**", "/forums/**", "/topics/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                         .requestMatchers("/v3/docs", "/v3/api-docs", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
