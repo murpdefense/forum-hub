@@ -16,7 +16,7 @@ import java.util.UUID;
  * REST controller for managing comments.
  */
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/v1/comment")
 public class CommentController {
 
     private final CreateCommentUsecase createCommentUsecase;

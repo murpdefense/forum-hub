@@ -15,7 +15,7 @@ import java.util.UUID;
  * The role of the user.
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
     private final CreateUserUsecase createUserUsecase;
     private final GetUserUsecase getUserUsecase;

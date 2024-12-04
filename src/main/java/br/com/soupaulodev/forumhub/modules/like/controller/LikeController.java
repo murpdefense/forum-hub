@@ -13,7 +13,7 @@ import java.util.UUID;
  * REST controller for managing likes.
  */
 @RestController
-@RequestMapping("/like")
+@RequestMapping("/api/v1/like")
 public class LikeController {
 
     private final LikeResourceUsecase likeResourceUsecase;

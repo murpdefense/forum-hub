@@ -16,7 +16,7 @@ import java.util.UUID;
  * REST controller for managing forums.
  */
 @RestController
-@RequestMapping("/forums")
+@RequestMapping("/api/v1/forums")
 public class ForumController {
 
     private final CreateForumUsecase createForumUsecase;

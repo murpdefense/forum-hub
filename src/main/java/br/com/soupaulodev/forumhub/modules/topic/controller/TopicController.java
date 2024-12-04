@@ -16,7 +16,7 @@ import java.util.UUID;
  * REST controller for managing topics.
  */
 @RestController
-@RequestMapping("/topics")
+@RequestMapping("/api/v1/topics")
 public class TopicController {
 
     private final CreateTopicUsecase createTopicUsecase;
