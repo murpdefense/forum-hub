@@ -1,100 +1,101 @@
 package br.com.soupaulodev.forumhub.filters;
 
+import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.Optional;
 
+@Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS = 100;
-    private static final long TIME_WINDOW = TimeUnit.MINUTES.toMillis(1);
-    private static final Cache<String, RequestInfo> requestCache = new Cache<>();
+    private final JwtUtil jwtUtil;
+    private final StringRedisTemplate redisTemplate;
+
+    private final int ipRateLimit = 10;
+    private final int userRateLimit = 10;
+    private final Duration refillDuration = Duration.ofMinutes(1);
+
+    public RateLimitFilter(JwtUtil jwtUtil, StringRedisTemplate redisTemplate) {
+        this.jwtUtil = jwtUtil;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String clientIp = request.getRemoteAddr();
 
-        if (isRateLimited(clientIp)) {
-            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            response.getWriter().write("Too many requests, please try again later.");
+        if (!checkRateLimit(clientIp, ipRateLimit, response)) {
             return;
         }
 
-        filterChain.doFilter(request, response);
+        Optional<String> jwtToken = extractJwtFromCookies(request);
+        if (jwtToken.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: Missing or invalid token.");
+            return;
+        }
+
+        String username;
+        try {
+            username = jwtUtil.extractUsername(jwtToken.get());
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Unauthorized: Invalid token.");
+            return;
+        }
+
+        if (!checkRateLimit(username, userRateLimit, response)) {
+            return;
+        }
+
+        chain.doFilter(request, response);
     }
 
-    private boolean isRateLimited(String clientIp) {
-        RequestInfo requestInfo = requestCache.get(clientIp);
+    private boolean checkRateLimit(String key, int limit, HttpServletResponse response) throws IOException {
+        // Cria um bucket persistido no Redis para a chave fornecida
+        Bucket bucket = createOrGetBucket(key, limit);
 
-        if (requestInfo == null) {
-            requestInfo = new RequestInfo(0, System.currentTimeMillis());
-        }
-
-        long timePassed = System.currentTimeMillis() - requestInfo.getTimestamp();
-        if (timePassed > TIME_WINDOW) {
-            requestInfo.setCount(0);
-            requestInfo.setTimestamp(System.currentTimeMillis());
-        }
-
-        if (requestInfo.getCount() >= MAX_REQUESTS) {
+        if (bucket.tryConsume(1)) {
             return true;
-        }
-
-        requestInfo.setCount(requestInfo.getCount() + 1);
-        requestCache.put(clientIp, requestInfo);
-        return false;
-    }
-
-    /**
-     * Cache implementation for storing request information.
-     * This implementation should be replaced with a more robust solution in a production environment.
-     */
-    private static class Cache<K, V> {
-        private final java.util.Map<K, V> map = new java.util.HashMap<>();
-
-        public V get(K key) {
-            return map.get(key);
-        }
-
-        public void put(K key, V value) {
-            map.put(key, value);
+        } else {
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.getWriter().write("Rate limit exceeded for " + key + ". Try again later.");
+            return false;
         }
     }
 
-    /**
-     * Class to store request information per client IP.
-     */
-    private static class RequestInfo {
-        private int count;
-        private long timestamp;
+    private Bucket createOrGetBucket(String key, int capacity) {
+        Bandwidth limit = Bandwidth.classic(capacity, Refill.greedy(capacity, refillDuration));
 
-        public RequestInfo(int count, long timestamp) {
-            this.count = count;
-            this.timestamp = timestamp;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
-
-        public void setTimestamp(long timestamp) {
-            this.timestamp = timestamp;
-        }
+        return Bucket.builder()
+//                .withRedisTemplate(redisTemplate)
+//                .withKey(key)
+                .addLimit(limit)
+                .build();
     }
-}
+
+    private Optional<String> extractJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return Optional.empty();
+        for (Cookie cookie : request.getCookies()) {
+            if ("Authorization".equals(cookie.getName())) {
+                return Optional.of(cookie.getValue());
+            }
+        }
+        return Optional.empty();
+    }
+}}

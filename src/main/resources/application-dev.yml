@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:forumhub
-    username: sa # Your username to access the h2 database
-    password: # Your password to access the h2 database
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/forumhub
+    username: docker
+    password: docker
+    driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
     open-in-view: true
@@ -11,17 +11,16 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-    h2:
-      console:
-        enabled: true
-      path: /h2-console
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
-        type: trace
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 1000
+      database: 0
+  main:
+    allow-bean-definition-overriding: true
 jwt:
   issuer: your-issue
   secret: your-secret
@@ -29,5 +28,11 @@ jwt:
 cors:
   allowed:
     origins: "*" # Your allowed origins separated by ","
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type: trace
 server:
   port: 8080 # Your server port
