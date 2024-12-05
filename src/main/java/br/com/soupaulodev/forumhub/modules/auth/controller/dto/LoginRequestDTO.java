@@ -19,18 +19,10 @@ import org.hibernate.validator.constraints.Length;
  */
 public record LoginRequestDTO (
 
-    /**
-     * The username of the user attempting to log in.
-     * This field must not be blank.
-     */
     @NotBlank
     @NotNull
     String username,
 
-    /**
-     * The username of the user attempting to log in.
-     * This field must not be blank.
-     */
     @NotBlank
     @NotNull
     @Length(min = 8, max = 50)
