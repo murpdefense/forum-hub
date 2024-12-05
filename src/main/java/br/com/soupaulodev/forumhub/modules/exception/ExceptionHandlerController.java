@@ -180,6 +180,28 @@ public class ExceptionHandlerController {
     }
 
     /**
+     * Handles RateLimitExceededException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a too many requests status and the exception message
+     */
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<?> handleRateLimitExceededException(RateLimitExceededException e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
+    }
+
+    /**
+     * Handles UnauthorizedException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with an unauthorized status and the exception message
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handleUnauthorizedException(UnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    /**
      * Handles generic exceptions.
      *
      * @param e the exception to handle

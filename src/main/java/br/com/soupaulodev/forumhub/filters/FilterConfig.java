@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.filters;
 
+
 import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,7 @@ public class FilterConfig {
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilterRegistration(RateLimitFilter rateLimitFilter) {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(rateLimitFilter);
-        registrationBean.addUrlPatterns("/api/**");
+        registrationBean.addUrlPatterns("/api/v1/**");
         return registrationBean;
     }
 }
