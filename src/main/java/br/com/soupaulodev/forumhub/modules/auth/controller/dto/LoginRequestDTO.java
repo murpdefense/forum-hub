@@ -13,6 +13,8 @@ import org.hibernate.validator.constraints.Length;
  * both fields are non-blank, ensuring that the input is validated before processing.
  * </p>
  *
+ * @param username the username of the user attempting to log in
+ * @param password the password of the user attempting to log in
  * @author soupaulodev
  */
 public record LoginRequestDTO (
