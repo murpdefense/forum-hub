@@ -12,12 +12,24 @@ import java.net.URI;
 import java.util.UUID;
 
 /**
- * The role of the user.
+ * Controller for handling user-related operations.
+ * This class provides endpoints for retrieving by ID, finding by name or username, updating, and deleting users.
+ * The user-related operations are managed by interacting with the use cases retrieving by ID, finding by name or username,
+ * updating, and deleting users.
+ *
+ * <p>
+ * The {@link UserController} is responsible for:
+ * - Handling user retrieval requests by ID.
+ * - Handling user retrieval requests by name or username.
+ * - Handling user update requests.
+ * - Handling user deletion requests.
+ * </p>
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-    private final CreateUserUsecase createUserUsecase;
     private final GetUserUsecase getUserUsecase;
     private final FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase;
     private final UpdateUserUsecase updateUserUsecase;
@@ -26,18 +38,15 @@ public class UserController {
     /**
      * Constructor for UserController.
      *
-     * @param createUserUsecase the use case for creating a user
-     * @param getUserUsecase the use case for retrieving a user by ID
-     * @param findUserByNameOrUsernameUsecase the use case for finding a user by name or username
-     * @param updateUserUsecase the use case for updating a user's information
-     * @param deleteUserUsecase the use case for deleting a user
+     * @param getUserUsecase the use case for handling user retrieval by ID
+     * @param findUserByNameOrUsernameUsecase the use case for handling user retrieval by name or username
+     * @param updateUserUsecase the use case for handling user update operations
+     * @param deleteUserUsecase the use case for handling user deletion operations
      */
-    public UserController(CreateUserUsecase createUserUsecase,
-                          GetUserUsecase getUserUsecase,
+    public UserController(GetUserUsecase getUserUsecase,
                           FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase,
                           UpdateUserUsecase updateUserUsecase,
                           DeleteUserUsecase deleteUserUsecase) {
-        this.createUserUsecase = createUserUsecase;
         this.getUserUsecase = getUserUsecase;
         this.findUserByNameOrUsernameUsecase = findUserByNameOrUsernameUsecase;
         this.updateUserUsecase = updateUserUsecase;
@@ -45,24 +54,11 @@ public class UserController {
     }
 
     /**
-     * Creates a new user.
-     *
-     * @param requestDTO the data transfer object containing user creation data
-     * @return the response entity containing the created user data
-     */
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateRequestDTO requestDTO) {
-
-        UserResponseDTO responseDTO = createUserUsecase.execute(requestDTO);
-        URI uri = URI.create("/user/" + responseDTO.id());
-        return ResponseEntity.created(uri).body(responseDTO);
-    }
-
-    /**
-     * Retrieves a user by their unique identifier.
+     * Endpoint for handling retrieval of a user by their unique identifier.
+     * This method retrieves a user by their unique identifier and returns the user data.
      *
      * @param id the unique identifier of the user
-     * @return the response entity containing the user data
+     * @return a ResponseEntity with status 200 (OK) and the user data
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
@@ -71,10 +67,11 @@ public class UserController {
     }
 
     /**
-     * Retrieves a user by their name or username.
+     * Endpoint for handling retrieval of a user by their name or username.
+     * This method retrieves a user by their name or username and returns the user data.
      *
      * @param query the name or username of the user
-     * @return the response entity containing the user data
+     * @return a ResponseEntity with status 200 (OK) and the user data
      */
     @GetMapping("/{nameOrUsername}")
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
@@ -83,11 +80,13 @@ public class UserController {
     }
 
     /**
-     * Updates a user's information.
+     * Endpoint for handling user update operations.
+     * This method updates a user by their unique identifier, using the data provided in the request DTO
+     * and returns the updated user data.
      *
      * @param id the unique identifier of the user to be updated
      * @param requestDTO the data transfer object containing user update data
-     * @return the response entity containing the updated user data
+     * @return a ResponseEntity with status 200 (OK) and the updated user data
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
@@ -97,10 +96,11 @@ public class UserController {
     }
 
     /**
-     * Deletes a user by their unique identifier.
+     * Endpoint for handling user deletion operations.
+     * This method deletes a user by their unique identifier.
      *
      * @param id the unique identifier of the user to be deleted
-     * @return the response entity indicating the result of the operation
+     * @return a ResponseEntity with status 204 (NO_CONTENT) to indicate the successful deletion
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
