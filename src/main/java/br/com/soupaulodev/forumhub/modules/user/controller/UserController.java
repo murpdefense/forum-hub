@@ -1,14 +1,15 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.user.usecase.*;
+import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUsecase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.UUID;
 
 /**
@@ -19,10 +20,12 @@ import java.util.UUID;
  *
  * <p>
  * The {@link UserController} is responsible for:
- * - Handling user retrieval requests by ID.
- * - Handling user retrieval requests by name or username.
- * - Handling user update requests.
- * - Handling user deletion requests.
+ * <ul>
+ *     <li>Handling user retrieval requests by ID.</li>
+ *     <li>Handling user retrieval requests by name or username.</li>
+ *     <li>Handling user update requests.</li>
+ *     <li>Handling user deletion requests.</li>
+ * </ul>
  * </p>
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
