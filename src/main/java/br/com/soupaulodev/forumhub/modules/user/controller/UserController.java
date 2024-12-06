@@ -76,7 +76,7 @@ public class UserController {
      * @param query the name or username of the {@link String} type user to be retrieved
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
-    @GetMapping("/{nameOrUsername}")
+    @GetMapping("/find/{nameOrUsername}")
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
 
         return ResponseEntity.ok(findUserByNameOrUsernameUsecase.execute(query));
