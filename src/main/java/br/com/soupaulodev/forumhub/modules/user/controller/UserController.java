@@ -4,7 +4,7 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUsecase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUsecase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUsecase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-    private final GetUserUsecase getUserUsecase;
+    private final GetUserUseCase getUserUsecase;
     private final FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase;
     private final UpdateUserUsecase updateUserUsecase;
     private final DeleteUserUsecase deleteUserUsecase;
@@ -46,7 +46,7 @@ public class UserController {
      * @param updateUserUsecase the use case for handling user update operations
      * @param deleteUserUsecase the use case for handling user deletion operations
      */
-    public UserController(GetUserUsecase getUserUsecase,
+    public UserController(GetUserUseCase getUserUsecase,
                           FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase,
                           UpdateUserUsecase updateUserUsecase,
                           DeleteUserUsecase deleteUserUsecase) {
@@ -60,8 +60,8 @@ public class UserController {
      * Endpoint for handling retrieval of a user by their unique identifier.
      * This method retrieves a user by their unique identifier and returns the user data.
      *
-     * @param id the unique identifier of the user
-     * @return a ResponseEntity with status 200 (OK) and the user data
+     * @param id the user's unique identifier of type {@link UUID}
+     * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
@@ -73,8 +73,8 @@ public class UserController {
      * Endpoint for handling retrieval of a user by their name or username.
      * This method retrieves a user by their name or username and returns the user data.
      *
-     * @param query the name or username of the user
-     * @return a ResponseEntity with status 200 (OK) and the user data
+     * @param query the name or username of the {@link String} type user to be retrieved
+     * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
     @GetMapping("/{nameOrUsername}")
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
@@ -88,8 +88,8 @@ public class UserController {
      * and returns the updated user data.
      *
      * @param id the unique identifier of the user to be updated
-     * @param requestDTO the data transfer object containing user update data
-     * @return a ResponseEntity with status 200 (OK) and the updated user data
+     * @param requestDTO the data transfer object {@link UserUpdateRequestDTO} containing user update data
+     * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the updated user data
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
@@ -103,7 +103,7 @@ public class UserController {
      * This method deletes a user by their unique identifier.
      *
      * @param id the unique identifier of the user to be deleted
-     * @return a ResponseEntity with status 204 (NO_CONTENT) to indicate the successful deletion
+     * @return a {@link ResponseEntity} of {@link Void} with status 204 (NO_CONTENT) to indicate the successful deletion
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
