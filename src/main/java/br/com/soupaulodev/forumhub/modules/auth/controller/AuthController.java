@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * - Handling logout requests, invalidating the JWT token by clearing the associated cookie.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @RestController
 @RequestMapping("/api/v1/auth")
