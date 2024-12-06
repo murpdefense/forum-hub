@@ -39,7 +39,7 @@ public class UserController {
     private final DeleteUserUsecase deleteUserUsecase;
 
     /**
-     * Constructor for UserController.
+     * Constructor for {@link UserController}.
      *
      * @param getUserUsecase the use case for handling user retrieval by ID
      * @param findUserByNameOrUsernameUsecase the use case for handling user retrieval by name or username
