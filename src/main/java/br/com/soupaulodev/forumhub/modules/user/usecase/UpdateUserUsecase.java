@@ -13,7 +13,18 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Service class for updating a user's information.
+ * Use case responsible for handling the update of a user's information.
+ * <p>
+ *     The {@link UpdateUserUsecase} class processes requests to update a user's information.
+ *     If successful, it returns the updated user data in a response data transfer object.
+ * </p>
+ * <p>
+ *     It interacts with the {@link UserRepository} to update user data in the database.
+ *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+ *     If no fields to update are provided, a {@link UserIllegalArgumentException} is thrown.
+ * </p>
+ *
+ * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
 public class UpdateUserUsecase {
@@ -21,9 +32,9 @@ public class UpdateUserUsecase {
     private final UserRepository userRepository;
 
     /**
-     * Constructor for UpdateUserUsecase.
+     * Constructs a new {@link UpdateUserUsecase}.
      *
-     * @param userRepository the repository for user data
+     * @param userRepository the repository responsible for updating user data in the database
      */
     public UpdateUserUsecase(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -32,10 +43,14 @@ public class UpdateUserUsecase {
 
     /**
      * Executes the use case to update a user's information.
+     * <p>
+     *     This method updates a user's information in the database using the provided unique identifier and update data.
+     *     If the user is found and the update data is valid, the updated user data is returned in a response data transfer object.
+     * </p>
      *
-     * @param id the unique identifier of the user to be updated
-     * @param requestDTO the data transfer object containing user update data
-     * @return the response data transfer object containing updated user data
+     * @param id the user's unique identifier of type {@link UUID}
+     * @param requestDTO {@link UserUpdateRequestDTO} the data transfer object containing the user's update data
+     * @return {@link UserResponseDTO} the data transfer object containing the updated user data
      * @throws UserNotFoundException if no user with the given ID is found
      * @throws UserIllegalArgumentException if no fields to update are provided
      */

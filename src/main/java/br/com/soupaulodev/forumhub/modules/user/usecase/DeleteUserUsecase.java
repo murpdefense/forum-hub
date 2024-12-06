@@ -8,7 +8,17 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 /**
- * Service class for deleting a user.
+ * Use case responsible for handling the deletion of a user by their ID.
+ * <p>
+ *     The {@link DeleteUserUsecase} class processes requests to delete a user by their unique identifier.
+ *     If successful, the user is deleted from the database.
+ * </p>
+ * <p>
+ *     It interacts with the {@link UserRepository} to delete user data from the database.
+ *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+ * </p>
+ *
+ * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
 public class DeleteUserUsecase {
@@ -16,9 +26,9 @@ public class DeleteUserUsecase {
     private final UserRepository userRepository;
 
     /**
-     * Constructor for DeleteUserUsecase.
+     * Constructs a new {@link DeleteUserUsecase}.
      *
-     * @param userRepository the repository for user data
+     * @param userRepository the repository responsible for deleting user data from the database
      */
     public DeleteUserUsecase(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,8 +36,13 @@ public class DeleteUserUsecase {
 
     /**
      * Executes the use case to delete a user by their ID.
+     * <p>
+     *     This method deletes a user from the database using the provided unique identifier.
+     *     If the user is found, it is deleted from the database.
+     *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+     * </p>
      *
-     * @param id the unique identifier of the user to be deleted
+     * @param id the user's unique identifier of type {@link UUID}
      * @throws UserNotFoundException if no user with the given ID is found
      */
     public void execute(UUID id) {
