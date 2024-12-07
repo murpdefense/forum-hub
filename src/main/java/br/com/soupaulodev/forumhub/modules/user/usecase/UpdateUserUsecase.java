@@ -7,8 +7,10 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequest
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -29,14 +31,18 @@ import java.util.UUID;
 public class UpdateUserUsecase {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructs a new {@link UpdateUserUsecase}.
      *
      * @param userRepository the repository responsible for updating user data in the database
+     * @param passwordEncoder the password encoder used to securely hash user passwords
      */
-    public UpdateUserUsecase(UserRepository userRepository) {
+    public UpdateUserUsecase(UserRepository userRepository,
+                             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -71,9 +77,13 @@ public class UpdateUserUsecase {
                 """);
         }
 
-        UserEntity userUpdated = UserMapper.toEntity(requestDTO);
-        userUpdated.setId(userDB.getId());
+        userDB.setName(requestDTO.name() != null ? requestDTO.name() : userDB.getName());
+        userDB.setUsername(requestDTO.username() != null ? requestDTO.username() : userDB.getUsername());
+        userDB.setEmail(requestDTO.email() != null ? requestDTO.email() : userDB.getEmail());
+        userDB.setPassword(requestDTO.password() != null ?
+                passwordEncoder.encode(requestDTO.password()) : userDB.getPassword());
+        userDB.setUpdatedAt(Instant.now());
 
-        return UserMapper.toResponseDTO(userRepository.save(userUpdated));
+        return UserMapper.toResponseDTO(userRepository.save(userDB));
     }
 }
