@@ -9,7 +9,6 @@ import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.UUID;
 
 /**
