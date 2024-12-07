@@ -77,7 +77,7 @@ public class ForumController {
     public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumCreateRequestDTO requestDTO) {
         ForumResponseDTO responseDTO = createForumUsecase.execute(requestDTO);
 
-        URI uri = URI.create("/forums/" + responseDTO.getId());
+        URI uri = URI.create("/forums/" + responseDTO.id());
         return ResponseEntity.created(uri).body(responseDTO);
     }
 
