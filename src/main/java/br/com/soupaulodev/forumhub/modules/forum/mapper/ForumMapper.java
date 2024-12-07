@@ -13,41 +13,62 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Mapper class for converting between Forum DTOs and Forum entities.
+ * Mapper class for converting between {@link ForumEntity} and Data Transfer Objects (DTOs).
+ * <p>
+ *     This class provides static methods to convert between {@link ForumEntity} objects and
+ *     various DTO representations such as {@link ForumCreateRequestDTO}, {@link ForumUpdateRequestDTO},
+ *     and {@link ForumResponseDTO}. These transformations help decouple the domain model from
+ *     the API layer, ensuring proper data transfer between different components of the application.
+ * </p>
+ *
+ * @author soupaulodev
  */
 public class ForumMapper {
 
     /**
-     * Converts a ForumCreateRequestDTO to a ForumEntity.
+     * Converts a {@link ForumCreateRequestDTO} to a {@link ForumEntity}.
+     * <p>
+     *     This method maps the forum creation DTO, which contains the details of the new forum,
+     *     to a corresponding {@link ForumEntity} for persistence in the database.
+     * </p>
      *
-     * @param dto the data transfer object containing the forum creation data
-     * @param owner the owner of the forum
-     * @return the created ForumEntity
+     * @param dto the {@link ForumCreateRequestDTO} containing forum data to be converted
+     * @param owner {@link UserEntity} the owner of the forum
      */
     public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
-        return new ForumEntity(dto.getName(),
-                dto.getDescription(),
+        return new ForumEntity(
+                dto.name(),
+                dto.description(),
                 owner);
     }
 
     /**
-     * Converts a ForumUpdateRequestDTO to a ForumEntity.
+     * Converts a {@link ForumUpdateRequestDTO} to a {@link ForumEntity}.
+     * <p>
+     *     This method maps the forum update DTO, which contains updated details of the forum,
+     *     to a corresponding {@link ForumEntity} for modifying the forum's information in the database.
+     * </p>
      *
-     * @param dto the data transfer object containing the forum update data
-     * @param owner the owner of the forum
-     * @return the updated ForumEntity
+     * @param dto the {@link ForumUpdateRequestDTO} containing updated forum data to be converted
+     * @param owner {@link UserEntity} the owner of the forum
      */
     public static ForumEntity toEntity(ForumUpdateRequestDTO dto, UserEntity owner) {
-        return new ForumEntity(dto.getName(),
-                dto.getDescription(),
+        return new ForumEntity(
+                dto.name(),
+                dto.description(),
                 owner);
     }
 
     /**
-     * Converts a ForumEntity to a ForumResponseDTO.
+     * Converts a {@link ForumEntity} to a {@link ForumResponseDTO}.
+     * <p>
+     *     This method maps a {@link ForumEntity} to a {@link ForumResponseDTO}, which contains
+     *     forum data that is ready to be sent as a response to API calls. The response DTO
+     *     provides a simplified view of the forum, hiding sensitive information and internal details.
+     * </p>
      *
-     * @param entity the forum entity to be converted
-     * @return the ForumResponseDTO containing the forum data
+     * @param entity the {@link ForumEntity} object containing forum data to be converted
+     * @return the corresponding {@link ForumResponseDTO} with the mapped forum data
      */
     public static ForumResponseDTO toResponseDTO(ForumEntity entity) {
         UserResponseDTO owner = UserMapper.toResponseDTO(entity.getOwner());

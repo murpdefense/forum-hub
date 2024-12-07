@@ -14,11 +14,19 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Entity class representing a forum.
+ * Represents a forum within the system.
+ * <p>
+ *     The {@link ForumEntity} class encapsulates the details of a forum, including their
+ *     information (name, description) and relationships (owner, participants, topics).
+ *     It also tracks the timestamps of forum creation and last update.
+ * </p>
+ *
+ * @author <a href="http://soupaulodev.com.br">soupaulodev</a>
  */
 @Entity
 @Table(name = "tb_forum")
 public class ForumEntity implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

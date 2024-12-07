@@ -4,39 +4,24 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.UUID;
 
 /**
- * Data Transfer Object for updating a forum.
+ * DTO (Data Transfer Object) representing the request body for forum update.
+ * <p>
+ *     This class is used to capture the forum's information, including its name, description, and owner ID,
+ *     when updating an existing forum. It uses Jakarta Bean Validation annotations to enforce that the input is validated
+ *     before processing, ensuring that the forum is updated correctly. It is used to provide
+ *     a request to the client with the forum's information to be updated.
+ * </p>
+ *
+ * @param name the name of the forum
+ * @param description the description of the forum
+ * @param ownerId the unique identifier of the forum owner
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public class ForumUpdateRequestDTO {
+public record ForumUpdateRequestDTO (@Size(max = 50)
+                                     String name,
 
-    @Size(max = 50)
-    private String name;
+                                     @Size(max = 50)
+                                     String description,
 
-    @Size(max = 50)
-    private String description;
-
-    private UUID ownerId;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public UUID getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(UUID ownerId) {
-        this.ownerId = ownerId;
-    }
-}
+                                     UUID ownerId) {}

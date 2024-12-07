@@ -10,33 +10,34 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Repository interface for managing ForumEntity instances.
+ * Repository interface for {@link ForumEntity}.
+ * Extends {@link JpaRepository} to provide CRUD operations for {@link ForumEntity}.
  */
 @Repository
 public interface ForumRepository extends JpaRepository<ForumEntity, UUID> {
 
     /**
-     * Finds a forum by its name.
+     * Finds a forum by their name.
      *
-     * @param name the name of the forum
-     * @return an Optional containing the found ForumEntity, or empty if not found
+     * @param name {@link String} the name of the forum
+     * @return an {@link Optional} containing the found {@link ForumEntity}, or empty if not found
      */
     Optional<ForumEntity> findByName(String name);
 
     /**
      * Finds all forums with pagination support.
      *
-     * @param pageable the pagination information
-     * @return a list of ForumEntity instances
+     * @param pageable {@link Pageable} the pagination information
+     * @return a {@link List} of {@link ForumEntity} instances
      */
     List<ForumEntity> findAllBy(Pageable pageable);
 
     /**
      * Finds all forums whose names contain the specified string, ordered by creation date in descending order.
      *
-     * @param name the string to search for in forum names
-     * @param pageable the pagination information
-     * @return a list of ForumEntity instances
+     * @param name {@link String} the string to search for in forum names
+     * @param pageable {@link Pageable} the pagination information
+     * @return a {@link List} of {@link ForumEntity} instances
      */
     List<ForumEntity> findAllByNameContainingOrderByCreatedAtDesc(String name, Pageable pageable);
 }

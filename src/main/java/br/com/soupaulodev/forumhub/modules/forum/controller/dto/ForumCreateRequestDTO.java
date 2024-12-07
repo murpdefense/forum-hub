@@ -6,54 +6,25 @@ import org.hibernate.validator.constraints.Length;
 import java.util.UUID;
 
 /**
- * Data Transfer Object for creating a forum.
+ * DTO (Data Transfer Object) representing the request body for forum creation.
+ * <p>
+ *     This class is used to capture the forum's information, including its name, description, and owner ID,
+ *     when creating a new forum. It uses Jakarta Bean Validation annotations to enforce that the input is validated
+ *     before processing, ensuring that the forum is created correctly.
+ * </p>
+ * @param name the name of the forum
+ * @param description the description of the forum
+ * @param ownerId the unique identifier of the forum owner
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public class ForumCreateRequestDTO {
+public record ForumCreateRequestDTO (@NotBlank
+                                     @Length(min = 3, max = 50)
+                                     String name,
 
-    /**
-     * The name of the forum.
-     * Must not be blank and must be between 3 and 50 characters.
-     */
-    @NotBlank
-    @Length(min = 3, max = 50)
-    private String name;
+                                     @NotBlank
+                                     @Length(min = 3, max = 50)
+                                     String description,
 
-    /**
-     * The description of the forum.
-     * Must not be blank and must be between 3 and 50 characters.
-     */
-    @NotBlank
-    @Length(min = 3, max = 50)
-    private String description;
-
-    /**
-     * The unique identifier of the forum owner.
-     * Must not be blank.
-     */
-    @NotBlank
-    private UUID ownerId;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public UUID getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(UUID ownerId) {
-        this.ownerId = ownerId;
-    }
-}
+                                     @NotBlank
+                                     UUID ownerId) {}
