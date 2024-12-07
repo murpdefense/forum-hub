@@ -71,22 +71,10 @@ public class UpdateUserUsecase {
                 - password
                 """);
         }
-        if (requestDTO.name() != null) {
-            userDB.setName(requestDTO.name());
-        }
-        if (requestDTO.username() != null) {
-            userDB.setUsername(requestDTO.username());
-        }
-        if (requestDTO.email() != null) {
-            userDB.setEmail(requestDTO.email());
-        }
-        if (requestDTO.password() != null) {
-            userDB.setPassword(requestDTO.password());
-        }
 
-        userDB.setUpdatedAt(Instant.now());
+        UserEntity userUpdated = UserMapper.toEntity(requestDTO);
+        userUpdated.setId(userDB.getId());
 
-        UserEntity userUpdated = userRepository.save(userDB);
-        return UserMapper.toResponseDTO(userUpdated);
+        return UserMapper.toResponseDTO(userRepository.save(userUpdated));
     }
 }
