@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Repository interface for UserEntity.
+ * Repository interface for {@link UserEntity}.
  * Extends {@link JpaRepository} to provide CRUD operations for {@link UserEntity}.
  */
 @Repository

@@ -41,10 +41,10 @@ public class UserController {
     /**
      * Constructor for {@link UserController}.
      *
-     * @param getUserUsecase the use case for handling user retrieval by ID
-     * @param findUserByNameOrUsernameUsecase the use case for handling user retrieval by name or username
-     * @param updateUserUsecase the use case for handling user update operations
-     * @param deleteUserUsecase the use case for handling user deletion operations
+     * @param getUserUsecase {@link GetUserUseCase} the use case for handling user retrieval by ID
+     * @param findUserByNameOrUsernameUsecase {@link FindUserByNameOrUsernameUsecase} the use case for handling user retrieval by name or username
+     * @param updateUserUsecase {@link UpdateUserUsecase} the use case for handling user update operations
+     * @param deleteUserUsecase {@link DeleteUserUsecase} the use case for handling user deletion operations
      */
     public UserController(GetUserUseCase getUserUsecase,
                           FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase,
