@@ -175,8 +175,8 @@ public class ExceptionHandlerController {
      * @return a ResponseEntity with a bad request status and the exception message
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleBadRequestException(BadRequestException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<?> handleBadRequestException(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     /**
