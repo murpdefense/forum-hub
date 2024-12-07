@@ -40,11 +40,11 @@ public class CreateForumUsecase {
      */
     public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO) {
 
-        forumRepository.findByName(requestDTO.getName()).ifPresent(forum -> {
+        forumRepository.findByName(requestDTO.name()).ifPresent(forum -> {
             throw new ForumAlreadyExistsException();
         });
 
-        UserEntity owner = userRepository.findById(requestDTO.getOwnerId()).orElseThrow();
+        UserEntity owner = userRepository.findById(requestDTO.ownerId()).orElseThrow();
 
         ForumEntity forumFound =  forumRepository.save(ForumMapper.toEntity(requestDTO, owner));
         return ForumMapper.toResponseDTO(forumFound);

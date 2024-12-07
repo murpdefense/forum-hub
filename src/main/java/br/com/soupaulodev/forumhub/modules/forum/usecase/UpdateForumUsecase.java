@@ -42,17 +42,17 @@ public class UpdateForumUsecase {
         ForumEntity forumFound = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);
 
-        if(requestDTO.getName().equals(forumFound.getName())
-                && requestDTO.getDescription().equals(forumFound.getDescription())) {
+        if(requestDTO.name().equals(forumFound.getName())
+                && requestDTO.description().equals(forumFound.getDescription())) {
             throw new ForumIllegalArgumentException("Data is the same");
         }
 
-        if((requestDTO.getName().isEmpty()) || requestDTO.getDescription().isEmpty()) {
+        if((requestDTO.name().isEmpty()) || requestDTO.description().isEmpty()) {
             throw new ForumIllegalArgumentException("Name and description are empty");
         }
 
-        forumFound.setName(requestDTO.getName());
-        forumFound.setDescription(requestDTO.getDescription());
+        forumFound.setName(requestDTO.name());
+        forumFound.setDescription(requestDTO.description());
         forumFound.setUpdatedAt(Instant.now());
 
         ForumEntity forumUpdated = forumRepository.save(forumFound);
