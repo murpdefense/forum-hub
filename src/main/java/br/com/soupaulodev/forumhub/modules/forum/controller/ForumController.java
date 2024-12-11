@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller;
 
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
@@ -82,6 +83,20 @@ public class ForumController {
     }
 
     /**
+     * Endpoint for handling listing of forums with pagination support.
+     * This method lists forums with pagination support and returns the list of forums.
+     *
+     * @param page {@link Integer} the page number to retrieve
+     * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(listForumsPageableUsecase.execute(page, size));
+    }
+
+    /**
      * Endpoint for handling retrieval of a forum by its unique identifier.
      * This method retrieves a forum by its unique identifier and returns the forum data.
      *
@@ -89,24 +104,10 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the forum data
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ForumResponseDTO> getForumDetails(@PathVariable
+    public ResponseEntity<ForumDetailsResponseDTO> getForumDetails(@PathVariable
                                                             UUID id) {
 
         return ResponseEntity.ok(getForumDetailsUsecase.execute(id));
-    }
-
-    /**
-     * Endpoint for handling listing of forums with pagination support.
-     * This method lists forums with pagination support and returns the list of forums.
-     *
-     * @param page {@link Integer} the page number to retrieve
-     * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
-     */
-    @GetMapping("/all/{page}")
-    public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size) {
-
-        return ResponseEntity.ok(listForumsPageableUsecase.execute(page, size));
     }
 
     /**
