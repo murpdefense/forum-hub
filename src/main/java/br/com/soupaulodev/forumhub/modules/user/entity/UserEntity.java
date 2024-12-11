@@ -5,14 +5,12 @@ import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -71,15 +69,14 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-
     /**
      * The forums owned by the user.
      * <p>
      * A user can own multiple forums. These relationships are managed by the {@link ForumEntity} class.
      * </p>
      */
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ForumEntity> ownedForums = new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ForumEntity> ownedForums = new ArrayList<>();
 
     /**
      * The forums in which the user is a participant.
@@ -87,13 +84,13 @@ public class UserEntity {
      * A user can participate in multiple forums. These relationships are managed by the {@link ForumEntity} class.
      * </p>
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "forum_participants",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "forum_id")
     )
-    private Set<ForumEntity> participatingForums = new HashSet<>();
+    private List<ForumEntity> participatingForums = new ArrayList<>();
 
     /**
      * The topics created by the user.
@@ -101,8 +98,8 @@ public class UserEntity {
      * A user can create multiple topics. These relationships are managed by the {@link TopicEntity} class.
      * </p>
      */
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TopicEntity> topics = new HashSet<>();
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TopicEntity> topics = new ArrayList<>();
 
     /**
      * The comments made by the user.
@@ -110,8 +107,8 @@ public class UserEntity {
      * A user can post multiple comments. These relationships are managed by the {@link CommentEntity} class.
      * </p>
      */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CommentEntity> comments = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CommentEntity> comments = new ArrayList<>();
 
     /**
      * The likes given by the user.
@@ -119,8 +116,8 @@ public class UserEntity {
      * A user can give likes to various entities. These relationships are managed by the {@link LikeEntity} class.
      * </p>
      */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<LikeEntity> likes = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<LikeEntity> likes = new ArrayList<>();
 
     /**
      * The timestamp when the user was created.
@@ -272,92 +269,130 @@ public class UserEntity {
     }
 
     /**
-     * Gets the set of forums owned by the user.
+     * Gets the list of forums owned by the user.
      *
-     * @return the set of forums owned by the user.
+     * @return {@link List} of {@link ForumEntity} the list of forums owned by the user.
      */
-    public Set<ForumEntity> getOwnedForums() {
+    public List<ForumEntity> getOwnedForums() {
         return ownedForums;
     }
 
     /**
-     * Sets the set of forums owned by the user.
+     * Adds a forum to the user's owned forums collection.
      *
-     * @param ownedForums the new set of owned forums to set.
+     * @param forum the forum to add to the user's owned forums.
      */
-    public void setOwnedForums(Set<ForumEntity> ownedForums) {
-        this.ownedForums = ownedForums;
+    public void addOwnedForum(ForumEntity forum) {
+        if (!ownedForums.contains(forum)) {
+            ownedForums.add(forum);
+            if (forum.getOwner() != this) {
+                forum.setOwner(this);
+            }
+        }
     }
 
-
     /**
-     * Gets the set of forums the user is participating in.
+     * Gets the list of forums in which the user is a participant.
      *
-     * @return the set of forums the user is participating in.
+     * @return {@link List} of {@link ForumEntity} the list of forums in which the user is a participant.
      */
-    public Set<ForumEntity> getParticipatingForums() {
+    public List<ForumEntity> getParticipatingForums() {
         return participatingForums;
     }
 
     /**
-     * Sets the set of forums the user is participating in.
+     * Adds a forum to the user's participating forums collection.
      *
-     * @param participatingForums the new set of participating forums to set.
+     * @param forum {@link ForumEntity} the forum to add to the user's participating forums.
      */
-    public void setParticipatingForums(Set<ForumEntity> participatingForums) {
-        this.participatingForums = participatingForums;
+    public void addParticipatingForum(ForumEntity forum) {
+        if (!participatingForums.contains(forum)) {
+            participatingForums.add(forum);
+            forum.addParticipant(this);
+        }
     }
 
     /**
-     * Gets the set of topics created by the user.
+     * Gets the list of topics created by the user.
      *
-     * @return the set of topics created by the user.
+     * @return {@link List} of {@link TopicEntity} the list of topics created by the user.
      */
-    public Set<TopicEntity> getTopics() {
+    public List<TopicEntity> getTopics() {
         return topics;
     }
 
     /**
-     * Sets the set of topics created by the user.
+     * Adds a topic to the user's created topics collection.
      *
-     * @param topics the new set of topics to set.
+     * @param topic {@link TopicEntity} the topic to add to the user's created topics.
      */
-    public void setTopics(Set<TopicEntity> topics) {
-        this.topics = topics;
-    }/**
-     * Gets the set of comments made by the user.
+    public void addTopic(TopicEntity topic) {
+        if (!topics.contains(topic)) {
+            topics.add(topic);
+            if (topic.getCreator() != this) {
+                topic.setCreator(this);
+            }
+        }
+    }
+
+    /**
+     * Gets the list of comments made by the user.
      *
-     * @return the set of comments made by the user.
+     * @return {@link List} of {@link CommentEntity} the list of comments made by the user.
      */
-    public Set<CommentEntity> getComments() {
+    public List<CommentEntity> getComments() {
         return comments;
     }
 
     /**
-     * Sets the set of comments made by the user.
+     * Add a comment to the user's comments collection.
      *
-     * @param comments the new set of comments to set.
+     * @param comments {@link CommentEntity} the comment to add to the user's comments.
      */
-    public void setComments(Set<CommentEntity> comments) {
-        this.comments = comments;
+    public void addComment(CommentEntity comments) {
+        if (!this.comments.contains(comments)) {
+            this.comments.add(comments);
+            if (comments.getUser() != this) {
+                comments.setUser(this);
+            }
+        }
     }
 
     /**
-     * Gets the set of likes given by the user.
+     * Gets the list of likes given by the user.
      *
-     * @return the set of likes given by the user.
+     * @return {@link List} of {@link LikeEntity} the list of likes given by the user.
      */
-    public Set<LikeEntity> getLikes() {
+    public List<LikeEntity> getLikes() {
         return likes;
     }
 
     /**
-     * Sets the set of likes given by the user.
+     * Adds a like to the user's likes collection.
      *
-     * @param likes the new set of likes to set.
+     * @param likes {@link LikeEntity} the like to add to the user's likes.
      */
-    public void setLikes(Set<LikeEntity> likes) {
-        this.likes = likes;
+    public void addLikes(LikeEntity likes) {
+        if (!this.likes.contains(likes)) {
+            this.likes.add(likes);
+            if (likes.getUser() != this) {
+                likes.setUser(this);
+            }
+        }
+    }
+
+    /**
+     * Removes a like from the user's likes collection.
+     *
+     * @param likes {@link LikeEntity} the like to remove from the user's likes.
+     */
+    public void removeLikes(LikeEntity likes) {
+        if (this.likes.contains(likes)) {
+            this.likes.remove(likes);
+            if (likes.getUser() == this) {
+                likes.setUser(null);
+            }
+        }
     }
 
     /**
@@ -421,22 +456,22 @@ public class UserEntity {
      * Compares this UserEntity object to another object for equality.
      * <p>
      * This method checks whether the given object is an instance of {@link UserEntity}, and if so,
-     * compares the ID of the two UserEntity objects for equality. If the IDs are the same, the objects are considered equal.
+     * compares the ID of the two {@link UserEntity} objects for equality. If the IDs are the same, the objects are considered equal.
      * </p>
      *
-     * @param obj the object to compare this UserEntity to.
+     * @param obj the object to compare this {@link UserEntity} to.
      * @return true if the objects are equal (i.e., they have the same ID), false otherwise.
      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
-            return true; // Same object reference
+            return true;
         }
         if (obj == null || getClass() != obj.getClass()) {
-            return false; // Different classes or null object
+            return false;
         }
-        UserEntity that = (UserEntity) obj; // Cast to UserEntity
-        return Objects.equals(this.id, that.id); // Compare IDs
+        UserEntity that = (UserEntity) obj;
+        return Objects.equals(this.id, that.id);
     }
 
     /**
@@ -450,6 +485,6 @@ public class UserEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id); // Generate hash code based on the ID
+        return Objects.hash(id);
     }
 }
