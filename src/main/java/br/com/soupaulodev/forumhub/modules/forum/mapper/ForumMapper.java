@@ -71,21 +71,15 @@ public class ForumMapper {
      * @return the corresponding {@link ForumResponseDTO} with the mapped forum data
      */
     public static ForumResponseDTO toResponseDTO(ForumEntity entity) {
-        UserResponseDTO owner = UserMapper.toResponseDTO(entity.getOwner());
-
-        Set<UserResponseDTO> participants = Stream.of(entity.getParticipants())
-                .map(participant -> UserMapper.toResponseDTO((UserEntity) participant))
-                .collect(Collectors.toSet());
-
-        int topicCount = entity.getTopics().size();
-
-        return new ForumResponseDTO(entity.getId(),
-                entity.getName(),
-                entity.getDescription(),
-                owner,
-                participants,
-                topicCount,
-                entity.getCreatedAt(),
-                entity.getUpdatedAt());
+        return new ForumResponseDTO(
+            entity.getId(),
+            entity.getName(),
+            entity.getDescription(),
+            entity.getOwner().getId(),
+            entity.getParticipants().size(),
+            entity.getTopics().size(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
+        );
     }
 }

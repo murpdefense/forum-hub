@@ -3,15 +3,14 @@ package br.com.soupaulodev.forumhub.modules.forum.entity;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a forum within the system.
@@ -25,6 +24,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "tb_forum")
+@Transactional
 public class ForumEntity implements Serializable {
 
     @Serial
@@ -49,14 +49,14 @@ public class ForumEntity implements Serializable {
     /**
      * The participants of the forum.
      */
-    @ManyToMany(mappedBy = "participatingForums")
-    private Set<UserEntity> participants = new HashSet<>();
+    @ManyToMany(mappedBy = "participatingForums", fetch = FetchType.EAGER)
+    private List<UserEntity> participants = new ArrayList<>();
 
     /**
      * The topics in the forum.
      */
-    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TopicEntity> topics = new HashSet<>();
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TopicEntity> topics = new ArrayList<>();
 
     /**
      * The timestamp when the forum was created.
@@ -133,20 +133,28 @@ public class ForumEntity implements Serializable {
         this.owner = owner;
     }
 
-    public Set<UserEntity> getParticipants() {
+    public List<UserEntity> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Set<UserEntity> participants) {
-        this.participants = participants;
+    public void addParticipant(UserEntity user) {
+        if (!participants.contains(user)) { // Evita duplicidade
+            participants.add(user);
+            user.addParticipatingForum(this); // Sincroniza o outro lado
+        }
     }
 
-    public Set<TopicEntity> getTopics() {
+    public List<TopicEntity> getTopics() {
         return topics;
     }
 
-    public void setTopics(Set<TopicEntity> topics) {
-        this.topics = topics;
+    public void setTopics(TopicEntity topic) {
+        if (topic != null) {
+            this.topics.add(topic);
+            if (topic.getForum() != this) {
+                topic.setForum(this);
+            }
+        }
     }
 
     public Instant getCreatedAt() {
@@ -163,5 +171,17 @@ public class ForumEntity implements Serializable {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ForumEntity that = (ForumEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

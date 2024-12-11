@@ -25,6 +25,14 @@ public interface ForumRepository extends JpaRepository<ForumEntity, UUID> {
     Optional<ForumEntity> findByName(String name);
 
     /**
+     * Checks if a forum with the specified name exists.
+     *
+     * @param name {@link String} the name of the forum
+     * @return a {@link Boolean} indicating whether a forum with the specified name exists
+     */
+    Boolean existsByName(String name);
+
+    /**
      * Finds all forums with pagination support.
      *
      * @param pageable {@link Pageable} the pagination information

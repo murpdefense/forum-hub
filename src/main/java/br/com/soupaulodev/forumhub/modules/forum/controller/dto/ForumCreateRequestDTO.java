@@ -27,4 +27,4 @@ public record ForumCreateRequestDTO (@NotBlank
                                      String description,
 
                                      @UUID
-                                     java.util.UUID ownerId) {}
+                                     String ownerId) {}

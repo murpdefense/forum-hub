@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
@@ -8,7 +9,10 @@ import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * Use case for creating a new forum.
@@ -38,15 +42,21 @@ public class CreateForumUsecase {
      * @return the response data transfer object containing the created forum data
      * @throws ForumAlreadyExistsException if a forum with the same name already exists
      */
+    @Transactional
     public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO) {
 
-        forumRepository.findByName(requestDTO.name()).ifPresent(forum -> {
+        UserEntity user = userRepository.findById(UUID.fromString(requestDTO.ownerId()))
+                .orElseThrow(UserNotFoundException::new);
+
+        if (forumRepository.existsByName(requestDTO.name()).equals(true)) {
             throw new ForumAlreadyExistsException();
-        });
+        }
 
-        UserEntity owner = userRepository.findById(requestDTO.ownerId()).orElseThrow();
+        ForumEntity forum = ForumMapper.toEntity(requestDTO, user);
+        forum.addParticipant(user);
+        user.addOwnedForum(forum);
 
-        ForumEntity forumFound =  forumRepository.save(ForumMapper.toEntity(requestDTO, owner));
-        return ForumMapper.toResponseDTO(forumFound);
+        userRepository.save(user);
+        return ForumMapper.toResponseDTO(forum);
     }
 }
