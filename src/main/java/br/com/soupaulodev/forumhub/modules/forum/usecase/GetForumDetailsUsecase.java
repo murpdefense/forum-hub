@@ -2,7 +2,6 @@ package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumDetailsResponseDTO;
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
