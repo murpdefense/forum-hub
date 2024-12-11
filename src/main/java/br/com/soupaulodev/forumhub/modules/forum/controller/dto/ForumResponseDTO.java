@@ -28,8 +28,8 @@ import java.util.UUID;
 public record ForumResponseDTO (UUID id,
                                 String name,
                                 String description,
-                                UserResponseDTO owner,
-                                Set<UserResponseDTO> participants,
+                                UUID owner,
+                                int participants,
                                 int topicCount,
                                 Instant createdAt,
                                 Instant updatedAt) {}

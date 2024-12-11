@@ -89,9 +89,7 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the forum data
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ForumResponseDTO> getForumDetails(@Valid
-                                                            @PathVariable
-                                                            @org.hibernate.validator.constraints.UUID
+    public ResponseEntity<ForumResponseDTO> getForumDetails(@PathVariable
                                                             UUID id) {
 
         return ResponseEntity.ok(getForumDetailsUsecase.execute(id));
@@ -105,9 +103,10 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
      */
     @GetMapping("/all/{page}")
-    public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@PathVariable int page) {
+    public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(listForumsPageableUsecase.execute(page));
+        return ResponseEntity.ok(listForumsPageableUsecase.execute(page, size));
     }
 
     /**
