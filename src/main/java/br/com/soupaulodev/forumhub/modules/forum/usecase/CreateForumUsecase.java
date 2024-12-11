@@ -39,7 +39,8 @@ public class CreateForumUsecase {
      * Executes the use case to create a new forum.
      *
      * @param requestDTO the data transfer object containing the forum creation data
-     * @return the response data transfer object containing the created forum data
+     * @return the response data transfer {@link ForumResponseDTO} object containing the created forum data
+     * @throws UserNotFoundException if the user does not exist
      * @throws ForumAlreadyExistsException if a forum with the same name already exists
      */
     @Transactional
