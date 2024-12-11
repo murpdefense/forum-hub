@@ -2,8 +2,8 @@ package br.com.soupaulodev.forumhub.modules.forum.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UUID;
 
-import java.util.UUID;
 
 /**
  * DTO (Data Transfer Object) representing the request body for forum creation.
@@ -26,5 +26,5 @@ public record ForumCreateRequestDTO (@NotBlank
                                      @Length(min = 3, max = 50)
                                      String description,
 
-                                     @NotBlank
-                                     UUID ownerId) {}
+                                     @UUID
+                                     java.util.UUID ownerId) {}
