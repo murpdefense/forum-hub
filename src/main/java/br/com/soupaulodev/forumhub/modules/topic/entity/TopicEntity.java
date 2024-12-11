@@ -11,9 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Entity representing a topic in the forum.
@@ -61,13 +59,13 @@ public class TopicEntity implements Serializable {
      * The comments associated with the topic.
      */
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CommentEntity> comments = new HashSet<>();
+    private List<CommentEntity> comments = new ArrayList<>();
 
     /**
      * The likes associated with the topic.
      */
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<LikeEntity> likes = new HashSet<>();
+    private List<LikeEntity> likes = new ArrayList<>();
 
     /**
      * The timestamp when the topic was created.
@@ -186,20 +184,33 @@ public class TopicEntity implements Serializable {
         this.creator = creator;
     }
 
-    public Set<CommentEntity> getComments() {
+    public List<CommentEntity> getComments() {
         return comments;
     }
 
-    public void setComments(Set<CommentEntity> comments) {
-        this.comments = comments;
+    public void addComments(CommentEntity comment) {
+        if(!comments.contains(comment)) {
+            comments.add(comment);
+            comment.setTopic(this);
+        }
     }
 
-    public Set<LikeEntity> getLikes() {
+    public List<LikeEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeEntity> likes) {
-        this.likes = likes;
+    public void addLike(LikeEntity like) {
+        if (!likes.contains(like)) {
+            likes.add(like);
+            like.setTopic(this);
+        }
+    }
+
+    public void removeLike(LikeEntity like) {
+        if (likes.contains(like)) {
+            likes.remove(like);
+            like.setTopic(null);
+        }
     }
 
     public Instant getCreatedAt() {
