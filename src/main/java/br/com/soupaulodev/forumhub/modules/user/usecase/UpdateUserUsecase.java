@@ -63,10 +63,10 @@ public class UpdateUserUsecase {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         if (requestDTO == null
-            || requestDTO.name() == null
+            || (requestDTO.name() == null
             && requestDTO.username() == null
             && requestDTO.email() == null
-            && requestDTO.password() == null) {
+            && requestDTO.password() == null)) {
 
             throw new UserIllegalArgumentException("""
                 You must provide at least one field to update:
