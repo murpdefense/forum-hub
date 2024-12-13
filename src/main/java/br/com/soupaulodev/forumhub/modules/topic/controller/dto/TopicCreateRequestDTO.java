@@ -1,75 +1,32 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.UUID;
+import org.hibernate.validator.constraints.UUID;
 
 /**
- * Data Transfer Object for creating a new topic.
+ * DTO (Data Transfer Object) representing the request body for topic creation.
+ * <p>
+ *     This class is used to capture the topic's information, including its title, content, forum ID and creator ID,
+ *     when creating a new topic. It uses Jakarta Bean Validation annotations to enforce that the input is validated
+ *     before processing, ensuring that the topic is created correctly.
+ * </p>
+ * @param title the title of the topic
+ * @param content the content of the topic
+ * @param forumId the unique identifier of the forum to which the topic belongs
+ * @param creatorId the unique identifier of the creator of the topic
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public class TopicCreateRequestDTO {
+public record TopicCreateRequestDTO(
+        @NotBlank
+        @Size(max = 50)
+        String title,
 
-    /**
-     * The title of the topic.
-     * Must not be blank and must not exceed 50 characters.
-     */
-    @NotBlank
-    @Size(max = 50)
-    private String title;
+        @NotBlank
+        @Size(max = 500)
+        String content,
 
-    /**
-     * The content of the topic.
-     * Must not be blank and must not exceed 500 characters.
-     */
-    @NotBlank
-    @Size(max = 500)
-    private String content;
-
-    /**
-     * The unique identifier of the creator of the topic.
-     * Must not be null.
-     */
-    @NotNull
-    private UUID forumId;
-
-    /**
-     * The unique identifier of the creator of the topic.
-     * Must not be null.
-     */
-    @NotNull
-    private UUID creatorId;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public UUID getForumId() {
-        return forumId;
-    }
-
-    public void setForumId(UUID forumId) {
-        this.forumId = forumId;
-    }
-
-    public UUID getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(UUID creatorId) {
-        this.creatorId = creatorId;
-    }
-}
+        @UUID String forumId,
+        @UUID String creatorId
+) {}

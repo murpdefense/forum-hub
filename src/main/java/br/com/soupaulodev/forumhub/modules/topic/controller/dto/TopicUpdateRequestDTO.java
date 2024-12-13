@@ -1,42 +1,22 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller.dto;
 
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicState;
 import jakarta.validation.constraints.Size;
 
 /**
- * Data Transfer Object for updating an existing topic.
+ * DTO (Data Transfer Object) representing the request body for topic update.
+ * <p>
+ *     This class is used to capture the topic's information, including its title, content, forum ID and creator ID,
+ *     when updating an existing forum. It uses Jakarta Bean Validation annotations to enforce that the input is validated
+ *     before processing, ensuring that the topic is updated correctly. It is used to provide
+ *     a request to the client with the topic's information to be updated.
+ * </p>
+ *
+ * @param title the name of the forum
+ * @param content the description of the forum
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public class TopicUpdateRequestDTO {
-
-    @Size(max = 50)
-    private String title;
-
-    @Size(max = 500)
-    private String content;
-
-    private TopicState state;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public TopicState getState() {
-        return state;
-    }
-
-    public void setState(TopicState state) {
-        this.state = state;
-    }
-}
+public record TopicUpdateRequestDTO (
+        @Size(max = 50) String title,
+        @Size(max = 500) String content
+) {}

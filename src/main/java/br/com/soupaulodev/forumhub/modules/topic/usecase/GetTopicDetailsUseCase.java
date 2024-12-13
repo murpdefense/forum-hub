@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
+import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Use case for retrieving a specific topic by its unique identifier.
  */
 @Service
-public class GetTopicUsecase {
+public class GetTopicDetailsUseCase {
 
     private final TopicRepository topicRepository;
 
@@ -22,7 +22,7 @@ public class GetTopicUsecase {
      *
      * @param topicRepository the repository for managing topics
      */
-    public GetTopicUsecase(TopicRepository topicRepository) {
+    public GetTopicDetailsUseCase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
@@ -33,11 +33,14 @@ public class GetTopicUsecase {
      * @return the response data transfer object containing the topic data
      * @throws TopicNotFoundException if the topic specified by the id does not exist
      */
-    public TopicResponseDTO execute(UUID id) {
+    public TopicDetailsResponseDTO execute(UUID id) {
 
         TopicEntity topicFound = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
+        topicFound.getLikes();
+        topicFound.getComments();
+        topicFound.getCreator();
 
-        return TopicMapper.toResponseDTO(topicFound);
+        return TopicMapper.toDetailsResponseDTO(topicFound);
     }
 }

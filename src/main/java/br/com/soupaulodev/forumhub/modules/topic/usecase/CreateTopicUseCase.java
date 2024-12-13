@@ -13,11 +13,13 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Use case for creating a new topic.
  */
 @Service
-public class CreateTopicUsecase {
+public class CreateTopicUseCase {
 
     private final TopicRepository topicRepository;
     private final ForumRepository forumRepository;
@@ -30,7 +32,7 @@ public class CreateTopicUsecase {
      * @param forumRepository the repository for managing forums
      * @param userRepository the repository for managing users
      */
-    public CreateTopicUsecase(TopicRepository topicRepository,
+    public CreateTopicUseCase(TopicRepository topicRepository,
                               ForumRepository forumRepository,
                               UserRepository userRepository) {
         this.topicRepository = topicRepository;
@@ -48,12 +50,18 @@ public class CreateTopicUsecase {
      */
     public TopicResponseDTO execute(TopicCreateRequestDTO requestDTO) {
 
-        ForumEntity forum = forumRepository.findById(requestDTO.getForumId())
+        ForumEntity forum = forumRepository.findById(UUID.fromString(requestDTO.forumId()))
                 .orElseThrow(ForumNotFoundException::new);
-        UserEntity creator = userRepository.findById(requestDTO.getCreatorId())
+        UserEntity user = userRepository.findById(UUID.fromString(requestDTO.creatorId()))
                 .orElseThrow(UserNotFoundException::new);
 
-        TopicEntity topicSaved = topicRepository.save(TopicMapper.toEntity(requestDTO, forum, creator));
+        TopicEntity topic = TopicMapper.toEntity(requestDTO, forum, user);
+        topic.setCreator(user);
+        topic.setForum(forum);
+        forum.addTopics(topic);
+        user.addTopic(topic);
+
+        TopicEntity topicSaved = topicRepository.save(topic);
         return TopicMapper.toResponseDTO(topicSaved);
     }
 }

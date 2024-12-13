@@ -1,7 +1,9 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
@@ -16,7 +18,7 @@ import java.util.UUID;
  * Use case for updating an existing topic.
  */
 @Service
-public class UpdateTopicUsecase {
+public class UpdateTopicUseCase {
 
     private final TopicRepository topicRepository;
 
@@ -25,7 +27,7 @@ public class UpdateTopicUsecase {
      *
      * @param topicRepository the repository for managing topics
      */
-    public UpdateTopicUsecase(TopicRepository topicRepository) {
+    public UpdateTopicUseCase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
@@ -40,26 +42,24 @@ public class UpdateTopicUsecase {
      */
     public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO) {
 
-        TopicEntity topicDB = topicRepository.findById(id)
+        TopicEntity topicFound = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
 
-        if (requestDTO.getTitle() == null && requestDTO.getContent() == null) {
-            throw new TopicIllegalArgumentException("""
-                    You must provide at least one field to update:
-                    - title
-                    - content
-                    """);
+        if (requestDTO == null
+                || (requestDTO.title() == null
+                && requestDTO.content() == null)) {
+
+            throw new UserIllegalArgumentException("""
+                You must provide at least one field to update:
+                - title
+                - content
+                """);
         }
 
-        if (requestDTO.getTitle() != null) {
-            topicDB.setTitle(requestDTO.getTitle());
-        }
-        if (requestDTO.getContent() != null) {
-            topicDB.setContent(requestDTO.getContent());
-        }
-        topicDB.setUpdatedAt(Instant.now());
+        topicFound.setTitle(requestDTO.title() != null ? requestDTO.title() : topicFound.getTitle());
+        topicFound.setContent(requestDTO.content() != null ? requestDTO.content() : topicFound.getContent());
+        topicFound.setUpdatedAt(Instant.now());
 
-        TopicEntity updatedTopic = topicRepository.save(topicDB);
-        return TopicMapper.toResponseDTO(updatedTopic);
+        return TopicMapper.toResponseDTO( topicRepository.save(topicFound));
     }
 }

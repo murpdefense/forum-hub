@@ -11,7 +11,7 @@ import java.util.UUID;
  * Use case for deleting a topic.
  */
 @Service
-public class DeleteTopicUsecase {
+public class DeleteTopicUseCase {
 
     private final TopicRepository topicRepository;
 
@@ -20,7 +20,7 @@ public class DeleteTopicUsecase {
      *
      * @param topicRepository the repository for managing topics
      */
-    public DeleteTopicUsecase(TopicRepository topicRepository) {
+    public DeleteTopicUseCase(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 

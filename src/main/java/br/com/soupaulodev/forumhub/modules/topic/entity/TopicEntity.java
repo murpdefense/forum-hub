@@ -32,14 +32,6 @@ public class TopicEntity implements Serializable {
     private String content;
 
     /**
-     * The state of the topic.
-     * Must not be null.
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TopicState state;
-
-    /**
      * The forum to which the topic belongs.
      * Must not be null.
      */
@@ -61,11 +53,17 @@ public class TopicEntity implements Serializable {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @Column(name = "comments_count")
+    private int commentsCount;
+
     /**
      * The likes associated with the topic.
      */
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeEntity> likes = new ArrayList<>();
+
+    @Column(name = "likes_count")
+    private int likesCount;
 
     /**
      * The timestamp when the topic was created.
@@ -101,15 +99,13 @@ public class TopicEntity implements Serializable {
      *
      * @param title the title of the topic
      * @param content the content of the topic
-     * @param state the state of the topic
      */
-    public TopicEntity(String title, String content, TopicState state) {
+    public TopicEntity(String title, String content) {
         Instant now = Instant.now();
 
         this.id = UUID.randomUUID();
         this.title = title;
         this.content = content;
-        this.state = state;
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -129,7 +125,6 @@ public class TopicEntity implements Serializable {
         this.id = UUID.randomUUID();
         this.title = title;
         this.content = content;
-        this.state = TopicState.OPEN;
         this.forum = forum;
         this.creator = creator;
         this.createdAt = now;
@@ -160,14 +155,6 @@ public class TopicEntity implements Serializable {
         this.content = content;
     }
 
-    public TopicState getState() {
-        return state;
-    }
-
-    public void setState(TopicState state) {
-        this.state = state;
-    }
-
     public ForumEntity getForum() {
         return forum;
     }
@@ -192,7 +179,20 @@ public class TopicEntity implements Serializable {
         if(!comments.contains(comment)) {
             comments.add(comment);
             comment.setTopic(this);
+            commentsCount++;
         }
+    }
+
+    public void removeComment(CommentEntity comment) {
+        if(comments.contains(comment)) {
+            comments.remove(comment);
+            comment.setTopic(null);
+            commentsCount--;
+        }
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
     }
 
     public List<LikeEntity> getLikes() {
@@ -203,6 +203,7 @@ public class TopicEntity implements Serializable {
         if (!likes.contains(like)) {
             likes.add(like);
             like.setTopic(this);
+            likesCount++;
         }
     }
 
@@ -210,7 +211,12 @@ public class TopicEntity implements Serializable {
         if (likes.contains(like)) {
             likes.remove(like);
             like.setTopic(null);
+            likesCount--;
         }
+    }
+
+    public int getLikesCount() {
+        return likesCount;
     }
 
     public Instant getCreatedAt() {
