@@ -18,7 +18,7 @@ import java.util.UUID;
  * @param name the name of the forum
  * @param description the description of the forum
  * @param owner the owner of the forum
- * @param topicCount the number of topics in the forum
+ * @param topicsRecents the number of topics in the forum
  * @param createdAt the creation date of the forum
  * @param updatedAt the last update date of the forum
  *
@@ -28,6 +28,6 @@ public record ForumDetailsResponseDTO(UUID id,
                                       String name,
                                       String description,
                                       UUID owner,
-                                      List<TopicResponseDTO> topicCount,
+                                      List<TopicResponseDTO> topicsRecents,
                                       Instant createdAt,
                                       Instant updatedAt) {}

@@ -36,35 +36,31 @@ import java.util.UUID;
 @RequestMapping("/api/v1/forums")
 public class ForumController {
 
-    private final CreateForumUsecase createForumUsecase;
-    private final ListForumsPageableUsecase listForumsPageableUsecase;
-    private final ListForumsByNamePageableUsecase listForumsByNamePageableUsecase;
-    private final GetForumDetailsUsecase getForumDetailsUsecase;
-    private final UpdateForumUsecase updateForumUsecase;
-    private final DeleteForumUsecase deleteForumUsecase;
+    private final CreateForumUseCase createForumUseCase;
+    private final ListForumsUseCase listForumsPageableUseCase;
+    private final GetForumDetailsUseCase getForumDetailsUseCase;
+    private final UpdateForumUseCase updateForumUseCase;
+    private final DeleteForumUseCase deleteForumUseCase;
 
     /**
      * Constructs a new {@link ForumController} with the specified use cases.
      *
-     * @param createForumUsecase {@link CreateForumUsecase} the use case for creating forums
-     * @param listForumsPageableUsecase {@link ListForumsPageableUsecase} the use case for listing forums with pagination
-     * @param listForumsByNamePageableUsecase {@link ListForumsByNamePageableUsecase} the use case for listing forums by name with pagination
-     * @param getForumDetailsUsecase {@link GetForumDetailsUsecase} the use case for getting forum details
-     * @param updateForumUsecase {@link UpdateForumUsecase} the use case for updating forums
-     * @param deleteForumUsecase {@link DeleteForumUsecase} the use case for deleting forums
+     * @param createForumUsecase {@link CreateForumUseCase} the use case for creating forums
+     * @param listForumsPageableUsecase {@link ListForumsUseCase} the use case for listing forums with pagination
+     * @param getForumDetailsUsecase {@link GetForumDetailsUseCase} the use case for getting forum details
+     * @param updateForumUsecase {@link UpdateForumUseCase} the use case for updating forums
+     * @param deleteForumUsecase {@link DeleteForumUseCase} the use case for deleting forums
      */
-    public ForumController(CreateForumUsecase createForumUsecase,
-                           ListForumsPageableUsecase listForumsPageableUsecase,
-                           ListForumsByNamePageableUsecase listForumsByNamePageableUsecase,
-                           GetForumDetailsUsecase getForumDetailsUsecase,
-                           UpdateForumUsecase updateForumUsecase,
-                           DeleteForumUsecase deleteForumUsecase) {
-        this.createForumUsecase = createForumUsecase;
-        this.listForumsPageableUsecase = listForumsPageableUsecase;
-        this.listForumsByNamePageableUsecase = listForumsByNamePageableUsecase;
-        this.getForumDetailsUsecase = getForumDetailsUsecase;
-        this.updateForumUsecase = updateForumUsecase;
-        this.deleteForumUsecase = deleteForumUsecase;
+    public ForumController(CreateForumUseCase createForumUsecase,
+                           ListForumsUseCase listForumsPageableUsecase,
+                           GetForumDetailsUseCase getForumDetailsUsecase,
+                           UpdateForumUseCase updateForumUsecase,
+                           DeleteForumUseCase deleteForumUsecase) {
+        this.createForumUseCase = createForumUsecase;
+        this.listForumsPageableUseCase = listForumsPageableUsecase;
+        this.getForumDetailsUseCase = getForumDetailsUsecase;
+        this.updateForumUseCase = updateForumUsecase;
+        this.deleteForumUseCase = deleteForumUsecase;
     }
 
     /**
@@ -76,7 +72,7 @@ public class ForumController {
      */
     @PostMapping
     public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumCreateRequestDTO requestDTO) {
-        ForumResponseDTO responseDTO = createForumUsecase.execute(requestDTO);
+        ForumResponseDTO responseDTO = createForumUseCase.execute(requestDTO);
 
         URI uri = URI.create("/forums/" + responseDTO.id());
         return ResponseEntity.created(uri).body(responseDTO);
@@ -87,13 +83,14 @@ public class ForumController {
      * This method lists forums with pagination support and returns the list of forums.
      *
      * @param page {@link Integer} the page number to retrieve
+     * @param size {@link Integer} the number of forums to retrieve per page
      * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
      */
     @GetMapping("/all")
     public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(listForumsPageableUsecase.execute(page, size));
+        return ResponseEntity.ok(listForumsPageableUseCase.execute(page, size));
     }
 
     /**
@@ -107,22 +104,7 @@ public class ForumController {
     public ResponseEntity<ForumDetailsResponseDTO> getForumDetails(@PathVariable
                                                             UUID id) {
 
-        return ResponseEntity.ok(getForumDetailsUsecase.execute(id));
-    }
-
-    /**
-     * Endpoint for handling listing of forums by name with pagination support.
-     * This method lists forums by name with pagination support and returns the list of forums.
-     *
-     * @param name {@link String} the name of the forums to search for
-     * @param page {@link Integer} the page number to retrieve
-     * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
-     */
-    @GetMapping("/{name}/{page}")
-    public ResponseEntity<List<ForumResponseDTO>> listForumsByNamePageable(@PathVariable String name,
-                                                                           @PathVariable int page) {
-
-        return ResponseEntity.ok(listForumsByNamePageableUsecase.execute(name, page));
+        return ResponseEntity.ok(getForumDetailsUseCase.execute(id));
     }
 
     /**
@@ -142,7 +124,7 @@ public class ForumController {
                                                         @RequestBody
                                                         ForumUpdateRequestDTO forumRequestDTO) {
 
-        return ResponseEntity.ok(updateForumUsecase.execute(id, forumRequestDTO));
+        return ResponseEntity.ok(updateForumUseCase.execute(id, forumRequestDTO));
     }
 
     /**
@@ -158,7 +140,7 @@ public class ForumController {
                                            @org.hibernate.validator.constraints.UUID
                                            UUID id) {
 
-        deleteForumUsecase.execute(id);
+        deleteForumUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
  * Use case for deleting a forum.
  */
 @Service
-public class DeleteForumUsecase {
+public class DeleteForumUseCase {
 
     private final ForumRepository forumRepository;
 
@@ -20,7 +20,7 @@ public class DeleteForumUsecase {
      *
      * @param forumRepository the repository for managing forums
      */
-    public DeleteForumUsecase(ForumRepository forumRepository) {
+    public DeleteForumUseCase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 

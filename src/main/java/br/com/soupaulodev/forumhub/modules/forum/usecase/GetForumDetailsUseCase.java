@@ -13,7 +13,7 @@ import java.util.UUID;
  * Use case for retrieving the details of a forum.
  */
 @Service
-public class GetForumDetailsUsecase {
+public class GetForumDetailsUseCase {
 
     private final ForumRepository forumRepository;
 
@@ -22,7 +22,7 @@ public class GetForumDetailsUsecase {
      *
      * @param forumRepository the repository for managing forums
      */
-    public GetForumDetailsUsecase(ForumRepository forumRepository) {
+    public GetForumDetailsUseCase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 

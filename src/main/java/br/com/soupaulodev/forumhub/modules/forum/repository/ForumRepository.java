@@ -17,35 +17,10 @@ import java.util.UUID;
 public interface ForumRepository extends JpaRepository<ForumEntity, UUID> {
 
     /**
-     * Finds a forum by their name.
-     *
-     * @param name {@link String} the name of the forum
-     * @return an {@link Optional} containing the found {@link ForumEntity}, or empty if not found
-     */
-    Optional<ForumEntity> findByName(String name);
-
-    /**
      * Checks if a forum with the specified name exists.
      *
      * @param name {@link String} the name of the forum
      * @return a {@link Boolean} indicating whether a forum with the specified name exists
      */
     Boolean existsByName(String name);
-
-    /**
-     * Finds all forums with pagination support.
-     *
-     * @param pageable {@link Pageable} the pagination information
-     * @return a {@link List} of {@link ForumEntity} instances
-     */
-    List<ForumEntity> findAllBy(Pageable pageable);
-
-    /**
-     * Finds all forums whose names contain the specified string, ordered by creation date in descending order.
-     *
-     * @param name {@link String} the string to search for in forum names
-     * @param pageable {@link Pageable} the pagination information
-     * @return a {@link List} of {@link ForumEntity} instances
-     */
-    List<ForumEntity> findAllByNameContainingOrderByCreatedAtDesc(String name, Pageable pageable);
 }

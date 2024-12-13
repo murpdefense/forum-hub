@@ -148,12 +148,10 @@ public class ForumEntity implements Serializable {
         return topics;
     }
 
-    public void setTopics(TopicEntity topic) {
-        if (topic != null) {
-            this.topics.add(topic);
-            if (topic.getForum() != this) {
-                topic.setForum(this);
-            }
+    public void addTopics(TopicEntity topic) {
+        if (!topics.contains(topic)) {
+            topics.add(topic);
+            topic.setForum(this);
         }
     }
 

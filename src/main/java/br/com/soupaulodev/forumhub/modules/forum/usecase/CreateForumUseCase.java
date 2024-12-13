@@ -18,7 +18,7 @@ import java.util.UUID;
  * Use case for creating a new forum.
  */
 @Service
-public class CreateForumUsecase {
+public class CreateForumUseCase {
 
     private final ForumRepository forumRepository;
     private final UserRepository userRepository;
@@ -29,7 +29,7 @@ public class CreateForumUsecase {
      * @param forumRepository the repository for managing forums
      * @param userRepository the repository for managing users
      */
-    public CreateForumUsecase(ForumRepository forumRepository,
+    public CreateForumUseCase(ForumRepository forumRepository,
                               UserRepository userRepository) {
         this.forumRepository = forumRepository;
         this.userRepository = userRepository;
