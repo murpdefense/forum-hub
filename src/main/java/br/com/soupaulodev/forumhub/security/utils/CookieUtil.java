@@ -46,6 +46,10 @@ public class CookieUtil {
      * @return A cookie containing the JWT token, configured with the appropriate security settings.
      */
     public Cookie generateCookieWithToken(UserEntity user) {
+        if (user == null) {
+            throw new NullPointerException("User cannot be null");
+        }
+
         String jwt = userDetailsService.generateToken(user);
 
         Cookie cookie = new Cookie("JWT_TOKEN", jwt);
