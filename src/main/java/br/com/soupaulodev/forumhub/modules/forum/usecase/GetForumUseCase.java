@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumDetailsResponseDTO;
+import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Use case for retrieving the details of a forum.
  */
 @Service
-public class GetForumDetailsUseCase {
+public class GetForumUseCase {
 
     private final ForumRepository forumRepository;
 
@@ -22,7 +22,7 @@ public class GetForumDetailsUseCase {
      *
      * @param forumRepository the repository for managing forums
      */
-    public GetForumDetailsUseCase(ForumRepository forumRepository) {
+    public GetForumUseCase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 
@@ -33,12 +33,11 @@ public class GetForumDetailsUseCase {
      * @return the response data transfer object containing the forum details
      * @throws ForumNotFoundException if the forum with the specified ID is not found
      */
-    public ForumDetailsResponseDTO execute(UUID id) {
+    public ForumResponseDTO execute(UUID id) {
 
         ForumEntity forumFound = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);
-        forumFound.getTopics();
 
-        return ForumMapper.toDetailsResponseDTO(forumFound);
+        return ForumMapper.toResponseDTO(forumFound);
     }
 }

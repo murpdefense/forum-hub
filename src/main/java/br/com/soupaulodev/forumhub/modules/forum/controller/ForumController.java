@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller;
 
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
@@ -37,30 +36,30 @@ import java.util.UUID;
 public class ForumController {
 
     private final CreateForumUseCase createForumUseCase;
-    private final ListForumsUseCase listForumsPageableUseCase;
-    private final GetForumDetailsUseCase getForumDetailsUseCase;
+    private final ListForumsUseCase listForumsUseCase;
+    private final GetForumUseCase getForumUseCase;
     private final UpdateForumUseCase updateForumUseCase;
     private final DeleteForumUseCase deleteForumUseCase;
 
     /**
      * Constructs a new {@link ForumController} with the specified use cases.
      *
-     * @param createForumUsecase {@link CreateForumUseCase} the use case for creating forums
-     * @param listForumsPageableUsecase {@link ListForumsUseCase} the use case for listing forums with pagination
-     * @param getForumDetailsUsecase {@link GetForumDetailsUseCase} the use case for getting forum details
-     * @param updateForumUsecase {@link UpdateForumUseCase} the use case for updating forums
-     * @param deleteForumUsecase {@link DeleteForumUseCase} the use case for deleting forums
+     * @param createForumUseCase {@link CreateForumUseCase} the use case for creating forums
+     * @param listForumsUseCase {@link ListForumsUseCase} the use case for listing forums with pagination
+     * @param getForumUseCase {@link GetForumUseCase} the use case for getting forum details
+     * @param updateForumUseCase {@link UpdateForumUseCase} the use case for updating forums
+     * @param deleteForumUseCase {@link DeleteForumUseCase} the use case for deleting forums
      */
-    public ForumController(CreateForumUseCase createForumUsecase,
-                           ListForumsUseCase listForumsPageableUsecase,
-                           GetForumDetailsUseCase getForumDetailsUsecase,
-                           UpdateForumUseCase updateForumUsecase,
-                           DeleteForumUseCase deleteForumUsecase) {
-        this.createForumUseCase = createForumUsecase;
-        this.listForumsPageableUseCase = listForumsPageableUsecase;
-        this.getForumDetailsUseCase = getForumDetailsUsecase;
-        this.updateForumUseCase = updateForumUsecase;
-        this.deleteForumUseCase = deleteForumUsecase;
+    public ForumController(CreateForumUseCase createForumUseCase,
+                           ListForumsUseCase listForumsUseCase,
+                           GetForumUseCase getForumUseCase,
+                           UpdateForumUseCase updateForumUseCase,
+                           DeleteForumUseCase deleteForumUseCase) {
+        this.createForumUseCase = createForumUseCase;
+        this.listForumsUseCase = listForumsUseCase;
+        this.getForumUseCase = getForumUseCase;
+        this.updateForumUseCase = updateForumUseCase;
+        this.deleteForumUseCase = deleteForumUseCase;
     }
 
     /**
@@ -87,10 +86,10 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
      */
     @GetMapping("/all")
-    public ResponseEntity<List<ForumResponseDTO>> listForumsPageable(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<ForumResponseDTO>> listForums(@RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(listForumsPageableUseCase.execute(page, size));
+        return ResponseEntity.ok(listForumsUseCase.execute(page, size));
     }
 
     /**
@@ -101,10 +100,10 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the forum data
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ForumDetailsResponseDTO> getForumDetails(@PathVariable
+    public ResponseEntity<ForumResponseDTO> getForum(@PathVariable
                                                             UUID id) {
 
-        return ResponseEntity.ok(getForumDetailsUseCase.execute(id));
+        return ResponseEntity.ok(getForumUseCase.execute(id));
     }
 
     /**

@@ -2,14 +2,12 @@ package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -52,7 +50,7 @@ public class UpdateForumUseCase {
                 || (requestDTO.name() == null
                 && requestDTO.description() == null)) {
 
-            throw new UserIllegalArgumentException("""
+            throw new ForumIllegalArgumentException("""
                 You must provide at least one field to update:
                 - name
                 - description

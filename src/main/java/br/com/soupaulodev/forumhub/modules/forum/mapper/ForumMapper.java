@@ -1,18 +1,10 @@
 package br.com.soupaulodev.forumhub.modules.forum.mapper;
 
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
-import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Mapper class for converting between {@link ForumEntity} and Data Transfer Objects (DTOs).
@@ -80,20 +72,6 @@ public class ForumMapper {
             entity.getOwner().getId(),
             entity.getParticipants().size(),
             entity.getTopics().size(),
-            entity.getCreatedAt(),
-            entity.getUpdatedAt()
-        );
-    }
-
-    public static ForumDetailsResponseDTO toDetailsResponseDTO(ForumEntity entity) {
-        return new ForumDetailsResponseDTO(
-            entity.getId(),
-            entity.getName(),
-            entity.getDescription(),
-            entity.getOwner().getId(),
-            entity.getTopics().stream()
-                .map(TopicMapper::toResponseDTO)
-                .collect(Collectors.toList()),
             entity.getCreatedAt(),
             entity.getUpdatedAt()
         );
