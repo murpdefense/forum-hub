@@ -24,4 +24,4 @@ public record ForumUpdateRequestDTO (@Size(max = 50)
                                      @Size(max = 50)
                                      String description,
 
-                                     UUID ownerId) {}
+                                     @UUID String ownerId) {}

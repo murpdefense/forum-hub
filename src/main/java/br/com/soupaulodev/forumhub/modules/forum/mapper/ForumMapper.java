@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.forum.mapper;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
@@ -30,6 +31,13 @@ public class ForumMapper {
      * @param owner {@link UserEntity} the owner of the forum
      */
     public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
+        if(owner == null) {
+            throw new ForumIllegalArgumentException("Owner cannot be null");
+        }
+        if ((dto.name() == null || dto.name().isEmpty() || dto.name().isBlank())
+                || (dto.description() == null || dto.description().isEmpty() || dto.description().isBlank())) {
+            throw new ForumIllegalArgumentException("Forum name and description cannot be empty");
+        }
         return new ForumEntity(
                 dto.name(),
                 dto.description(),
@@ -65,6 +73,9 @@ public class ForumMapper {
      * @return the corresponding {@link ForumResponseDTO} with the mapped forum data
      */
     public static ForumResponseDTO toResponseDTO(ForumEntity entity) {
+        if (entity == null || entity.getOwner() == null) {
+            throw new ForumIllegalArgumentException("Forum owner cannot be null");
+        }
         return new ForumResponseDTO(
             entity.getId(),
             entity.getName(),
