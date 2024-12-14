@@ -89,7 +89,7 @@ class JwtUtilTest {
                 .withExpiresAt(Date.from(Instant.now().minusSeconds(120000)))
                 .sign(Algorithm.HMAC256("test-secret-key"));
 
-        boolean isExpired = false;
+        boolean isExpired;
         try {
             isExpired = jwtUtil.isTokenExpired(token);
         } catch (TokenExpiredCustomException e) {
