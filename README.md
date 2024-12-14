@@ -1,5 +1,6 @@
-![Cover](./.github/cover.png)
 # ForumHub
+![Cover](./.github/cover.png)
+![Java CI with Maven Status](https://github.com/soupaulodev/one-forumhub/actions/workflows/maven.yml/badge.svg)
 
 Este projeto é minha aplicação para o desafio da Trilha de Especialização em Spring do Oracle ONE em parceria com Alura.
 
