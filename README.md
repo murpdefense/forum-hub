@@ -1,3 +1,4 @@
+![Cover](./.github/cover.png)
 # ForumHub
 
 Este projeto é minha aplicação para o desafio da Trilha de Especialização em Spring do Oracle ONE em parceria com Alura.
