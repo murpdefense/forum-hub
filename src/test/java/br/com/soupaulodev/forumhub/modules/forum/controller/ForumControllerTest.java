@@ -214,7 +214,7 @@ class ForumControllerTest {
     void shouldDeleteForumSuccessfully() {
         UUID forumId = UUID.randomUUID();
 
-        ResponseEntity<Void> response = forumController.deleteForum(forumId);
+        ResponseEntity<Void> response = forumController.deleteForum(forumId.toString());
 
         assertEquals(204, response.getStatusCodeValue());
         assertNull(response.getBody());
@@ -226,6 +226,6 @@ class ForumControllerTest {
 
         doThrow(new ForumNotFoundException()).when(deleteForumUseCase).execute(forumId);
 
-        assertThrows(ForumNotFoundException.class, () -> forumController.deleteForum(forumId));
+        assertThrows(ForumNotFoundException.class, () -> forumController.deleteForum(forumId.toString()));
     }
 }

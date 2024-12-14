@@ -137,9 +137,9 @@ public class ForumController {
     public ResponseEntity<Void> deleteForum(@Valid
                                            @PathVariable
                                            @org.hibernate.validator.constraints.UUID
-                                           UUID id) {
+                                           String id) {
 
-        deleteForumUseCase.execute(id);
+        deleteForumUseCase.execute(UUID.fromString(id));
         return ResponseEntity.noContent().build();
     }
 }
