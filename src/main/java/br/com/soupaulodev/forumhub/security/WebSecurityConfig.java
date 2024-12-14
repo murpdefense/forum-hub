@@ -39,7 +39,7 @@ import java.util.Arrays;
  *
  * The class also integrates the {@link JwtAuthenticationFilter} for JWT validation in HTTP requests.
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Configuration
 @EnableWebSecurity
