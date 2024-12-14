@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * user. The cookie is configured to be HTTP-only, secure, and have a maximum age of 7 days.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Component
 public class CookieUtil {

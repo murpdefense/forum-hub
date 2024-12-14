@@ -33,7 +33,7 @@ import java.util.Date;
  * key defined in the application properties.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Component
 public class JwtUtil {

@@ -28,7 +28,7 @@ import java.util.Collections;
  * authentication is properly stored in the {@link SecurityContextHolder}.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
