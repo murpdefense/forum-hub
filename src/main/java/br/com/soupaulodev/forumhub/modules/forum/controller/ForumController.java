@@ -118,12 +118,12 @@ public class ForumController {
     public ResponseEntity<ForumResponseDTO> updateForum(@Valid
                                                         @PathVariable
                                                         @org.hibernate.validator.constraints.UUID
-                                                        UUID id,
+                                                        String id,
                                                         @Valid
                                                         @RequestBody
                                                         ForumUpdateRequestDTO forumRequestDTO) {
 
-        return ResponseEntity.ok(updateForumUseCase.execute(id, forumRequestDTO));
+        return ResponseEntity.ok(updateForumUseCase.execute(UUID.fromString(id), forumRequestDTO));
     }
 
     /**
