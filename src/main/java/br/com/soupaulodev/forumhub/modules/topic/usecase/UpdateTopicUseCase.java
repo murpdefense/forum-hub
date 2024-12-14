@@ -49,7 +49,7 @@ public class UpdateTopicUseCase {
                 || (requestDTO.title() == null
                 && requestDTO.content() == null)) {
 
-            throw new UserIllegalArgumentException("""
+            throw new TopicIllegalArgumentException("""
                 You must provide at least one field to update:
                 - title
                 - content
