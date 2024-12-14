@@ -19,6 +19,11 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Rate Limit Filter.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 

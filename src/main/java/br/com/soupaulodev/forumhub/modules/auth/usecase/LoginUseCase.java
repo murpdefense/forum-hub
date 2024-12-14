@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
  * a JWT token is generated using the {@link CookieUtil} class, which is then sent as a cookie to the client.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class LoginUseCase {

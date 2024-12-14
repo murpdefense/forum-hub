@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
  *
  * @param username the username of the user attempting to log in
  * @param password the password of the user attempting to log in
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public record LoginRequestDTO (
 

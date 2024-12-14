@@ -19,7 +19,7 @@ import java.util.Collections;
  * The service also provides functionality to generate JWT tokens for authenticated users.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

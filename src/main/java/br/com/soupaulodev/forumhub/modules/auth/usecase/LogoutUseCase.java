@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * The cookie is also marked as HttpOnly and Secure to ensure it is only sent over secure connections and cannot be accessed via JavaScript.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class LogoutUseCase {

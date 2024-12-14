@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
  * If the username is already taken, an exception is thrown.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class SignUpUseCase {
