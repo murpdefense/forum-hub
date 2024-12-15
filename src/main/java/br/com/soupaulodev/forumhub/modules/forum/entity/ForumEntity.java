@@ -130,7 +130,12 @@ public class ForumEntity implements Serializable {
     }
 
     public void setOwner(UserEntity owner) {
-        this.owner = owner;
+        if (owner != null && !owner.equals(this.owner)) {
+            this.owner = owner;
+            if (!owner.getOwnedForums().contains(this)) {
+                owner.addOwnedForum(this);
+            }
+        }
     }
 
     public List<UserEntity> getParticipants() {
@@ -138,9 +143,9 @@ public class ForumEntity implements Serializable {
     }
 
     public void addParticipant(UserEntity user) {
-        if (!participants.contains(user)) { // Evita duplicidade
+        if (!participants.contains(user)) {
             participants.add(user);
-            user.addParticipatingForum(this); // Sincroniza o outro lado
+            user.addParticipatingForum(this);
         }
     }
 
@@ -148,10 +153,12 @@ public class ForumEntity implements Serializable {
         return topics;
     }
 
-    public void addTopics(TopicEntity topic) {
-        if (!topics.contains(topic)) {
+    public void addTopic(TopicEntity topic) {
+        if (topic != null && !topics.contains(topic)) {
             topics.add(topic);
-            topic.setForum(this);
+            if (!this.equals(topic.getForum())) {
+                topic.setForum(this);
+            }
         }
     }
 

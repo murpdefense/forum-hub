@@ -15,6 +15,8 @@ import java.util.*;
 
 /**
  * Entity representing a topic in the forum.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Entity
 @Table(name = "tb_topic")
@@ -160,7 +162,12 @@ public class TopicEntity implements Serializable {
     }
 
     public void setForum(ForumEntity forum) {
-        this.forum = forum;
+        if (forum != null && !forum.equals(this.forum)) {
+            this.forum = forum;
+            if (!forum.getTopics().contains(this)) {
+                forum.addTopic(this);
+            }
+        }
     }
 
     public UserEntity getCreator() {
@@ -168,7 +175,12 @@ public class TopicEntity implements Serializable {
     }
 
     public void setCreator(UserEntity creator) {
-        this.creator = creator;
+        if (creator != null && !creator.equals(this.creator)) {
+            this.creator = creator;
+            if (!creator.getTopics().contains(this)) {
+                creator.addTopic(this);
+            }
+        }
     }
 
     public List<CommentEntity> getComments() {
@@ -176,7 +188,7 @@ public class TopicEntity implements Serializable {
     }
 
     public void addComments(CommentEntity comment) {
-        if(!comments.contains(comment)) {
+        if (comment != null && !comments.contains(comment)) {
             comments.add(comment);
             comment.setTopic(this);
             commentsCount++;
@@ -184,7 +196,7 @@ public class TopicEntity implements Serializable {
     }
 
     public void removeComment(CommentEntity comment) {
-        if(comments.contains(comment)) {
+        if (comment != null && comments.contains(comment)) {
             comments.remove(comment);
             comment.setTopic(null);
             commentsCount--;
@@ -200,7 +212,7 @@ public class TopicEntity implements Serializable {
     }
 
     public void addLike(LikeEntity like) {
-        if (!likes.contains(like)) {
+        if (like != null && !likes.contains(like)) {
             likes.add(like);
             like.setTopic(this);
             likesCount++;
@@ -208,7 +220,7 @@ public class TopicEntity implements Serializable {
     }
 
     public void removeLike(LikeEntity like) {
-        if (likes.contains(like)) {
+        if (like != null && likes.contains(like)) {
             likes.remove(like);
             like.setTopic(null);
             likesCount--;
