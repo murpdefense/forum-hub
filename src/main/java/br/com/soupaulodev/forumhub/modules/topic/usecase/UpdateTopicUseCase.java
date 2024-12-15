@@ -38,6 +38,7 @@ public class UpdateTopicUseCase {
      * @return the response data transfer object containing the updated topic data
      * @throws TopicNotFoundException if the topic specified by the id does not exist
      * @throws TopicIllegalArgumentException if neither title nor content is provided for update
+     * @throws UnauthorizedException if the authenticated user is not the creator of the topic
      */
     public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO, UUID autheticatedUserId) {
 

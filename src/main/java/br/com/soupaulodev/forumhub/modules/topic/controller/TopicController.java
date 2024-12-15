@@ -140,7 +140,8 @@ public class TopicController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTopic(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
-        deleteTopicUseCase.execute(UUID.fromString(id));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        deleteTopicUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
