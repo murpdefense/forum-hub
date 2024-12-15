@@ -6,6 +6,7 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateReque
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -122,8 +123,8 @@ public class ForumController {
                                                         @Valid
                                                         @RequestBody
                                                         ForumUpdateRequestDTO forumRequestDTO) {
-
-        return ResponseEntity.ok(updateForumUseCase.execute(UUID.fromString(id), forumRequestDTO));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        return ResponseEntity.ok(updateForumUseCase.execute(UUID.fromString(id), forumRequestDTO, authenticatedUserId));
     }
 
     /**
@@ -138,8 +139,25 @@ public class ForumController {
                                            @PathVariable
                                            @org.hibernate.validator.constraints.UUID
                                            String id) {
-
-        deleteForumUseCase.execute(UUID.fromString(id));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        deleteForumUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Retrieves the authenticated user's unique identifier.
+     *
+     * @return the authenticated user's unique identifier
+     */
+    private UUID getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UUID) {
+            return (UUID) principal;
+        } else if (principal instanceof String) {
+            return UUID.fromString((String) principal);
+        }
+
+        throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
     }
 }

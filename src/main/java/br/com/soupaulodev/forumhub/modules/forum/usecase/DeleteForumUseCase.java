@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,17 @@ public class DeleteForumUseCase {
      * Executes the use case to delete a forum by its unique identifier.
      *
      * @param id the unique identifier of the forum to be deleted
+     * @param authenticatedUserId the unique identifier of the authenticated user
      * @throws ForumNotFoundException if the forum with the specified ID is not found
+     * @throws UnauthorizedException if the authenticated user is not the owner of the forum
      */
-    public void execute(UUID id) {
-
+    public void execute(UUID id, UUID authenticatedUserId) {
         ForumEntity forumDB = forumRepository.findById(id)
                 .orElseThrow(ForumNotFoundException::new);
+
+        if (!forumDB.getOwner().getId().equals(authenticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to delete this forum.");
+        }
 
         forumRepository.delete(forumDB);
     }
