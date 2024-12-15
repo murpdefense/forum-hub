@@ -3,6 +3,7 @@ package br.com.soupaulodev.forumhub.modules.forum.controller;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumAlreadyExistsException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
@@ -13,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.net.URI;
 import java.time.Instant;
@@ -21,9 +24,28 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for the {@link ForumController}.
+ * This class contains tests for the forum-related operations, such as creating, listing, retrieving, updating, and deleting forums.
+ *
+ *
+ * <p>
+ *     The {@link ForumControllerTest} class is responsible for testing the behavior of the {@link ForumController} class.
+ *     The tests cover the following operations:
+ *     <ul>
+ *         <li>Creating a forum.</li>
+ *         <li>Listing forums.</li>
+ *         <li>Rerieving a forum by its ID.</li>
+ *         <li>Updating a forum.</li>
+ *         <li>Deleting a forum.</li>
+ * </p>
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class ForumControllerTest {
 
     @Mock
@@ -160,23 +182,27 @@ class ForumControllerTest {
     @Test
     void shouldUpdateForumSuccessfully() {
         UUID forumId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
                 "Description Example",
-                UUID.randomUUID().toString());
+                ownerId.toString());
 
         Instant now = Instant.now();
         ForumResponseDTO responseDTO = new ForumResponseDTO(
                 forumId,
                 "Forum Example",
                 "Description Example",
-                UUID.randomUUID(),
+                ownerId,
                 1,
                 0,
                 now,
                 now);
 
-        when(updateForumUseCase.execute(forumId, requestDTO)).thenReturn(responseDTO);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
+
+        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenReturn(responseDTO);
 
         ResponseEntity<ForumResponseDTO> response = forumController.updateForum(forumId.toString(), requestDTO);
 
@@ -187,12 +213,16 @@ class ForumControllerTest {
     @Test
     void shouldUpdateForumThrowNotFoundException() {
         UUID forumId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
                 "Description Example",
                 UUID.randomUUID().toString());
 
-        when(updateForumUseCase.execute(forumId, requestDTO)).thenThrow(new ForumNotFoundException());
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
+
+        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ForumNotFoundException());
 
         assertThrows(ForumNotFoundException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
     }
@@ -200,12 +230,16 @@ class ForumControllerTest {
     @Test
     void shouldUpdateForumThrowForumIllegalArgumentException() {
         UUID forumId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
                 "Description Example",
                 UUID.randomUUID().toString());
 
-        when(updateForumUseCase.execute(forumId, requestDTO)).thenThrow(new ForumIllegalArgumentException(""));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
+
+        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ForumIllegalArgumentException(""));
 
         assertThrows(ForumIllegalArgumentException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
     }
@@ -213,6 +247,9 @@ class ForumControllerTest {
     @Test
     void shouldDeleteForumSuccessfully() {
         UUID forumId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
 
         ResponseEntity<Void> response = forumController.deleteForum(forumId.toString());
 
@@ -223,9 +260,25 @@ class ForumControllerTest {
     @Test
     void shouldDeleteForumThrowNotFoundException() {
         UUID forumId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
 
-        doThrow(new ForumNotFoundException()).when(deleteForumUseCase).execute(forumId);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
+
+        doThrow(new ForumNotFoundException()).when(deleteForumUseCase).execute(forumId, ownerId);
 
         assertThrows(ForumNotFoundException.class, () -> forumController.deleteForum(forumId.toString()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeleteForumWhenUserIsNotTheOwner() {
+        UUID forumId = UUID.randomUUID();
+        UUID nonOwnerId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(nonOwnerId, null));
+
+        doThrow(new UnauthorizedException("You are not allowed to update this topic."))
+                .when(deleteForumUseCase).execute(any(UUID.class), eq(nonOwnerId));
+
+        assertThrows(UnauthorizedException.class, () -> forumController.deleteForum(forumId.toString()));
     }
 }
