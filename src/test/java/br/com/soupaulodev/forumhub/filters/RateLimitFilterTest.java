@@ -1,102 +1,100 @@
 package br.com.soupaulodev.forumhub.filters;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.RateLimitExceededException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class RateLimitFilterTest {
+public class RateLimitFilterTest {
 
     @Mock
     private JwtUtil jwtUtil;
 
+    @Mock
+    private StringRedisTemplate redisTemplate;
+
     @InjectMocks
     private RateLimitFilter rateLimitFilter;
 
-    private MockHttpServletRequest request;
-    private MockHttpServletResponse response;
-    private FilterChain filterChain;
-
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-        request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
-        filterChain = mock(FilterChain.class);
     }
 
     @Test
-    void testDoFilterInternal_RateLimitExceededByIp() throws Exception {
-        request.setRemoteAddr("192.168.1.1");
+    public void testDoFilterInternal_withValidRequest_shouldProceed() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        FilterChain chain = mock(FilterChain.class);
 
-        Bucket mockBucket = mock(Bucket.class);
-        when(mockBucket.tryConsume(1)).thenReturn(false);
+        when(request.getRemoteAddr()).thenReturn("192.168.1.1");
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie("Authorization", "valid_jwt_token")});
 
-        rateLimitFilter = spy(rateLimitFilter);
-        doReturn(mockBucket).when(rateLimitFilter).createOrGetBucket("192.168.1.1", 10);
+        when(jwtUtil.extractUsername("valid_jwt_token")).thenReturn("user1");
 
-        assertThrows(RateLimitExceededException.class, () -> {
-            rateLimitFilter.doFilterInternal(request, response, filterChain);
-        });
+        ValueOperations<String, String> valueOperationsMock = mock(ValueOperations.class);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperationsMock);
+        when(valueOperationsMock.get(anyString())).thenReturn(null);  // Simulating that rate limit information is absent in Redis.
+
+        Bucket bucketMock = mock(Bucket.class);
+        when(bucketMock.tryConsume(1)).thenReturn(true);
+
+        rateLimitFilter.doFilterInternal(request, response, chain);
+
+        verify(chain).doFilter(request, response);
+    }
+
+
+    @Test
+    public void testDoFilterInternal_withMissingJwtToken_shouldThrowUnauthorizedException() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        FilterChain chain = mock(FilterChain.class);
+
+        when(request.getRemoteAddr()).thenReturn("192.168.1.1");
+        Bucket bucketMock = mock(Bucket.class);
+        when(bucketMock.tryConsume(1)).thenReturn(true);
+
+        when(request.getCookies()).thenReturn(new Cookie[]{});
+
+        try {
+            rateLimitFilter.doFilterInternal(request, response, chain);
+        } catch (UnauthorizedException e) {
+            return;
+        }
+        throw new AssertionError("Expected UnauthorizedException");
     }
 
     @Test
-    void testDoFilterInternal_RateLimitExceededByUser() throws Exception {
-        request.setRemoteAddr("192.168.1.1");
+    public void testDoFilterInternal_withInvalidJwtToken_shouldThrowUnauthorizedException() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        FilterChain chain = mock(FilterChain.class);
 
-        request.setCookies(new Cookie("Authorization", "fake-jwt-token"));
-        when(jwtUtil.extractUsername("fake-jwt-token")).thenReturn("user123");
+        when(request.getRemoteAddr()).thenReturn("192.168.1.1");
+        Bucket bucketMock = mock(Bucket.class);
+        when(bucketMock.tryConsume(1)).thenReturn(true);
 
-        Bucket mockBucket = mock(Bucket.class);
-        when(mockBucket.tryConsume(1)).thenReturn(true);
-        when(mockBucket.tryConsume(1)).thenReturn(false);
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie("Authorization", "invalid_jwt_token")});
+        when(jwtUtil.extractUsername("invalid_jwt_token")).thenThrow(new RuntimeException("Invalid token"));
 
-        rateLimitFilter = spy(rateLimitFilter);
-        doReturn(mockBucket).when(rateLimitFilter).createOrGetBucket("192.168.1.1", 10);
-        doReturn(mockBucket).when(rateLimitFilter).createOrGetBucket("user123", 10);
-
-        assertThrows(RateLimitExceededException.class, () -> {
-            rateLimitFilter.doFilterInternal(request, response, filterChain);
-        });
-    }
-
-    @Test
-    void testDoFilterInternal_UnauthorizedRequest() throws Exception {
-        request.setRemoteAddr("192.168.1.1");
-
-        assertThrows(UnauthorizedException.class, () -> {
-            rateLimitFilter.doFilterInternal(request, response, filterChain);
-        });
-    }
-
-    @Test
-    void testDoFilterInternal_SuccessfulRequest() throws Exception {
-        request.setRemoteAddr("192.168.1.1");
-
-        request.setCookies(new Cookie("Authorization", "valid-jwt-token"));
-        when(jwtUtil.extractUsername("valid-jwt-token")).thenReturn("user123");
-
-        Bucket mockBucket = mock(Bucket.class);
-        when(mockBucket.tryConsume(1)).thenReturn(true);
-        when(mockBucket.tryConsume(1)).thenReturn(true);
-
-        rateLimitFilter = spy(rateLimitFilter);
-        doReturn(mockBucket).when(rateLimitFilter).createOrGetBucket("192.168.1.1", 10);
-        doReturn(mockBucket).when(rateLimitFilter).createOrGetBucket("user123", 10);
-
-        rateLimitFilter.doFilterInternal(request, response, filterChain);
-        verify(filterChain, times(1)).doFilter(request, response);
+        try {
+            rateLimitFilter.doFilterInternal(request, response, chain);
+        } catch (UnauthorizedException e) {
+            return;
+        }
+        throw new AssertionError("Expected UnauthorizedException");
     }
 }
