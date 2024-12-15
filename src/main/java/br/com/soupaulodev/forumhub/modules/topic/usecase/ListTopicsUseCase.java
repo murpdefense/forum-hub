@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * Use case for listing topics with pagination support.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class ListTopicsUseCase {

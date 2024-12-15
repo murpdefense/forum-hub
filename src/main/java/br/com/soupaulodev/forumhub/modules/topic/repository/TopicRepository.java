@@ -11,6 +11,8 @@ import java.util.UUID;
 /**
  * Repository interface for {@link TopicEntity}.
  * Extends {@link JpaRepository} to provide CRUD operations for {@link TopicEntity}.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Repository
 public interface TopicRepository extends JpaRepository<TopicEntity, UUID> {}

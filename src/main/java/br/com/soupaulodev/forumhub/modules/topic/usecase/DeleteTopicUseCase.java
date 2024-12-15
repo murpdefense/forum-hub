@@ -9,6 +9,8 @@ import java.util.UUID;
 
 /**
  * Use case for deleting a topic.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class DeleteTopicUseCase {

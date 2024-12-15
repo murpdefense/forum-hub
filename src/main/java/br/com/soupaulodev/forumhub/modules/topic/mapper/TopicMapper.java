@@ -15,6 +15,8 @@ import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 
 /**
  * Mapper class for converting between TopicEntity and various DTOs.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public class TopicMapper {
 

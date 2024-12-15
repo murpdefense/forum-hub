@@ -11,6 +11,8 @@ import java.util.UUID;
 
 /**
  * Use case for retrieving a specific topic by its unique identifier.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class GetTopicDetailsUseCase {
