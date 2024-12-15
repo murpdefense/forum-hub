@@ -58,10 +58,8 @@ class AuthControllerTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Act
         ResponseEntity<String> result = authController.login(loginRequestDTO, response);
 
-        // Assert
         assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header");
         assertEquals("mock-token", response.getCookie("JWT_TOKEN").getValue(), "Cookie value should match the mocked token");
@@ -70,7 +68,6 @@ class AuthControllerTest {
 
     @Test
     void shouldRegisterUserSuccessfully() {
-        // Arrange
         UserCreateRequestDTO requestDTO = new UserCreateRequestDTO(
                 "Name Example",
                 "Username Example",
@@ -81,10 +78,8 @@ class AuthControllerTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Act
         ResponseEntity<String> result = authController.signUp(requestDTO, response);
 
-        // Assert
         assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header");
         assertEquals("mock-token", response.getCookie("JWT_TOKEN").getValue(), "Cookie value should match the mocked token");
@@ -93,17 +88,14 @@ class AuthControllerTest {
 
     @Test
     void shouldLogoutUserSuccessfully() {
-        // Arrange
         Cookie logoutCookie = new Cookie("JWT_TOKEN", null);
         logoutCookie.setMaxAge(0);
         when(logoutUseCase.execute()).thenReturn(logoutCookie);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Act
         ResponseEntity<Void> result = authController.logout(response);
 
-        // Assert
         assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header for logout");
         assertNull(response.getCookie("JWT_TOKEN").getValue(), "Logout cookie value should be null");
