@@ -109,8 +109,8 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
-
-        deleteUserUsecase.execute(id);
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        deleteUserUsecase.execute(id, authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 

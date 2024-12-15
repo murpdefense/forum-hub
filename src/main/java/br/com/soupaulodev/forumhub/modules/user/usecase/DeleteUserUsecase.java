@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
@@ -38,17 +39,21 @@ public class DeleteUserUsecase {
      * Executes the use case to delete a user by their ID.
      * <p>
      *     This method deletes a user from the database using the provided unique identifier.
-     *     If the user is found, it is deleted from the database.
+     *     If the user is found and user is authenticated, the user is deleted from the database.
      *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
      * </p>
      *
      * @param id the user's unique identifier of type {@link UUID}
+     * @param authenticatedUserId the authenticated user's unique identifier
      * @throws UserNotFoundException if no user with the given ID is found
      */
-    public void execute(UUID id) {
-
+    public void execute(UUID id, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
+        if (!userDB.getId().equals(authenticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to delete this user.");
+        }
 
         userRepository.delete(userDB);
     }
