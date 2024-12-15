@@ -2,10 +2,10 @@ package br.com.soupaulodev.forumhub.modules.user.controller;
 
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUsecase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUsecase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,27 +34,27 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-    private final GetUserUseCase getUserUsecase;
-    private final FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase;
-    private final UpdateUserUsecase updateUserUsecase;
-    private final DeleteUserUsecase deleteUserUsecase;
+    private final GetUserUseCase getUserUseCase;
+    private final FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
 
     /**
      * Constructor for {@link UserController}.
      *
-     * @param getUserUsecase {@link GetUserUseCase} the use case for handling user retrieval by ID
-     * @param findUserByNameOrUsernameUsecase {@link FindUserByNameOrUsernameUsecase} the use case for handling user retrieval by name or username
-     * @param updateUserUsecase {@link UpdateUserUsecase} the use case for handling user update operations
-     * @param deleteUserUsecase {@link DeleteUserUsecase} the use case for handling user deletion operations
+     * @param getUserUseCase {@link GetUserUseCase} the use case for handling user retrieval by ID
+     * @param findUserByNameOrUsernameUsecase {@link FindUserByNameOrUsernameUseCase} the use case for handling user retrieval by name or username
+     * @param updateUserUseCase {@link UpdateUserUseCase} the use case for handling user update operations
+     * @param deleteUserUseCase {@link DeleteUserUseCase} the use case for handling user deletion operations
      */
-    public UserController(GetUserUseCase getUserUsecase,
-                          FindUserByNameOrUsernameUsecase findUserByNameOrUsernameUsecase,
-                          UpdateUserUsecase updateUserUsecase,
-                          DeleteUserUsecase deleteUserUsecase) {
-        this.getUserUsecase = getUserUsecase;
-        this.findUserByNameOrUsernameUsecase = findUserByNameOrUsernameUsecase;
-        this.updateUserUsecase = updateUserUsecase;
-        this.deleteUserUsecase = deleteUserUsecase;
+    public UserController(GetUserUseCase getUserUseCase,
+                          FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUsecase,
+                          UpdateUserUseCase updateUserUseCase,
+                          DeleteUserUseCase deleteUserUseCase) {
+        this.getUserUseCase = getUserUseCase;
+        this.findUserByNameOrUsernameUseCase = findUserByNameOrUsernameUsecase;
+        this.updateUserUseCase = updateUserUseCase;
+        this.deleteUserUseCase = deleteUserUseCase;
     }
 
     /**
@@ -67,7 +67,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
 
-        return ResponseEntity.ok(getUserUsecase.execute(id));
+        return ResponseEntity.ok(getUserUseCase.execute(id));
     }
 
     /**
@@ -80,7 +80,7 @@ public class UserController {
     @GetMapping("/find/{nameOrUsername}")
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
 
-        return ResponseEntity.ok(findUserByNameOrUsernameUsecase.execute(query));
+        return ResponseEntity.ok(findUserByNameOrUsernameUseCase.execute(query));
     }
 
     /**
@@ -97,7 +97,7 @@ public class UserController {
                                       @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
 
         UUID authenticatedUserId = getAuthenticatedUserId();
-        return ResponseEntity.ok(updateUserUsecase.execute(id, requestDTO, authenticatedUserId));
+        return ResponseEntity.ok(updateUserUseCase.execute(id, requestDTO, authenticatedUserId));
     }
 
     /**
@@ -110,7 +110,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
-        deleteUserUsecase.execute(id, authenticatedUserId);
+        deleteUserUseCase.execute(id, authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 

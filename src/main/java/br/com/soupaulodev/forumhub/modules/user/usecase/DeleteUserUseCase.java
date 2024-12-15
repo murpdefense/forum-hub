@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the deletion of a user by their ID.
  * <p>
- *     The {@link DeleteUserUsecase} class processes requests to delete a user by their unique identifier.
+ *     The {@link DeleteUserUseCase} class processes requests to delete a user by their unique identifier.
  *     If successful, the user is deleted from the database.
  * </p>
  * <p>
@@ -22,16 +22,16 @@ import java.util.UUID;
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
-public class DeleteUserUsecase {
+public class DeleteUserUseCase {
 
     private final UserRepository userRepository;
 
     /**
-     * Constructs a new {@link DeleteUserUsecase}.
+     * Constructs a new {@link DeleteUserUseCase}.
      *
      * @param userRepository the repository responsible for deleting user data from the database
      */
-    public DeleteUserUsecase(UserRepository userRepository) {
+    public DeleteUserUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

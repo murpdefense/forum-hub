@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the update of a user's information.
  * <p>
- *     The {@link UpdateUserUsecase} class processes requests to update a user's information.
+ *     The {@link UpdateUserUseCase} class processes requests to update a user's information.
  *     If successful, it returns the updated user data in a response data transfer object.
  * </p>
  * <p>
@@ -29,18 +29,18 @@ import java.util.UUID;
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
-public class UpdateUserUsecase {
+public class UpdateUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Constructs a new {@link UpdateUserUsecase}.
+     * Constructs a new {@link UpdateUserUseCase}.
      *
      * @param userRepository the repository responsible for updating user data in the database
      * @param passwordEncoder the password encoder used to securely hash user passwords
      */
-    public UpdateUserUsecase(UserRepository userRepository,
+    public UpdateUserUseCase(UserRepository userRepository,
                              PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

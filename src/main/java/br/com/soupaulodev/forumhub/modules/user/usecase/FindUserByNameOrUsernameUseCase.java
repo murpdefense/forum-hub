@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 /**
  * Use case responsible for handling the retrieval of a user by their name or username.
  * <p>
- *     The {@link FindUserByNameOrUsernameUsecase} class processes requests to retrieve a user by their name or username.
+ *     The {@link FindUserByNameOrUsernameUseCase} class processes requests to retrieve a user by their name or username.
  *     If successful, it returns the user data in a response data transfer object.
  * </p>
  * <p>
@@ -21,16 +21,16 @@ import org.springframework.stereotype.Service;
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
-public class FindUserByNameOrUsernameUsecase {
+public class FindUserByNameOrUsernameUseCase {
 
     private final UserRepository userRepository;
 
     /**
-     * Constructs a new {@link FindUserByNameOrUsernameUsecase}.
+     * Constructs a new {@link FindUserByNameOrUsernameUseCase}.
      *
      * @param userRepository The repository responsible for retrieving user data from the database.
      */
-    public FindUserByNameOrUsernameUsecase(UserRepository userRepository) {
+    public FindUserByNameOrUsernameUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
