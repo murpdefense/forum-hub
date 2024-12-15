@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,7 +101,7 @@ class TopicControllerTest {
 
         ResponseEntity<TopicResponseDTO> createdTopic = topicController.createTopic(requestDTO);
 
-        assertEquals(201, createdTopic.getStatusCodeValue());
+        assertEquals(201, createdTopic.getStatusCode().value());
         assertEquals(responseDTO, createdTopic.getBody());
         assertEquals(URI.create("/topics/" + responseDTO.id()), createdTopic.getHeaders().getLocation());
     }
@@ -161,9 +162,9 @@ class TopicControllerTest {
 
         ResponseEntity<List<TopicResponseDTO>> listedTopics = topicController.listForumsPageable(Page, Size);
 
-        assertEquals(200, listedTopics.getStatusCodeValue());
+        assertEquals(200, listedTopics.getStatusCode().value());
         assertEquals(topics, listedTopics.getBody());
-        assertEquals(topics.size(), listedTopics.getBody().size());
+        assertEquals(topics.size(), Objects.requireNonNull(listedTopics.getBody()).size());
     }
 
     @Test
@@ -189,7 +190,7 @@ class TopicControllerTest {
 
         ResponseEntity<TopicDetailsResponseDTO> topicDetailsResponse = topicController.getTopicDetails(topicId.toString());
 
-        assertEquals(200, topicDetailsResponse.getStatusCodeValue());
+        assertEquals(200, topicDetailsResponse.getStatusCode().value());
         assertEquals(topicDetails, topicDetailsResponse.getBody());
     }
 
@@ -227,17 +228,15 @@ class TopicControllerTest {
                 now
         );
 
-        UUID authenticatedUserId = creatorId;
-
         SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+                .setAuthentication(new UsernamePasswordAuthenticationToken(creatorId, null));
 
-        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
+        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(creatorId)))
                 .thenReturn(responseDTO);
 
         ResponseEntity<TopicResponseDTO> updatedTopic = topicController.updateTopic(topicId.toString(), requestDTO);
 
-        assertEquals(200, updatedTopic.getStatusCodeValue());
+        assertEquals(200, updatedTopic.getStatusCode().value());
         assertEquals(responseDTO, updatedTopic.getBody());
     }
 
@@ -302,7 +301,7 @@ class TopicControllerTest {
 
         ResponseEntity<Void> response = topicController.deleteTopic(topicId.toString());
 
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
     }
 

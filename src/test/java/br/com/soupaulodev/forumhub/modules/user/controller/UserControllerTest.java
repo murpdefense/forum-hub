@@ -80,7 +80,7 @@ class UserControllerTest {
 
         ResponseEntity<UserResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(userResponseDTO, response.getBody());
     }
 
@@ -106,7 +106,7 @@ class UserControllerTest {
 
         ResponseEntity<UserResponseDTO> response = userController.getUserByNameOrUsername("test-name");
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(userResponseDTO, response.getBody());
     }
 
@@ -144,27 +144,19 @@ class UserControllerTest {
 
         ResponseEntity<UserResponseDTO> response = userController.updateUser(userId.toString(), userUpdateRequestDTO);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(userResponseDTO, response.getBody());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingUserIsNotSelf() {
         UUID userId = UUID.randomUUID();
-        Instant now = Instant.now();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 "test-name",
                 "test-username",
                 "test@mail.com",
                 "test-password");
-        UserResponseDTO userResponseDTO = new UserResponseDTO(
-                userId,
-                "test-name",
-                "test-username",
-                "test@mail.com",
-                now,
-                now);
 
         UUID authenticatedUserId = UUID.randomUUID();
 
@@ -179,20 +171,12 @@ class UserControllerTest {
     @Test
     void shouldThrowExceptionWhenUpdatingUserWithNoFieldsToUpdate() {
         UUID userId = UUID.randomUUID();
-        Instant now = Instant.now();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 null,
                 null,
                 null,
                 null);
-        UserResponseDTO userResponseDTO = new UserResponseDTO(
-                userId,
-                "test-name",
-                "test-username",
-                "test@mail.com",
-                now,
-                now);
 
         UUID authenticatedUserId = UUID.randomUUID();
 
@@ -207,20 +191,12 @@ class UserControllerTest {
     @Test
     void shouldThrowExceptionWhenUserNotFoundWhenUpdatingUser() {
         UUID userId = UUID.randomUUID();
-        Instant now = Instant.now();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 "test-name",
                 "test-username",
                 "test@mail.com",
                 "test-password");
-        UserResponseDTO userResponseDTO = new UserResponseDTO(
-                userId,
-                "test-name",
-                "test-username",
-                "test@mail.com",
-                now,
-                now);
 
         UUID authenticatedUserId = UUID.randomUUID();
 
@@ -243,13 +219,12 @@ class UserControllerTest {
         doNothing().when(deleteUserUseCase).execute(any(UUID.class), eq(authenticatedUserId));
 
         ResponseEntity<Void> response = userController.deleteUser(userId.toString());
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
     }
 
     @Test
     void shouldThrowExceptionWhenDeletingUserIsNotSelf() {
-        UUID userId = UUID.randomUUID();
         UUID authenticatedUserId = UUID.randomUUID();
 
         SecurityContextHolder.getContext()
@@ -263,7 +238,6 @@ class UserControllerTest {
 
     @Test
     void shouldThrowExceptionWhenUserNotFoundWhenDeletingUser() {
-        UUID userId = UUID.randomUUID();
         UUID authenticatedUserId = UUID.randomUUID();
 
         SecurityContextHolder.getContext()

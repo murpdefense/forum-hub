@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,7 +94,7 @@ class ForumControllerTest {
 
         ResponseEntity<ForumResponseDTO> response = forumController.createForum(requestDTO);
 
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
         assertEquals(URI.create("/forums/" + responseDTO.id()), response.getHeaders().getLocation());
     }
@@ -143,9 +144,9 @@ class ForumControllerTest {
 
         ResponseEntity<List<ForumResponseDTO>> response = forumController.listForums(page, size);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTOS, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(2, Objects.requireNonNull(response.getBody()).size());
     }
 
     @Test
@@ -166,7 +167,7 @@ class ForumControllerTest {
 
         ResponseEntity<ForumResponseDTO> response = forumController.getForum(forumId);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
     }
 
@@ -206,7 +207,7 @@ class ForumControllerTest {
 
         ResponseEntity<ForumResponseDTO> response = forumController.updateForum(forumId.toString(), requestDTO);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
     }
 
@@ -253,7 +254,7 @@ class ForumControllerTest {
 
         ResponseEntity<Void> response = forumController.deleteForum(forumId.toString());
 
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
     }
 

@@ -48,9 +48,7 @@ class CookieUtilTest {
 
     @Test
     void testGenerateCookieWithToken_NullUser() {
-        UserEntity user = null;
-
-        assertThrows(NullPointerException.class, () -> cookieUtil.generateCookieWithToken(user), "Should throw NullPointerException when user is null");
+        assertThrows(NullPointerException.class, () -> cookieUtil.generateCookieWithToken(null), "Should throw NullPointerException when user is null");
         verify(userDetailsService, never()).generateToken(any());
     }
 
