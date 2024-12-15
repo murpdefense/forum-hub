@@ -56,6 +56,7 @@ public class UpdateUserUsecase {
      *
      * @param id the user's unique identifier of type {@link UUID}
      * @param requestDTO {@link UserUpdateRequestDTO} the data transfer object containing the user's update data
+     * @param authenticatedUserId the authenticated user's unique identifier
      * @return {@link UserResponseDTO} the data transfer object containing the updated user data
      * @throws UserNotFoundException if no user with the given ID is found
      * @throws UserIllegalArgumentException if no fields to update are provided
