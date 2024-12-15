@@ -60,6 +60,7 @@ public class UpdateUserUsecase {
      * @return {@link UserResponseDTO} the data transfer object containing the updated user data
      * @throws UserNotFoundException if no user with the given ID is found
      * @throws UserIllegalArgumentException if no fields to update are provided
+     * @throws UnauthorizedException if the authenticated user is not the user being updated
      */
     public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);

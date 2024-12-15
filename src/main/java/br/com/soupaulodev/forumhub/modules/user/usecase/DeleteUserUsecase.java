@@ -46,6 +46,7 @@ public class DeleteUserUsecase {
      * @param id the user's unique identifier of type {@link UUID}
      * @param authenticatedUserId the authenticated user's unique identifier
      * @throws UserNotFoundException if no user with the given ID is found
+     * @throws UnauthorizedException if the authenticated user is not the owner of the user
      */
     public void execute(UUID id, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id)
