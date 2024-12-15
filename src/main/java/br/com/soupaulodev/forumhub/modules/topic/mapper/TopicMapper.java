@@ -1,17 +1,13 @@
 package br.com.soupaulodev.forumhub.modules.topic.mapper;
 
 import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
-import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
-import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 
 /**
  * Mapper class for converting between TopicEntity and various DTOs.
