@@ -24,8 +24,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the {@link TopicController}.
@@ -243,7 +242,7 @@ class TopicControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserIsNotTheCreatorOfTheTopic() {
+    void shouldThrowExceptionWhenUpdatingTopicWhenUserIsNotTheCreator() {
         UUID topicId = UUID.randomUUID();
         UUID nonCreatorId = UUID.randomUUID();
 
@@ -294,6 +293,12 @@ class TopicControllerTest {
     @Test
     void shouldDeleteTopicSuccessfully() {
         UUID topicId = UUID.randomUUID();
+        UUID authenticatedUserId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+
+        doNothing().when(deleteTopicUseCase).execute(any(UUID.class), eq(authenticatedUserId));
 
         ResponseEntity<Void> response = topicController.deleteTopic(topicId.toString());
 
@@ -304,9 +309,25 @@ class TopicControllerTest {
     @Test
     void shouldThrowExceptionWhenDeletingNonExistentTopic() {
         UUID topicId = UUID.randomUUID();
+        UUID creatorId = UUID.randomUUID();
 
-        doThrow(new TopicNotFoundException()).when(deleteTopicUseCase).execute(topicId);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(creatorId, null));
+
+        doThrow(new TopicNotFoundException()).when(deleteTopicUseCase).execute(topicId, creatorId);
 
         assertThrows(TopicNotFoundException.class, () -> topicController.deleteTopic(topicId.toString()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeleteTopicWhenUserIsNotTheCreator() {
+        UUID topicId = UUID.randomUUID();
+        UUID nonCreatorId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(nonCreatorId, null));
+
+        doThrow(new UnauthorizedException("You are not allowed to update this topic."))
+                .when(deleteTopicUseCase).execute(any(UUID.class), eq(nonCreatorId));
+
+        assertThrows(UnauthorizedException.class, () -> topicController.deleteTopic(topicId.toString()));
     }
 }
