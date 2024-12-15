@@ -34,5 +34,8 @@ logging:
       hibernate:
         SQL: debug
         type: trace
+rate-limit:
+  ip-limit: 10
+  user-limit: 10
 server:
   port: 8080 # Your server port
