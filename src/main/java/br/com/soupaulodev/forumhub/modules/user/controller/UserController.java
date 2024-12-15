@@ -8,6 +8,7 @@ import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUsecase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -95,7 +96,8 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
                                       @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
 
-        return ResponseEntity.ok(updateUserUsecase.execute(id, requestDTO));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        return ResponseEntity.ok(updateUserUsecase.execute(id, requestDTO, authenticatedUserId));
     }
 
     /**
@@ -110,5 +112,22 @@ public class UserController {
 
         deleteUserUsecase.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Retrieves the authenticated user's unique identifier.
+     *
+     * @return the authenticated user's unique identifier
+     */
+    private UUID getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UUID) {
+            return (UUID) principal;
+        } else if (principal instanceof String) {
+            return UUID.fromString((String) principal);
+        }
+
+        throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
     }
 }

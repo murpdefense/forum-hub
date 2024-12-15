@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
@@ -59,8 +60,12 @@ public class UpdateUserUsecase {
      * @throws UserNotFoundException if no user with the given ID is found
      * @throws UserIllegalArgumentException if no fields to update are provided
      */
-    public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO) {
+    public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        if (!userDB.getId().equals(authenticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to update this user.");
+        }
 
         if (requestDTO == null
             || (requestDTO.name() == null
