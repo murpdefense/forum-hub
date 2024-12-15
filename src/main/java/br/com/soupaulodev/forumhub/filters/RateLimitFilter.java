@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,17 +31,21 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final StringRedisTemplate redisTemplate;
 
-    private final int ipRateLimit = 10;
-    private final int userRateLimit = 10;
+    @Value("${rate-limit.ip-limit}")
+    private int ipRateLimit;
+    @Value("${rate-limit.user-limit}")
+    private int userRateLimit;
     private final Duration refillDuration = Duration.ofMinutes(1);
 
     public RateLimitFilter(JwtUtil jwtUtil, StringRedisTemplate redisTemplate) {
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
+        validateRateLimits();
     }
 
-    public int getIpRateLimit() {
-        return ipRateLimit;
+    private void validateRateLimits() {
+        if (ipRateLimit <= 0) { ipRateLimit = 10;}
+        if (userRateLimit <= 0) { userRateLimit = 10;}
     }
 
     @Override
