@@ -17,6 +17,8 @@ import java.util.UUID;
 
 /**
  * Use case for creating a new topic.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class CreateTopicUseCase {
@@ -58,8 +60,6 @@ public class CreateTopicUseCase {
         TopicEntity topic = TopicMapper.toEntity(requestDTO, forum, user);
         topic.setCreator(user);
         topic.setForum(forum);
-        forum.addTopics(topic);
-        user.addTopic(topic);
 
         TopicEntity topicSaved = topicRepository.save(topic);
         return TopicMapper.toResponseDTO(topicSaved);
