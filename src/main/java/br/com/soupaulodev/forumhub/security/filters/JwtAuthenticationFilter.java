@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 /**
  * This filter intercepts HTTP requests and processes JWT authentication.
@@ -50,15 +51,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * This method is invoked for each incoming HTTP request.
-     * It extracts the JWT token from the cookies, validates it, and if valid, authenticates the user.
-     * If the token is expired or invalid, the request proceeds without authentication.
+     * Processes the incoming HTTP request, extracts the JWT token from the cookies, and sets the authentication
+     * information in the Spring Security context.
      *
      * @param request The HTTP request.
      * @param response The HTTP response.
      * @param chain The filter chain.
-     * @throws ServletException If the request could not be processed.
-     * @throws IOException If an I/O error occurs during request processing.
+     * @throws ServletException If an error occurs during the filter processing.
+     * @throws IOException If an error occurs during the filter processing.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -74,14 +74,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            String username = jwtUtil.extractUsername(jwt);
+            String userId = jwtUtil.extractUserId(jwt);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
+            if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (!jwtUtil.isTokenExpired(jwt)) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, Collections.emptyList());
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    UUID.fromString(userId),
+                                    null,
+                                    Collections.emptyList());
                     authenticationToken
                             .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -93,6 +94,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         chain.doFilter(request, response);
     }
+
 
     /**
      * Extracts the JWT token from the cookies in the HTTP request.

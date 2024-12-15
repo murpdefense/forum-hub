@@ -1,10 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller;
 
-import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.*;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
@@ -16,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.net.URI;
 import java.time.Instant;
@@ -25,9 +23,29 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for the {@link TopicController}.
+ * This class contains tests for the topic-related operations, such as creating, listing, retrieving by ID, updating, and
+ * deleting topics.
+ *
+ * <p>
+ *     The {@link TopicControllerTest} class is responsible for testing the behavior of the {@link TopicController} class.
+ *     The tests cover the following operations:
+ *     <ul>
+ *         <li>Creating a topic.</li>
+ *         <li>Listing topics.</li>
+ *         <li>Retrieving a topic by ID.</li>
+ *         <li>Updating a topic.</li>
+ *         <li>Deleting a topic.</li>
+ *     </ul>
+ * </p>
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class TopicControllerTest {
 
     @Mock
@@ -210,7 +228,13 @@ class TopicControllerTest {
                 now
         );
 
-        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class))).thenReturn(responseDTO);
+        UUID authenticatedUserId = creatorId;
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+
+        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
+                .thenReturn(responseDTO);
 
         ResponseEntity<TopicResponseDTO> updatedTopic = topicController.updateTopic(topicId.toString(), requestDTO);
 
@@ -219,21 +243,52 @@ class TopicControllerTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenUserIsNotTheCreatorOfTheTopic() {
+        UUID topicId = UUID.randomUUID();
+        UUID nonCreatorId = UUID.randomUUID();
+
+        TopicUpdateRequestDTO requestDTO = new TopicUpdateRequestDTO(
+                "Topic Example",
+                "Description Example");
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(nonCreatorId, null));
+
+        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(nonCreatorId)))
+                .thenThrow(new UnauthorizedException("You are not allowed to update this topic."));
+
+        assertThrows(UnauthorizedException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
+    }
+
+    @Test
     void shouldThrowExceptionWhenUpdatingNonExistentTopic() {
         UUID topicId = UUID.randomUUID();
+        UUID authenticatedUserId = UUID.randomUUID();
 
-        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class))).thenThrow(new TopicNotFoundException());
+        TopicUpdateRequestDTO requestDTO = new TopicUpdateRequestDTO(
+                "Topic Example",
+                "Description Example");
 
-        assertThrows(TopicNotFoundException.class, () -> topicController.updateTopic(topicId.toString(), new TopicUpdateRequestDTO("Topic Example", "Description Example")));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+
+        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
+                .thenThrow(new TopicNotFoundException());
+
+        assertThrows(TopicNotFoundException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingTopicWithoutProvidingTitleOrContent() {
         UUID topicId = UUID.randomUUID();
+        UUID authenticatedUserId = UUID.randomUUID();
 
-        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class))).thenThrow(new TopicIllegalArgumentException("You must provide at least one field to update:\n- title\n- content"));
+        TopicUpdateRequestDTO requestDTO = new TopicUpdateRequestDTO(null, null);
 
-        assertThrows(TopicIllegalArgumentException.class, () -> topicController.updateTopic(topicId.toString(), new TopicUpdateRequestDTO(null, null)));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+
+        when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
+                .thenThrow(new TopicIllegalArgumentException("You must provide at least one field to update:\n- title\n- content"));
+
+        assertThrows(TopicIllegalArgumentException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
     }
 
     @Test

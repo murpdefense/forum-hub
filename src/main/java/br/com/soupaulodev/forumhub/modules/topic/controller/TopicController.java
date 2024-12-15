@@ -9,6 +9,7 @@ import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -114,10 +115,10 @@ public class TopicController {
 
     /**
      * Endpoint for handling topic update operations.
-     * This method updates a topic by its unique identifier, using the data provided in the request DTO
+     * This method updates a topic by its unique identifier if the authenticated user is the topic's owner.
      *
      * @param id the topic's unique identifier of type {@link UUID} to be updated
-     * @param requestDTO {@link TopicUpdateRequestDTO} the data transfer object containing the topic update data
+     * @param requestDTO the data transfer object containing the topic update data
      * @return a {@link ResponseEntity} of {@link TopicResponseDTO} with status 200 (OK) and the updated topic data
      */
     @PutMapping("/{id}")
@@ -125,7 +126,9 @@ public class TopicController {
                                                         @org.hibernate.validator.constraints.UUID String id,
                                                         @Valid @RequestBody
                                                         TopicUpdateRequestDTO requestDTO) {
-        return ResponseEntity.ok(updateTopicUseCase.execute(UUID.fromString(id), requestDTO));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+
+        return ResponseEntity.ok(updateTopicUseCase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));
     }
 
     /**
@@ -139,5 +142,22 @@ public class TopicController {
     public ResponseEntity<Void> deleteTopic(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
         deleteTopicUseCase.execute(UUID.fromString(id));
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Retrieves the authenticated user's unique identifier.
+     *
+     * @return the authenticated user's unique identifier
+     */
+    private UUID getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UUID) {
+            return (UUID) principal;
+        } else if (principal instanceof String) {
+            return UUID.fromString((String) principal);
+        }
+
+        throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
     }
 }

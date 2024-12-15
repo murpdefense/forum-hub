@@ -52,21 +52,23 @@ public class JwtUtil {
     /**
      * Generates a JWT token for the specified user.
      * <p>
-     * The token contains the username as the subject, the issuer, and an expiration date
-     * calculated based on the configured expiration time.
+     * The token contains the issuer, the user ID as the subject, the username as a custom claim,
+     * and an expiration date based on the configured expiration time (in days).
      * </p>
      *
      * @param user The user for whom the token is generated.
-     * @return The generated JWT token as a string.
+     * @return The generated token as a string.
      */
     public String generateToken(UserEntity user) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
                 .withIssuer(issuer)
-                .withSubject(user.getUsername())
+                .withSubject(user.getId().toString())
+                .withClaim("username", user.getUsername())
                 .withExpiresAt(generateExpirationDate())
                 .sign(algorithm);
     }
+
 
     /**
      * Generates a refresh token for the specified user.
@@ -91,14 +93,14 @@ public class JwtUtil {
     /**
      * Extracts the username from the given JWT token.
      * <p>
-     * This method decodes the token and retrieves the subject (username) from it.
+     * This method decodes the token and retrieves the username claim from it.
      * </p>
      *
      * @param token The JWT token.
      * @return The username extracted from the token.
      */
     public String extractUsername(String token) {
-        return decodeToken(token).getSubject();
+        return decodeToken(token).getClaim("username").asString();
     }
 
     /**
@@ -153,5 +155,18 @@ public class JwtUtil {
      */
     private Date generateExpirationDate() {
         return Date.from(Instant.now().plus(Duration.ofDays(expirationDate)));
+    }
+
+    /**
+     * Extracts the user ID from the given JWT token.
+     * <p>
+     * This method decodes the token and retrieves the subject claim from it, which contains the user ID.
+     * </p>
+     *
+     * @param token The JWT token.
+     * @return The user ID extracted from the token.
+     */
+    public String extractUserId(String token) {
+        return decodeToken(token).getSubject();
     }
 }

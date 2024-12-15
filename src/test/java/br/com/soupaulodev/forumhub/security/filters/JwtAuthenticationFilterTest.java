@@ -8,22 +8,25 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test class for the {@link JwtAuthenticationFilter}.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class JwtAuthenticationFilterTest {
 
     private JwtAuthenticationFilter filter;
     private JwtUtil jwtUtil;
-    private UserDetailsService userDetailsService;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private FilterChain chain;
@@ -31,7 +34,7 @@ class JwtAuthenticationFilterTest {
     @BeforeEach
     void setUp() {
         jwtUtil = mock(JwtUtil.class);
-        userDetailsService = mock(UserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         filter = new JwtAuthenticationFilter(userDetailsService, jwtUtil);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
@@ -43,16 +46,14 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_SuccessfulAuthentication() throws ServletException, IOException {
         Cookie jwtCookie = new Cookie("JWT_TOKEN", "valid-token");
         when(request.getCookies()).thenReturn(new Cookie[]{jwtCookie});
-        when(jwtUtil.extractUsername("valid-token")).thenReturn("testuser");
+        when(jwtUtil.extractUserId("valid-token")).thenReturn(UUID.randomUUID().toString());
         when(jwtUtil.isTokenExpired("valid-token")).thenReturn(false);
-        UserDetails userDetails = User.withUsername("testuser").password("password").roles("USER").build();
-        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
 
         filter.doFilterInternal(request, response, chain);
 
         verify(chain).doFilter(request, response);
         assertNotNull(SecurityContextHolder.getContext().getAuthentication(), "Authentication should be set");
-        assertEquals("testuser", SecurityContextHolder.getContext().getAuthentication().getName(), "Username should match");
+        assertInstanceOf(UsernamePasswordAuthenticationToken.class, SecurityContextHolder.getContext().getAuthentication(), "Authentication should be of type UsernamePasswordAuthenticationToken");
     }
 
     @Test

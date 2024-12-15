@@ -1,9 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
@@ -40,10 +39,14 @@ public class UpdateTopicUseCase {
      * @throws TopicNotFoundException if the topic specified by the id does not exist
      * @throws TopicIllegalArgumentException if neither title nor content is provided for update
      */
-    public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO) {
+    public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO, UUID autheticatedUserId) {
 
         TopicEntity topicFound = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
+
+        if (!topicFound.getCreator().getId().equals(autheticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to update this topic.");
+        }
 
         if (requestDTO == null
                 || (requestDTO.title() == null
