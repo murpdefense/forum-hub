@@ -44,8 +44,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
     }
 
     private void validateRateLimits() {
-        if (ipRateLimit <= 0) { ipRateLimit = 10;}
-        if (userRateLimit <= 0) { userRateLimit = 10;}
+        if (ipRateLimit <= 0) { ipRateLimit = 10; }
+        if (userRateLimit <= 0) { userRateLimit = 10; }
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String clientIp = request.getRemoteAddr();
-        if (!checkRateLimit(clientIp, ipRateLimit, response)) {
+        if (rateLimitCheck(clientIp, ipRateLimit, response)) {
             return;
         }
 
@@ -62,25 +62,25 @@ public class RateLimitFilter extends OncePerRequestFilter {
             throw new UnauthorizedException("Unauthorized: Missing or invalid token.");
         }
 
-        String username;
+        String userId;
         try {
-            username = jwtUtil.extractUsername(jwtToken.get());
+            userId = jwtUtil.extractUserId(jwtToken.get()); // Alterei para extrair o userId ao invés do username
         } catch (Exception e) {
             throw new UnauthorizedException("Unauthorized: Invalid token.");
         }
 
-        if (!checkRateLimit(username, userRateLimit, response)) {
+        if (rateLimitCheck(userId, userRateLimit, response)) {
             return;
         }
 
         chain.doFilter(request, response);
     }
 
-    private boolean checkRateLimit(String key, int limit, HttpServletResponse response) {
+    protected boolean rateLimitCheck(String key, int limit, HttpServletResponse response) {
         Bucket bucket = createOrGetBucket(key, limit);
 
         if (bucket.tryConsume(1)) {
-            return true;
+            return false;
         } else {
             throw new RateLimitExceededException();
         }

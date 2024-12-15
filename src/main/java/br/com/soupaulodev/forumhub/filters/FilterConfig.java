@@ -1,6 +1,5 @@
 package br.com.soupaulodev.forumhub.filters;
 
-
 import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -8,15 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
- * Filter Configuration Class.
- * <p>
- * This class defines the configuration for filters in the application, such as the rate-limiting filter.
- * It creates and registers the rate-limiting filter with the Spring context, allowing it to be applied to specific endpoints.
- * </p>
- *
- * Key features:
- * - Creates a {@link RateLimitFilter} bean to handle rate limiting for API requests.
- * - Registers the rate-limiting filter with the Spring context to apply it to specific URL patterns.
+ * Filter Configurations.
+ * This class is responsible for registering the filters in the application.
+ * The filters are registered in the order they are added to the FilterRegistrationBean.
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
@@ -41,6 +34,7 @@ public class FilterConfig {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(rateLimitFilter);
         registrationBean.addUrlPatterns("/api/v1/**");
+        registrationBean.setOrder(1);
         return registrationBean;
     }
 }
