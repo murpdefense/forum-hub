@@ -45,7 +45,10 @@ interajam entre si, criando e acessando novos foruns, tópicos, comentários e c
 - Spring DevTools
 
 ## Endpoints
-
+### Autenticação
+- POST /api/v1/auth/signup
+- POST /api/v1/auth/login
+  
 ### Usuários
 - GET /api/v1/users/{id}
 - PUT /api/v1/users/{id}
