@@ -18,6 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for the {@link AuthController} class.
+ * <p>
+ *     The {@link AuthControllerTest} class contains unit tests for the {@link AuthController} class.
+ *     It tests the login, registration, and logout of users using the {@link AuthController} class.
+ * </p>
+ * <p>
+ *     The tests use Mockito to mock dependencies and verify the behavior of the authentication controller.
+ * </p>
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class AuthControllerTest {
 
     @Mock
