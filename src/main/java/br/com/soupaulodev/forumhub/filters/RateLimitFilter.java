@@ -39,12 +39,15 @@ public class RateLimitFilter extends OncePerRequestFilter {
         this.redisTemplate = redisTemplate;
     }
 
+    public int getIpRateLimit() {
+        return ipRateLimit;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String clientIp = request.getRemoteAddr();
-
         if (!checkRateLimit(clientIp, ipRateLimit, response)) {
             return;
         }
@@ -68,7 +71,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    private boolean checkRateLimit(String key, int limit, HttpServletResponse response) throws IOException {
+    private boolean checkRateLimit(String key, int limit, HttpServletResponse response) {
         Bucket bucket = createOrGetBucket(key, limit);
 
         if (bucket.tryConsume(1)) {
@@ -78,12 +81,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
         }
     }
 
-    private Bucket createOrGetBucket(String key, int capacity) {
+    protected Bucket createOrGetBucket(String key, int capacity) {
         Bandwidth limit = Bandwidth.classic(capacity, Refill.greedy(capacity, refillDuration));
 
         return Bucket.builder()
-//                .withRedisTemplate(redisTemplate)
-//                .withKey(key)
                 .addLimit(limit)
                 .build();
     }
