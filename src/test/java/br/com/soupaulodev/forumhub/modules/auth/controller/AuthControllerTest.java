@@ -14,6 +14,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -51,7 +53,6 @@ class AuthControllerTest {
 
     @Test
     void shouldLoginUserSuccessfully() {
-        // Arrange
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO("username", "password");
         Cookie cookie = new Cookie("JWT_TOKEN", "mock-token");
         when(loginUseCase.execute(any(LoginRequestDTO.class))).thenReturn(cookie);
@@ -60,9 +61,9 @@ class AuthControllerTest {
 
         ResponseEntity<String> result = authController.login(loginRequestDTO, response);
 
-        assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
+        assertEquals(200, result.getStatusCode().value(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header");
-        assertEquals("mock-token", response.getCookie("JWT_TOKEN").getValue(), "Cookie value should match the mocked token");
+        assertEquals("mock-token", Objects.requireNonNull(response.getCookie("JWT_TOKEN")).getValue(), "Cookie value should match the mocked token");
         assertEquals("User logged in successfully", result.getBody(), "Response body should confirm login success");
     }
 
@@ -80,9 +81,10 @@ class AuthControllerTest {
 
         ResponseEntity<String> result = authController.signUp(requestDTO, response);
 
-        assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
+        assertEquals(200, result.getStatusCode().value(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header");
-        assertEquals("mock-token", response.getCookie("JWT_TOKEN").getValue(), "Cookie value should match the mocked token");
+        assertEquals("mock-token", Objects.requireNonNull(response.getCookie("JWT_TOKEN")).getValue(),
+                "Cookie value should match the mocked token");
         assertEquals("User registered successfully", result.getBody(), "Response body should confirm registration success");
     }
 
@@ -96,8 +98,8 @@ class AuthControllerTest {
 
         ResponseEntity<Void> result = authController.logout(response);
 
-        assertEquals(200, result.getStatusCodeValue(), "Response status should be 200 OK");
+        assertEquals(200, result.getStatusCode().value(), "Response status should be 200 OK");
         assertTrue(response.containsHeader("Set-Cookie"), "Response should contain Set-Cookie header for logout");
-        assertNull(response.getCookie("JWT_TOKEN").getValue(), "Logout cookie value should be null");
+        assertNull(Objects.requireNonNull(response.getCookie("JWT_TOKEN")).getValue(), "Logout cookie value should be null");
     }
 }
