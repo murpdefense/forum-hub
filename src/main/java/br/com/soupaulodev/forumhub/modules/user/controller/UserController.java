@@ -65,9 +65,9 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") UUID id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@Valid @PathVariable("id") String id) {
 
-        return ResponseEntity.ok(getUserUseCase.execute(id));
+        return ResponseEntity.ok(getUserUseCase.execute(UUID.fromString(id)));
     }
 
     /**
@@ -93,11 +93,11 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the updated user data
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") UUID id,
+    public ResponseEntity<UserResponseDTO> updateUser(@Valid @PathVariable("id") String id,
                                       @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
 
         UUID authenticatedUserId = getAuthenticatedUserId();
-        return ResponseEntity.ok(updateUserUseCase.execute(id, requestDTO, authenticatedUserId));
+        return ResponseEntity.ok(updateUserUseCase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));
     }
 
     /**
@@ -108,9 +108,9 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link Void} with status 204 (NO_CONTENT) to indicate the successful deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> deleteUser(@Valid @PathVariable("id") String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
-        deleteUserUseCase.execute(id, authenticatedUserId);
+        deleteUserUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
