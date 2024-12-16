@@ -5,6 +5,7 @@ import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRespons
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.ListCommentsUseCase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +28,9 @@ class CommentControllerTest {
 
     @Mock
     private CreateCommentUseCase createCommentUseCase;
+
+    @Mock
+    private ListCommentsUseCase listCommentsUseCase;
 
     @Mock
     private UpdateCommentUseCase updateCommentUseCase;
@@ -79,6 +84,32 @@ class CommentControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
         verify(createCommentUseCase, times(1)).execute(requestDTO, userId);
+    }
+
+    @Test
+    void listAllComments_Success() {
+        UUID userId = UUID.randomUUID();
+        UUID commentId = UUID.randomUUID();
+        UUID topicId = UUID.randomUUID();
+        CommentResponseDTO responseDTO = new CommentResponseDTO(
+                commentId,
+                "Content",
+                userId,
+                topicId,
+                null,
+                null,
+                null,
+                null
+        );
+
+        when(authentication.getPrincipal()).thenReturn(userId.toString());
+        when(listCommentsUseCase.execute(0, 10)).thenReturn(List.of(responseDTO));
+
+        ResponseEntity<List<CommentResponseDTO>> response = commentController.listComments(0, 10);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(List.of(responseDTO), response.getBody());
+        verify(listCommentsUseCase, times(1)).execute(0, 10);
     }
 
     @Test

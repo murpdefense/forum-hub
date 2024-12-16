@@ -98,7 +98,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Users data retrieved successfully"),
     })
     public ResponseEntity<List<UserResponseDTO>> listUsers(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                             @Valid @RequestParam(defaultValue = "10") @Min(5) int size) {
+                                                            @Valid @RequestParam(defaultValue = "10") @Min(10) int size) {
         return ResponseEntity.ok(listUsersUseCase.execute(page, size));
     }
 

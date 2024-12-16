@@ -5,16 +5,19 @@ import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRespons
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.ListCommentsUseCase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,6 +29,7 @@ import java.util.UUID;
 public class CommentController {
 
     private final CreateCommentUseCase createCommentUseCase;
+    private final ListCommentsUseCase listCommentsUseCase;
     private final UpdateCommentUseCase updateCommentUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
 
@@ -33,13 +37,16 @@ public class CommentController {
      * Constructs a new CommentController with the specified use cases.
      *
      * @param createCommentUseCase the use case for creating comments
+     * @param listCommentsUseCase the use case for listing comments
      * @param updateCommentUseCase the use case for updating comments
-     * @param createCommentUseCase the use case for deleting comments
+     * @param deleteCommentUseCase the use case for deleting comments
      */
     public CommentController(CreateCommentUseCase createCommentUseCase,
+                                ListCommentsUseCase listCommentsUseCase,
                              UpdateCommentUseCase updateCommentUseCase,
                              DeleteCommentUseCase deleteCommentUseCase) {
         this.createCommentUseCase = createCommentUseCase;
+        this.listCommentsUseCase = listCommentsUseCase;
         this.updateCommentUseCase = updateCommentUseCase;
         this.deleteCommentUseCase = deleteCommentUseCase;
     }
@@ -65,6 +72,19 @@ public class CommentController {
         return ResponseEntity.ok(createCommentUseCase.execute(requestDTO, authenticatedUserId));
     }
 
+    /**
+     * Endpoint for handling comment listing operations.
+     * This method lists all comments.
+     *
+     * @return the response entity of CommentResponseDTO with status 200 (OK) and the list of comments
+     */
+    @GetMapping("/all")
+    @Operation(summary = "List all comments")
+    @ApiResponse(responseCode = "200", description = "Comments listed successfully")
+    public ResponseEntity<List<CommentResponseDTO>> listComments(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
+                                                                 @Valid @RequestParam(defaultValue = "5") @Min(5) int size) {
+        return ResponseEntity.ok(listCommentsUseCase.execute(page, size));
+    }
     /**
      * Endpoint for handling comment updates.
      * This method updates a comment by its unique identifier, using the data provided in the request DTO.
