@@ -1,20 +1,23 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetAllUsersUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,25 +42,25 @@ import java.util.UUID;
 @RequestMapping("/api/v1/user")
 @Tag(name = "User", description = "Endpoints for user operations")
 public class UserController {
-    private final GetUserUseCase getUserUseCase;
-    private final FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUseCase;
+    private final GetAllUsersUseCase getAllUsersUseCase;
+    private final GetUserDetailsUseCase getUserDetailsUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
 
     /**
      * Constructor for {@link UserController}.
      *
-     * @param getUserUseCase {@link GetUserUseCase} the use case for handling user retrieval by ID
-     * @param findUserByNameOrUsernameUsecase {@link FindUserByNameOrUsernameUseCase} the use case for handling user retrieval by name or username
+     * @param getAllUsersUseCase {@link GetAllUsersUseCase} the use case for handling all users retrieval
+     * @param getUserUseCase {@link GetUserDetailsUseCase} the use case for handling user retrieval by ID
      * @param updateUserUseCase {@link UpdateUserUseCase} the use case for handling user update operations
      * @param deleteUserUseCase {@link DeleteUserUseCase} the use case for handling user deletion operations
      */
-    public UserController(GetUserUseCase getUserUseCase,
-                          FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUsecase,
+    public UserController(GetAllUsersUseCase getAllUsersUseCase,
+                          GetUserDetailsUseCase getUserUseCase,
                           UpdateUserUseCase updateUserUseCase,
                           DeleteUserUseCase deleteUserUseCase) {
-        this.getUserUseCase = getUserUseCase;
-        this.findUserByNameOrUsernameUseCase = findUserByNameOrUsernameUsecase;
+        this.getAllUsersUseCase = getAllUsersUseCase;
+        this.getUserDetailsUseCase = getUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
     }
@@ -75,27 +78,28 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User data retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UserResponseDTO> getUserById(@Valid @PathVariable("id") String id) {
+    public ResponseEntity<UserDetailsResponseDTO> getUserById(@Valid @PathVariable("id") String id) {
 
-        return ResponseEntity.ok(getUserUseCase.execute(UUID.fromString(id)));
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        return ResponseEntity.ok(getUserDetailsUseCase.execute(UUID.fromString(id), authenticatedUserId));
     }
 
     /**
-     * Endpoint for handling retrieval of a user by their name or username.
-     * This method retrieves a user by their name or username and returns the user data.
+     * Endpoint for handling retrieval of all users.
+     * This method retrieves all users and returns a list of user data.
      *
-     * @param query the name or username of the {@link String} type user to be retrieved
-     * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
+     * @param page the page number to be retrieved (default is 0) and must be at least 0
+     * @param size the number of items per page to be retrieved (default is 10) and must be at least 5
+     * @return a list of {@link UserResponseDTO} with status 200 (OK) and the list of user data
      */
-    @GetMapping("/find/{nameOrUsername}")
-    @Operation(summary = "Find user by name or username", description = "Find user data by their name or username")
+    @GetMapping("/all")
+    @Operation(summary = "Get all users", description = "Get all users data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User data retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "200", description = "Users data retrieved successfully"),
     })
-    public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
-
-        return ResponseEntity.ok(findUserByNameOrUsernameUseCase.execute(query));
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
+                                                             @Valid @RequestParam(defaultValue = "10") @Min(5) int size) {
+        return ResponseEntity.ok(getAllUsersUseCase.execute(page, size));
     }
 
     /**
