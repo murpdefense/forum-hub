@@ -2,6 +2,7 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
@@ -85,7 +86,7 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
-        CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", userId.toString(), topicId.toString(), null);
+        CommentUpdateRequestDTO requestDTO = new CommentUpdateRequestDTO("Content Updated");
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
