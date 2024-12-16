@@ -7,6 +7,7 @@ import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/forums")
+@Tag(name = "Forum", description = "Operations related to forums")
 public class ForumController {
 
     private final CreateForumUseCase createForumUseCase;

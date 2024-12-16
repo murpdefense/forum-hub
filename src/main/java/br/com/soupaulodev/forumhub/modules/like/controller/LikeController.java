@@ -3,6 +3,7 @@ package br.com.soupaulodev.forumhub.modules.like.controller;
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
 import br.com.soupaulodev.forumhub.modules.like.usecase.LikeResourceUsecase;
 import br.com.soupaulodev.forumhub.modules.like.usecase.UnlikeResourceUsecase;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/like")
+@Tag(name = "Like", description = "Operations related to likes")
 public class LikeController {
 
     private final LikeResourceUsecase likeResourceUsecase;

@@ -9,6 +9,7 @@ import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/topics")
+@Tag(name = "Topic", description = "Operations related to topics")
 public class TopicController {
 
     private final CreateTopicUseCase createTopicUseCase;

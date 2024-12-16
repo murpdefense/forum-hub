@@ -8,6 +8,7 @@ import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/comment")
+@Tag(name = "Comment", description = "Operations related to comments")
 public class CommentController {
 
     private final CreateCommentUsecase createCommentUsecase;
