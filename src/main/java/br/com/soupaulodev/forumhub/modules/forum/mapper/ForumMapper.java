@@ -16,7 +16,7 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
  *     the API layer, ensuring proper data transfer between different components of the application.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public class ForumMapper {
 
@@ -29,6 +29,7 @@ public class ForumMapper {
      *
      * @param dto the {@link ForumCreateRequestDTO} containing forum data to be converted
      * @param owner {@link UserEntity} the owner of the forum
+     * @return a new {@link ForumEntity} with the data from the {@link ForumCreateRequestDTO}
      */
     public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
         if(owner == null) {
@@ -53,6 +54,7 @@ public class ForumMapper {
      *
      * @param dto the {@link ForumUpdateRequestDTO} containing updated forum data to be converted
      * @param owner {@link UserEntity} the owner of the forum
+     * @return a new {@link ForumEntity} with the updated data from the {@link ForumUpdateRequestDTO}
      */
     public static ForumEntity toEntity(ForumUpdateRequestDTO dto, UserEntity owner) {
         return new ForumEntity(

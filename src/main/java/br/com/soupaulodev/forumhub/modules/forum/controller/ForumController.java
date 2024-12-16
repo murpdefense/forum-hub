@@ -127,7 +127,7 @@ public class ForumController {
      * Endpoint for handling forum update operations.
      * This method updates a forum by its unique identifier, using the data provided in the request DTO
      *
-     * @param id the forum's unique identifier of type {@link UUID} to be updated
+     * @param id the forum's unique identifier to be updated
      * @param forumRequestDTO {@link ForumUpdateRequestDTO} the data transfer object containing the forum update data
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the updated forum data
      */
@@ -154,8 +154,8 @@ public class ForumController {
      * Endpoint for handling forum deletion operations.
      * This method deletes a forum by its unique identifier.
      *
-     * @param id the forum's unique identifier of type {@link UUID} to be deleted
-     * @return a {@link ResponseEntity} with status 204 (No Content)
+     * @param id the forum's unique identifier to be deleted
+     * @return a response entity with status 204 (No Content)
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete forum by ID")
