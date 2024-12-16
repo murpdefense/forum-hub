@@ -55,15 +55,15 @@ public class DeleteCommentUsecase {
         CommentEntity commentFound = commentRepository.findById(id)
                 .orElseThrow(CommentNotFoundException::new);
 
-        UserEntity user = userRepository.findById(commentFound.getUser().getId())
-                .orElseThrow(UserNotFoundException::new);
-        if (!user.getId().equals(getAuthenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to update a comment for another user");
+        if(!commentFound.getUser().getId().equals(getAuthenticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to delete a comment for another user");
         }
+
+        UserEntity user = userRepository.findById(getAuthenticatedUserId)
+                .orElseThrow(UserNotFoundException::new);
 
         TopicEntity topic = topicRepository.findById(commentFound.getTopic().getId())
                 .orElseThrow(TopicNotFoundException::new);
-
         if (!user.participateInForum(topic.getForum())) {
             throw new UnauthorizedException("You are not allowed to update a comment for this topic");
         }
