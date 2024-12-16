@@ -1,6 +1,5 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
