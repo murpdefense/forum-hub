@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.comment.usecase;
 
-import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
@@ -52,36 +52,35 @@ public class UpdateCommentUsecase {
      * @throws UnauthorizedException if the user is not allowed to update a comment for another user or topic
      * @throws TopicNotFoundException if the topic is not found
      */
-    public CommentResponseDTO execute(UUID id, CommentRequestDTO requestDTO, UUID getAuthenticatedUserId) {
+    public CommentResponseDTO execute(UUID id, CommentUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
 
         CommentEntity commentFound = commentRepository.findById(id)
                 .orElseThrow(CommentNotFoundException::new);
 
         if (requestDTO.content().equals(commentFound.getContent())) {
-            throw new CommentIllegalArgumentException();
+            throw new CommentIllegalArgumentException("New content must be different from the old content");
         }
-
         if (requestDTO.content().isEmpty()) {
             throw new CommentIllegalArgumentException("Comment content cannot be empty");
         }
 
-        UserEntity user = userRepository.findById(commentFound.getUser().getId())
-                .orElseThrow(UserNotFoundException::new);
-        if (!user.getId().equals(getAuthenticatedUserId)) {
+        if (!commentFound.getUser().getId().equals(authenticatedUserId)) {
             throw new UnauthorizedException("You are not allowed to update a comment for another user");
         }
 
+        UserEntity user = userRepository.findById(authenticatedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
         TopicEntity topic = topicRepository.findById(commentFound.getTopic().getId())
                 .orElseThrow(TopicNotFoundException::new);
-
-        if (user.participateInForum(topic.getForum())) {
+        if (!user.participateInForum(topic.getForum())) {
             throw new UnauthorizedException("You are not allowed to update a comment for this topic");
         }
 
         commentFound.setContent(requestDTO.content());
         commentFound.setUpdatedAt(Instant.now());
 
-        CommentEntity commentUpdated = commentRepository.save(commentFound);
-        return CommentMapper.toResponseDTO(commentUpdated);
+        commentRepository.save(commentFound);
+        return CommentMapper.toResponseDTO(commentFound);
     }
 }
