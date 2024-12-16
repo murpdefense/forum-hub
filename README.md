@@ -36,7 +36,7 @@ interajam entre si, criando e acessando novos foruns, tópicos, comentários e c
 - Spring Cache
 
 ### Documentação
-- SpringFox Swagger
+- SpringDoc OpenAPI
 
 ### DevOps
 - Spring Actuator
@@ -45,6 +45,10 @@ interajam entre si, criando e acessando novos foruns, tópicos, comentários e c
 - Spring DevTools
 
 ## Endpoints
+### Documentação
+- GET /swagger-ui.html
+- GET /v3/api-docs
+
 ### Autenticação
 - POST /api/v1/auth/signup
 - POST /api/v1/auth/login
