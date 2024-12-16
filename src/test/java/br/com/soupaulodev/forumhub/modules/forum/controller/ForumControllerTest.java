@@ -8,6 +8,7 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateReque
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -70,6 +71,11 @@ class ForumControllerTest {
     @BeforeEach
     void setUpd() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

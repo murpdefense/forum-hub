@@ -6,6 +6,7 @@ import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResp
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -69,6 +70,11 @@ class TopicControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

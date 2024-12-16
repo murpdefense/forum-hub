@@ -6,6 +6,7 @@ import br.com.soupaulodev.forumhub.modules.auth.usecase.LogoutUseCase;
 import br.com.soupaulodev.forumhub.modules.auth.usecase.SignUpUseCase;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import jakarta.servlet.http.Cookie;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Objects;
 
@@ -49,6 +51,11 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

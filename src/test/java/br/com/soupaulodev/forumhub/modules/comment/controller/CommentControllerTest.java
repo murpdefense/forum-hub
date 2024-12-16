@@ -5,6 +5,7 @@ import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRespons
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,6 +46,11 @@ class CommentControllerTest {
         MockitoAnnotations.openMocks(this);
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(authentication);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

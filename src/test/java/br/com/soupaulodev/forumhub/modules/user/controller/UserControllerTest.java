@@ -8,6 +8,7 @@ import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -64,6 +65,11 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
