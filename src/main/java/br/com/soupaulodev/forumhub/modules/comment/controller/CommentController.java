@@ -20,8 +20,8 @@ import java.util.UUID;
  * REST controller for managing comments.
  */
 @RestController
-@RequestMapping("/api/v1/comment")
-@Tag(name = "Comment", description = "Operations related to comments")
+@RequestMapping("/api/v1/comments")
+@Tag(name = "Comments", description = "Operations related to comments")
 public class CommentController {
 
     private final CreateCommentUsecase createCommentUsecase;
