@@ -11,4 +11,13 @@ public class CommentNotFoundException extends RuntimeException{
     public CommentNotFoundException() {
         super("Comment not found");
     }
+
+    /**
+     * Constructs a new CommentNotFoundException with the specified message.
+     *
+     * @param message the message
+     */
+    public CommentNotFoundException(String message) {
+        super(message);
+    }
 }

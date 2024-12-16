@@ -4,13 +4,12 @@ import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Entity representing a comment in the forum.
@@ -52,7 +51,7 @@ public class CommentEntity implements Serializable {
      * Replies to this comment.
      */
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CommentEntity> replies = new HashSet<>();
+    private List<CommentEntity> replies = new ArrayList<>();
 
     /**
      * Timestamp when the comment was created.
@@ -64,7 +63,7 @@ public class CommentEntity implements Serializable {
     /**
      * Timestamp when the comment was last updated.
      */
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -87,14 +86,10 @@ public class CommentEntity implements Serializable {
      * @param topic the topic to which the comment belongs
      */
     public CommentEntity(String content, UserEntity user, TopicEntity topic) {
-        Instant now = Instant.now();
-
-        this.id = UUID.randomUUID();
+        this();
         this.content = content;
         this.user = user;
         this.topic = topic;
-        this.createdAt = now;
-        this.updatedAt = now;
     }
 
     /**
@@ -106,14 +101,8 @@ public class CommentEntity implements Serializable {
      * @param parentComment the parent comment if this comment is a reply
      */
     public CommentEntity(String content, UserEntity user, TopicEntity topic, CommentEntity parentComment) {
-        Instant now = Instant.now();
-
-        this.id = UUID.randomUUID();
-        this.content = content;
-        this.user = user;
-        this.topic = topic;
-        this.createdAt = now;
-        this.updatedAt = now;
+        this(content, user, topic);
+        this.setParentComment(parentComment);
     }
 
     public UUID getId() {
@@ -156,12 +145,22 @@ public class CommentEntity implements Serializable {
         this.parentComment = parentComment;
     }
 
-    public Set<CommentEntity> getReplies() {
+    public List<CommentEntity> getReplies() {
         return replies;
     }
 
-    public void setReplies(Set<CommentEntity> replies) {
-        this.replies = replies;
+    public void addReplies(CommentEntity reply) {
+        if (reply != null && !this.replies.contains(reply)) {
+            this.replies.add(reply);
+            reply.parentComment = this;
+        }
+    }
+
+    public void removeReplies(CommentEntity reply) {
+        if (reply != null && this.replies.contains(reply)) {
+            this.replies.remove(reply);
+            reply.parentComment = null;
+        }
     }
 
     public Instant getCreatedAt() {

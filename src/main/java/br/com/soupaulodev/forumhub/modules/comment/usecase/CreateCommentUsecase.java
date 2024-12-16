@@ -5,6 +5,7 @@ import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRespons
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.CommentNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
@@ -51,22 +52,31 @@ public class CreateCommentUsecase {
      * @throws UserNotFoundException if the user or topic is not found
      * @throws UnauthorizedException if the user is not allowed to create a comment for another user or topic
      */
-    public CommentResponseDTO execute(CommentRequestDTO requestDTO, UUID getAuthenticatedUserId) {
+    public CommentResponseDTO execute(CommentRequestDTO requestDTO, UUID authenticatedUserId) {
 
         UserEntity user = userRepository.findById(UUID.fromString(requestDTO.userId()))
                 .orElseThrow(UserNotFoundException::new);
-        if (!user.getId().equals(getAuthenticatedUserId)) {
+
+        if (!user.getId().equals(authenticatedUserId)) {
             throw new UnauthorizedException("You are not allowed to create a comment for another user");
         }
 
         TopicEntity topic = topicRepository.findById(UUID.fromString(requestDTO.topicId()))
                 .orElseThrow(TopicNotFoundException::new);
 
-        if(user.participateInForum(topic.getForum())) {
-            throw new UnauthorizedException("You are not allowed to create a comment for this topic");
+        if (!topic.getCreator().getId().equals(authenticatedUserId)) {
+            throw new UnauthorizedException("You are not allowed to create a comment for another user");
         }
 
-        CommentEntity entity = commentRepository.save(CommentMapper.toEntity(requestDTO, user, topic));
+        CommentEntity parentComment = null;
+        if (requestDTO.parentCommentId() != null) {
+            parentComment = commentRepository.findById(UUID.fromString(requestDTO.parentCommentId()))
+                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found with ID: " + requestDTO.parentCommentId()));
+        }
+
+        CommentEntity entity = new CommentEntity(requestDTO.content(), user, topic, parentComment);
+        commentRepository.save(entity);
+
         return CommentMapper.toResponseDTO(entity);
     }
 }
