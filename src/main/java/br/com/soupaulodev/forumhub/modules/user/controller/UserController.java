@@ -4,7 +4,7 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsRespon
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetAllUsersUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +42,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/user")
 @Tag(name = "User", description = "Endpoints for user operations")
 public class UserController {
-    private final GetAllUsersUseCase getAllUsersUseCase;
+    private final ListUsersUseCase listUsersUseCase;
     private final GetUserDetailsUseCase getUserDetailsUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
@@ -50,16 +50,16 @@ public class UserController {
     /**
      * Constructor for {@link UserController}.
      *
-     * @param getAllUsersUseCase {@link GetAllUsersUseCase} the use case for handling all users retrieval
+     * @param listUsersUseCase {@link } the use case for handling all users retrieval
      * @param getUserUseCase {@link GetUserDetailsUseCase} the use case for handling user retrieval by ID
      * @param updateUserUseCase {@link UpdateUserUseCase} the use case for handling user update operations
      * @param deleteUserUseCase {@link DeleteUserUseCase} the use case for handling user deletion operations
      */
-    public UserController(GetAllUsersUseCase getAllUsersUseCase,
+    public UserController(ListUsersUseCase listUsersUseCase,
                           GetUserDetailsUseCase getUserUseCase,
                           UpdateUserUseCase updateUserUseCase,
                           DeleteUserUseCase deleteUserUseCase) {
-        this.getAllUsersUseCase = getAllUsersUseCase;
+        this.listUsersUseCase = listUsersUseCase;
         this.getUserDetailsUseCase = getUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
@@ -97,9 +97,9 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users data retrieved successfully"),
     })
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
+    public ResponseEntity<List<UserResponseDTO>> listUsers(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
                                                              @Valid @RequestParam(defaultValue = "10") @Min(5) int size) {
-        return ResponseEntity.ok(getAllUsersUseCase.execute(page, size));
+        return ResponseEntity.ok(listUsersUseCase.execute(page, size));
     }
 
     /**

@@ -17,7 +17,7 @@ import java.util.List;
  * This class provides the business logic for retrieving all users.
  *
  * <p>
- * The {@link GetAllUsersUseCase} is responsible for:
+ * The {@link ListUsersUseCase} is responsible for:
  * <ul>
  *     <li>Retrieving all users.</li>
  * </ul>
@@ -26,16 +26,16 @@ import java.util.List;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
-public class GetAllUsersUseCase {
+public class ListUsersUseCase {
 
     private final UserRepository userRepository;
 
     /**
-     * Constructor for {@link GetAllUsersUseCase}.
+     * Constructor for {@link ListUsersUseCase}.
      *
      * @param userRepository {@link UserRepository} the repository for handling user-related operations
      */
-    public GetAllUsersUseCase(UserRepository userRepository) {
+    public ListUsersUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

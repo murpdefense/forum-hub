@@ -5,8 +5,8 @@ import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgument
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetAllUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.*;
 class UserControllerTest {
 
     @Mock
-    private GetAllUsersUseCase getAllUsersUseCase;
+    private ListUsersUseCase listUsersUseCase;
 
     @Mock
     private GetUserDetailsUseCase getUserDetailsUseCase;
@@ -76,9 +76,9 @@ class UserControllerTest {
         int page = 0;
         int size = 10;
 
-        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+        when(listUsersUseCase.execute(page, size)).thenReturn(responseDTO);
 
-        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+        ResponseEntity<List<UserResponseDTO>> response = userController.listUsers(page, size);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
@@ -91,9 +91,9 @@ class UserControllerTest {
         int page = 0;
         int size = 10;
 
-        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+        when(listUsersUseCase.execute(page, size)).thenReturn(responseDTO);
 
-        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+        ResponseEntity<List<UserResponseDTO>> response = userController.listUsers(page, size);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
@@ -106,9 +106,9 @@ class UserControllerTest {
         int page = -1;
         int size = 10;
 
-        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+        when(listUsersUseCase.execute(page, size)).thenReturn(responseDTO);
 
-        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+        ResponseEntity<List<UserResponseDTO>> response = userController.listUsers(page, size);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
@@ -121,9 +121,9 @@ class UserControllerTest {
         int page = 0;
         int size = -1;
 
-        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+        when(listUsersUseCase.execute(page, size)).thenReturn(responseDTO);
 
-        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+        ResponseEntity<List<UserResponseDTO>> response = userController.listUsers(page, size);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
