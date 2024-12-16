@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.comment.controller;
 
-import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRequestDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
@@ -58,7 +58,7 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
-        CommentRequestDTO requestDTO = new CommentRequestDTO("Content", userId.toString(), topicId.toString(), null);
+        CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", userId.toString(), topicId.toString(), null);
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
@@ -85,7 +85,7 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
-        CommentRequestDTO requestDTO = new CommentRequestDTO("Content", userId.toString(), topicId.toString(), null);
+        CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", userId.toString(), topicId.toString(), null);
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",

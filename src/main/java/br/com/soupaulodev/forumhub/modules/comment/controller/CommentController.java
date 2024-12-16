@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.comment.controller;
 
-import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRequestDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
 import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
@@ -59,7 +59,7 @@ public class CommentController {
     })
     public ResponseEntity<CommentResponseDTO> createComment(@Valid
                                                             @RequestBody
-                                                            CommentRequestDTO requestDTO) {
+                                                            CommentCreateRequestDTO requestDTO) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         return ResponseEntity.ok(createCommentUsecase.execute(requestDTO, authenticatedUserId));
     }
@@ -82,7 +82,7 @@ public class CommentController {
     })
     public ResponseEntity<CommentResponseDTO> updateComment(@Valid @PathVariable
                                                             @org.hibernate.validator.constraints.UUID String id,
-                                                            @RequestBody CommentRequestDTO requestDTO) {
+                                                            @RequestBody CommentCreateRequestDTO requestDTO) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         return ResponseEntity.ok(updateCommentUsecase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));
     }

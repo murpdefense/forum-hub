@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.UUID;
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public record CommentRequestDTO(
+public record CommentCreateRequestDTO(
     @NotBlank
     @Size(max = 500)
     String content,
@@ -28,7 +28,7 @@ public record CommentRequestDTO(
     String topicId,
     String parentCommentId
 ) {
-    public CommentRequestDTO {
+    public CommentCreateRequestDTO {
         if (parentCommentId != null && parentCommentId.isEmpty()) {
             parentCommentId = null;
         }
