@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.comment.usecase;
 
-import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRequestDTO;
+import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
@@ -52,20 +52,21 @@ public class CreateCommentUsecase {
      * @throws UserNotFoundException if the user or topic is not found
      * @throws UnauthorizedException if the user is not allowed to create a comment for another user or topic
      */
-    public CommentResponseDTO execute(CommentRequestDTO requestDTO, UUID authenticatedUserId) {
+    public CommentResponseDTO execute(CommentCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 
         UserEntity user = userRepository.findById(UUID.fromString(requestDTO.userId()))
                 .orElseThrow(UserNotFoundException::new);
-
         if (!user.getId().equals(authenticatedUserId)) {
             throw new UnauthorizedException("You are not allowed to create a comment for another user");
         }
 
         TopicEntity topic = topicRepository.findById(UUID.fromString(requestDTO.topicId()))
                 .orElseThrow(TopicNotFoundException::new);
-
         if (!topic.getCreator().getId().equals(authenticatedUserId)) {
             throw new UnauthorizedException("You are not allowed to create a comment for another user");
+        }
+        if (!user.participateInForum(topic.getForum())) {
+            throw new UnauthorizedException("You are not allowed to create a comment for this topic");
         }
 
         CommentEntity parentComment = null;
