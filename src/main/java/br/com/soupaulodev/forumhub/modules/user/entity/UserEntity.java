@@ -291,6 +291,9 @@ public class UserEntity {
         }
     }
 
+    public boolean participateInForum(ForumEntity forum) {
+        return participatingForums.contains(forum);
+    }
     /**
      * Gets the list of forums in which the user is a participant.
      *
