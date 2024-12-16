@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
@@ -23,16 +24,16 @@ import java.util.UUID;
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
  */
 @Service
-public class GetUserUseCase {
+public class GetUserDetailsUseCase {
 
     private final UserRepository userRepository;
 
     /**
-     * Constructs a new {@link GetUserUseCase}.
+     * Constructs a new {@link GetUserDetailsUseCase}.
      *
      * @param userRepository The repository responsible for retrieving user data from the database.
      */
-    public GetUserUseCase(UserRepository userRepository) {
+    public GetUserDetailsUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -48,8 +49,13 @@ public class GetUserUseCase {
      * @return {@link UserResponseDTO} the data transfer object containing the retrieved user data
      * @throws UserNotFoundException if no user with the given ID is found
      */
-    public UserResponseDTO execute(UUID id) {
+    public UserDetailsResponseDTO execute(UUID id, UUID authenticatedUserId) {
         UserEntity userFound = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return UserMapper.toResponseDTO(userFound);
+
+        if (!userFound.getId().equals(authenticatedUserId)) {
+            userFound.setEmail(null);
+        }
+
+        return UserMapper.toDetailsResponseDTO(userFound);
     }
 }
