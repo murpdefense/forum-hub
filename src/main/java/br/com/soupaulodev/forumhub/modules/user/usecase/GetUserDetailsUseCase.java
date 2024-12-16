@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the retrieval of a user by their ID.
  * <p>
- *     The {@link GetUserUseCase} class processes requests to retrieve a user by their unique identifier.
+ *     The {@link GetUserDetailsUseCase} class processes requests to retrieve a user by their unique identifier.
  *     If successful, it returns the user data in a response data transfer object.
  * </p>
  * <p>
