@@ -3,11 +3,10 @@ package br.com.soupaulodev.forumhub.modules.user.controller;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetAllUsersUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,10 +47,10 @@ import static org.mockito.Mockito.*;
 class UserControllerTest {
 
     @Mock
-    private GetUserUseCase getUserUseCase;
+    private GetAllUsersUseCase getAllUsersUseCase;
 
     @Mock
-    private FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUseCase;
+    private GetUserDetailsUseCase getUserDetailsUseCase;
 
     @Mock
     private UpdateUserUseCase updateUserUseCase;
@@ -66,59 +67,129 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturnUserById() {
+    void testGetAllUsers_shouldReturnAllUsers() {
+        UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
-        UserResponseDTO userResponseDTO = new UserResponseDTO(
-                UUID.randomUUID(),
+        List<UserResponseDTO> responseDTO = List.of(
+                new UserResponseDTO(userId, "test-name", "test-username", now, now),
+                new UserResponseDTO(UUID.randomUUID(), "test-name", "test-username", now, now));
+        int page = 0;
+        int size = 10;
+
+        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+
+        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        assertEquals(responseDTO.size(), Objects.requireNonNull(response.getBody()).size());
+    }
+
+    @Test
+    void testGetAllUsers_shouldReturnVoidListWhenNoUsersFound() {
+        List<UserResponseDTO> responseDTO = List.of();
+        int page = 0;
+        int size = 10;
+
+        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+
+        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        assertEquals(0, Objects.requireNonNull(response.getBody()).size());
+    }
+
+    @Test
+    void testGetUserDetails_shouldReturnVoidListWhenPageIsNegative() {
+        List<UserResponseDTO> responseDTO = List.of();
+        int page = -1;
+        int size = 10;
+
+        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+
+        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        assertEquals(0, response.getBody().size());
+    }
+
+    @Test
+    void testGetUserDetails_shouldReturnVoidListWhenSizeIsNegative() {
+        List<UserResponseDTO> responseDTO = List.of();
+        int page = 0;
+        int size = -1;
+
+        when(getAllUsersUseCase.execute(page, size)).thenReturn(responseDTO);
+
+        ResponseEntity<List<UserResponseDTO>> response = userController.getAllUsers(page, size);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        assertEquals(0, response.getBody().size());
+    }
+
+    @Test
+    void testGetUserDetails_shouldReturnUserDetailsByID() {
+        UUID userId = UUID.randomUUID();
+        Instant now = Instant.now();
+        UserDetailsResponseDTO responseDTO = new UserDetailsResponseDTO(
+                userId,
                 "test-name",
                 "test-username",
-                "test@mail.com",
+                null,
+                List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                List.of(new ParticipantesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 now,
                 now);
 
-        when(getUserUseCase.execute(any(UUID.class))).thenReturn(userResponseDTO);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        ResponseEntity<UserResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
+        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenReturn(responseDTO);
+
+        ResponseEntity<UserDetailsResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(userResponseDTO, response.getBody());
+        assertEquals(responseDTO, response.getBody());
     }
 
     @Test
-    void shouldThrowUserNotFoundExceptionWhenUserNotFoundById() {
-        when(getUserUseCase.execute(any(UUID.class))).thenThrow(UserNotFoundException.class);
+    void testGetUserDetails_shouldThrowUserNotFoundExceptionWhenUserNotFoundById() {
+        UUID userId = UUID.randomUUID();
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        assertThrows(UserNotFoundException.class, () -> userController.getUserById(UUID.randomUUID().toString()));
+        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, () -> userController.getUserById(userId.toString()));
     }
 
     @Test
-    void shouldReturnUserByNameOrUsername() {
+    void testGetUserDetails_shouldReturnUserDetailsWithoutEmail() {
+        UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
-        UserResponseDTO userResponseDTO = new UserResponseDTO(
-                UUID.randomUUID(),
+        UserDetailsResponseDTO responseDTO = new UserDetailsResponseDTO(
+                userId,
                 "test-name",
                 "test-username",
-                "test@mail.com",
+                null,
+                List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                List.of(new ParticipantesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 now,
                 now);
 
-        when(findUserByNameOrUsernameUseCase.execute(any(String.class))).thenReturn(userResponseDTO);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(UUID.randomUUID(), null));
 
-        ResponseEntity<UserResponseDTO> response = userController.getUserByNameOrUsername("test-name");
+        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenReturn(responseDTO);
+
+        ResponseEntity<UserDetailsResponseDTO> response = userController.getUserById(userId.toString());
 
         assertEquals(200, response.getStatusCode().value());
-        assertEquals(userResponseDTO, response.getBody());
+        assertEquals(responseDTO, response.getBody());
     }
 
     @Test
-    void shouldThrowUserNotFoundExceptionWhenUserNotFoundByNameOrUsername() {
-        when(findUserByNameOrUsernameUseCase.execute(any(String.class))).thenThrow(UserNotFoundException.class);
-
-        assertThrows(UserNotFoundException.class, () -> userController.getUserByNameOrUsername("test-name"));
-    }
-
-    @Test
-    void shouldUpdateUserSuccessfully() {
+    void testUpdateUser_shouldUpdateUserSuccessfully() {
         UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
 
@@ -131,7 +202,6 @@ class UserControllerTest {
                 userId,
                 "test-name",
                 "test-username",
-                "test@mail.com",
                 now,
                 now);
 
@@ -149,7 +219,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUpdatingUserIsNotSelf() {
+    void testUpdateUser_shouldThrowExceptionWhenUpdatingUserIsNotSelf() {
         UUID userId = UUID.randomUUID();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
@@ -169,7 +239,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUpdatingUserWithNoFieldsToUpdate() {
+    void testUpdateUser_shouldThrowExceptionWhenUpdatingUserWithNoFieldsToUpdate() {
         UUID userId = UUID.randomUUID();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
@@ -189,7 +259,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserNotFoundWhenUpdatingUser() {
+    void testUpdateUser_shouldThrowExceptionWhenUserNotFoundWhenUpdatingUser() {
         UUID userId = UUID.randomUUID();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
@@ -209,7 +279,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldDeleteUserSuccessfully() {
+    void testDeleteUser_shouldDeleteUserSuccessfully() {
         UUID userId = UUID.randomUUID();
         UUID authenticatedUserId = UUID.randomUUID();
 
@@ -224,7 +294,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenDeletingUserIsNotSelf() {
+    void testDeleteUser_shouldThrowExceptionWhenDeletingUserIsNotSelf() {
         UUID authenticatedUserId = UUID.randomUUID();
 
         SecurityContextHolder.getContext()
@@ -237,7 +307,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserNotFoundWhenDeletingUser() {
+    void testDeleteUser_shouldThrowExceptionWhenUserNotFoundWhenDeletingUser() {
         UUID authenticatedUserId = UUID.randomUUID();
 
         SecurityContextHolder.getContext()
