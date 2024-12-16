@@ -3,9 +3,9 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,23 +25,23 @@ import java.util.UUID;
 @Tag(name = "Comments", description = "Operations related to comments")
 public class CommentController {
 
-    private final CreateCommentUsecase createCommentUsecase;
-    private final UpdateCommentUsecase updateCommentUsecase;
-    private final DeleteCommentUsecase deleteCommentUsecase;
+    private final CreateCommentUseCase createCommentUseCase;
+    private final UpdateCommentUseCase updateCommentUseCase;
+    private final DeleteCommentUseCase deleteCommentUseCase;
 
     /**
      * Constructs a new CommentController with the specified use cases.
      *
-     * @param createCommentUsecase the use case for creating comments
-     * @param updateCommentUsecase the use case for updating comments
-     * @param deleteCommentUsecase the use case for deleting comments
+     * @param createCommentUseCase the use case for creating comments
+     * @param updateCommentUseCase the use case for updating comments
+     * @param createCommentUseCase the use case for deleting comments
      */
-    public CommentController(CreateCommentUsecase createCommentUsecase,
-                             UpdateCommentUsecase updateCommentUsecase,
-                             DeleteCommentUsecase deleteCommentUsecase) {
-        this.createCommentUsecase = createCommentUsecase;
-        this.updateCommentUsecase = updateCommentUsecase;
-        this.deleteCommentUsecase = deleteCommentUsecase;
+    public CommentController(CreateCommentUseCase createCommentUseCase,
+                             UpdateCommentUseCase updateCommentUseCase,
+                             DeleteCommentUseCase deleteCommentUseCase) {
+        this.createCommentUseCase = createCommentUseCase;
+        this.updateCommentUseCase = updateCommentUseCase;
+        this.deleteCommentUseCase = deleteCommentUseCase;
     }
 
     /**
@@ -62,7 +62,7 @@ public class CommentController {
                                                             @RequestBody
                                                             CommentCreateRequestDTO requestDTO) {
         UUID authenticatedUserId = getAuthenticatedUserId();
-        return ResponseEntity.ok(createCommentUsecase.execute(requestDTO, authenticatedUserId));
+        return ResponseEntity.ok(createCommentUseCase.execute(requestDTO, authenticatedUserId));
     }
 
     /**
@@ -85,7 +85,7 @@ public class CommentController {
                                                             @org.hibernate.validator.constraints.UUID String id,
                                                             @RequestBody CommentUpdateRequestDTO requestDTO) {
         UUID authenticatedUserId = getAuthenticatedUserId();
-        return ResponseEntity.ok(updateCommentUsecase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));
+        return ResponseEntity.ok(updateCommentUseCase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));
     }
 
     /**
@@ -104,7 +104,7 @@ public class CommentController {
     })
     public ResponseEntity<Void> deleteComment(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
-        deleteCommentUsecase.execute(UUID.fromString(id), authenticatedUserId);
+        deleteCommentUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 

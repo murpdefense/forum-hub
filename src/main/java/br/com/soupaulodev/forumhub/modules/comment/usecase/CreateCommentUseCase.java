@@ -23,7 +23,7 @@ import java.util.UUID;
  * @author <a href="https://soupaulodev.com.br">soupauldev</a>
  */
 @Service
-public class CreateCommentUsecase {
+public class CreateCommentUseCase {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -36,7 +36,7 @@ public class CreateCommentUsecase {
      * @param userRepository the repository for managing users
      * @param topicRepository the repository for managing topics
      */
-    public CreateCommentUsecase(CommentRepository commentRepository,
+    public CreateCommentUseCase(CommentRepository commentRepository,
                                 UserRepository userRepository,
                                 TopicRepository topicRepository) {
         this.commentRepository = commentRepository;

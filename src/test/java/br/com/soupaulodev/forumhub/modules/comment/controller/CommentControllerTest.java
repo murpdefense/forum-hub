@@ -3,9 +3,9 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUsecase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUsecase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUsecase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.*;
 class CommentControllerTest {
 
     @Mock
-    private CreateCommentUsecase createCommentUsecase;
+    private CreateCommentUseCase createCommentUseCase;
 
     @Mock
-    private UpdateCommentUsecase updateCommentUsecase;
+    private UpdateCommentUseCase updateCommentUseCase;
 
     @Mock
-    private DeleteCommentUsecase deleteCommentUsecase;
+    private DeleteCommentUseCase deleteCommentUseCase;
 
     @Mock
     private SecurityContext securityContext;
@@ -72,13 +72,13 @@ class CommentControllerTest {
         );
 
         when(authentication.getPrincipal()).thenReturn(userId.toString());
-        when(createCommentUsecase.execute(requestDTO, userId)).thenReturn(responseDTO);
+        when(createCommentUseCase.execute(requestDTO, userId)).thenReturn(responseDTO);
 
         ResponseEntity<CommentResponseDTO> response = commentController.createComment(requestDTO);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
-        verify(createCommentUsecase, times(1)).execute(requestDTO, userId);
+        verify(createCommentUseCase, times(1)).execute(requestDTO, userId);
     }
 
     @Test
@@ -99,13 +99,13 @@ class CommentControllerTest {
         );
 
         when(authentication.getPrincipal()).thenReturn(userId.toString());
-        when(updateCommentUsecase.execute(commentId, requestDTO, userId)).thenReturn(responseDTO);
+        when(updateCommentUseCase.execute(commentId, requestDTO, userId)).thenReturn(responseDTO);
 
         ResponseEntity<CommentResponseDTO> response = commentController.updateComment(commentId.toString(), requestDTO);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
-        verify(updateCommentUsecase, times(1)).execute(commentId, requestDTO, userId);
+        verify(updateCommentUseCase, times(1)).execute(commentId, requestDTO, userId);
     }
 
     @Test
@@ -118,6 +118,6 @@ class CommentControllerTest {
         ResponseEntity<Void> response = commentController.deleteComment(commentId.toString());
 
         assertEquals(204, response.getStatusCode().value());
-        verify(deleteCommentUsecase, times(1)).execute(commentId, userId);
+        verify(deleteCommentUseCase, times(1)).execute(commentId, userId);
     }
 }
