@@ -6,6 +6,9 @@ import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResp
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.usecase.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +77,12 @@ public class TopicController {
      * @return a {@link ResponseEntity} of {@link TopicResponseDTO} with status 201 (Created) and the created topic data
      */
     @PostMapping
+    @Operation(summary = "Create a new topic")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Topic created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "409", description = "Topic already exists")
+    })
     public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicCreateRequestDTO requestDTO) {
 
         TopicResponseDTO responseDTO = createTopicUseCase.execute(requestDTO);
@@ -89,6 +98,11 @@ public class TopicController {
      * @return the response entity containing the topic
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Get topic details by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Topic found"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
     public ResponseEntity<TopicDetailsResponseDTO> getTopicDetails(@Valid @PathVariable
                                                             @org.hibernate.validator.constraints.UUID String id) {
         return ResponseEntity.ok(getTopicDetailsUseCase.execute(UUID.fromString(id)));
@@ -103,6 +117,8 @@ public class TopicController {
      * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of topics
      */
     @GetMapping("/all")
+    @Operation(summary = "List all topics with pagination support")
+    @ApiResponse(responseCode = "200", description = "Topics found")
     public ResponseEntity<List<TopicResponseDTO>> listForumsPageable(@Valid
                                                                      @RequestParam(defaultValue = "0")
                                                                      @Min(value = 0, message = "Page number must be greater than or equal to 0")
@@ -122,6 +138,13 @@ public class TopicController {
      * @return a {@link ResponseEntity} of {@link TopicResponseDTO} with status 200 (OK) and the updated topic data
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Update a topic by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Topic updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
     public ResponseEntity<TopicResponseDTO> updateTopic(@Valid @PathVariable
                                                         @org.hibernate.validator.constraints.UUID String id,
                                                         @Valid @RequestBody
@@ -139,6 +162,12 @@ public class TopicController {
      * @return a {@link ResponseEntity} with status 204 (No Content)
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a topic by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Topic deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
     public ResponseEntity<Void> deleteTopic(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteTopicUseCase.execute(UUID.fromString(id), authenticatedUserId);

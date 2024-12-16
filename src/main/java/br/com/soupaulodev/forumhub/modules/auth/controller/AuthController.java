@@ -5,6 +5,10 @@ import br.com.soupaulodev.forumhub.modules.auth.usecase.LoginUseCase;
 import br.com.soupaulodev.forumhub.modules.auth.usecase.LogoutUseCase;
 import br.com.soupaulodev.forumhub.modules.auth.usecase.SignUpUseCase;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Authentication", description = "Endpoints for user authentication")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -67,6 +72,12 @@ public class AuthController {
      * @return a ResponseEntity with status 200 (OK) if login is successful
      */
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Authenticate a user and return a JWT token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User logged in successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDTO requestDTO, HttpServletResponse response) {
         response.addCookie(loginUseCase.execute(requestDTO));
 
@@ -84,6 +95,12 @@ public class AuthController {
      * @return a ResponseEntity with status 200 (OK) if registration is successful
      */
     @PostMapping("/signup")
+    @Operation(summary = "Sign Up", description = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "409", description = "Username already exists")
+    })
     public ResponseEntity<String> signUp(@Valid @RequestBody UserCreateRequestDTO signUpRequest, HttpServletResponse response) {
         response.addCookie(signUpUseCase.execute(signUpRequest));
 
@@ -99,6 +116,10 @@ public class AuthController {
      * @return a ResponseEntity with status 200 (OK) indicating the user has been logged out
      */
     @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Invalidate the user's JWT token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User logged out successfully")
+    })
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         response.addCookie(logoutUseCase.execute());
 

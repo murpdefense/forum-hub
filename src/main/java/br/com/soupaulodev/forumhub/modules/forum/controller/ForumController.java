@@ -4,6 +4,9 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateReque
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.usecase.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,6 +74,12 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 201 (Created) and the created forum data
      */
     @PostMapping
+    @Operation(summary = "Create a new forum")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Forum created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "409", description = "Forum already exists")
+    })
     public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumCreateRequestDTO requestDTO) {
         ForumResponseDTO responseDTO = createForumUseCase.execute(requestDTO);
 
@@ -87,6 +96,8 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link List} of {@link ForumResponseDTO} with status 200 (OK) and the list of forums
      */
     @GetMapping("/all")
+    @Operation(summary = "List all forums")
+    @ApiResponse(responseCode = "200", description = "Forums listed")
     public ResponseEntity<List<ForumResponseDTO>> listForums(@RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size) {
 
@@ -101,6 +112,11 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the forum data
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Get forum by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Forum retrieved"),
+            @ApiResponse(responseCode = "404", description = "Forum not found")
+    })
     public ResponseEntity<ForumResponseDTO> getForum(@PathVariable
                                                             UUID id) {
 
@@ -116,6 +132,13 @@ public class ForumController {
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the updated forum data
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Update forum by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Forum updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Forum not found")
+    })
     public ResponseEntity<ForumResponseDTO> updateForum(@Valid
                                                         @PathVariable
                                                         @org.hibernate.validator.constraints.UUID
@@ -135,6 +158,12 @@ public class ForumController {
      * @return a {@link ResponseEntity} with status 204 (No Content)
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete forum by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Forum deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Forum not found")
+    })
     public ResponseEntity<Void> deleteForum(@Valid
                                            @PathVariable
                                            @org.hibernate.validator.constraints.UUID

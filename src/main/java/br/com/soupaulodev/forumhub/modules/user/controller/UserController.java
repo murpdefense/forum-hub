@@ -6,6 +6,10 @@ import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.FindUserByNameOrUsernameUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +37,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "User", description = "Endpoints for user operations")
 public class UserController {
     private final GetUserUseCase getUserUseCase;
     private final FindUserByNameOrUsernameUseCase findUserByNameOrUsernameUseCase;
@@ -65,6 +70,11 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID", description = "Get user data by their unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User data retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public ResponseEntity<UserResponseDTO> getUserById(@Valid @PathVariable("id") String id) {
 
         return ResponseEntity.ok(getUserUseCase.execute(UUID.fromString(id)));
@@ -78,6 +88,11 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the user data
      */
     @GetMapping("/find/{nameOrUsername}")
+    @Operation(summary = "Find user by name or username", description = "Find user data by their name or username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User data retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public ResponseEntity<UserResponseDTO> getUserByNameOrUsername(@PathVariable("nameOrUsername") String query) {
 
         return ResponseEntity.ok(findUserByNameOrUsernameUseCase.execute(query));
@@ -93,6 +108,13 @@ public class UserController {
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the updated user data
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Update user", description = "Update user data by their unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User data updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
     public ResponseEntity<UserResponseDTO> updateUser(@Valid @PathVariable("id") String id,
                                       @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
 
@@ -107,6 +129,12 @@ public class UserController {
      * @param id the unique identifier of the user to be deleted
      * @return a {@link ResponseEntity} of {@link Void} with status 204 (NO_CONTENT) to indicate the successful deletion
      */
+    @Operation(summary = "Delete user", description = "Delete user by their unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Valid @PathVariable("id") String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
