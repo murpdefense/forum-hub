@@ -82,7 +82,7 @@ public class UserMapper {
                 entity.getUsername(),
                 entity.getEmail(),
                 entity.getOwnedForums().stream().map(OwnerOfDTO::from).toList(),
-                entity.getParticipatingForums().stream().map(ParticipantesInDTO::from).toList(),
+                entity.getParticipatingForums().stream().map(ParticipatesInDTO::from).toList(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

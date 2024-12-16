@@ -146,7 +146,7 @@ class UserControllerTest {
                 "test-username",
                 null,
                 List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
-                List.of(new ParticipantesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 now,
                 now);
 
@@ -180,7 +180,7 @@ class UserControllerTest {
                 "test-username",
                 null,
                 List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
-                List.of(new ParticipantesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 now,
                 now);
 

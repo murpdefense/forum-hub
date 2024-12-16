@@ -27,7 +27,7 @@ public record UserDetailsResponseDTO(UUID id,
                                      String username,
                                      String email,
                                      List<OwnerOfDTO> ownerOf,
-                                     List<ParticipantesInDTO> participatesIn,
+                                     List<ParticipatesInDTO> participatesIn,
                                      Instant createdAt,
                                      Instant updatedAt) {}
 
