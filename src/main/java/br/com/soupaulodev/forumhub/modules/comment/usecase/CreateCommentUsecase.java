@@ -62,9 +62,6 @@ public class CreateCommentUsecase {
 
         TopicEntity topic = topicRepository.findById(UUID.fromString(requestDTO.topicId()))
                 .orElseThrow(TopicNotFoundException::new);
-        if (!topic.getCreator().getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to create a comment for another user");
-        }
         if (!user.participateInForum(topic.getForum())) {
             throw new UnauthorizedException("You are not allowed to create a comment for this topic");
         }
