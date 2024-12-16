@@ -1,8 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.mapper;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 
 /**
@@ -72,7 +70,19 @@ public class UserMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getUsername(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
+
+    public static UserDetailsResponseDTO toDetailsResponseDTO(UserEntity entity) {
+        return new UserDetailsResponseDTO(
+                entity.getId(),
+                entity.getName(),
+                entity.getUsername(),
                 entity.getEmail(),
+                entity.getOwnedForums().stream().map(OwnerOfDTO::from).toList(),
+                entity.getParticipatingForums().stream().map(ParticipantesInDTO::from).toList(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
