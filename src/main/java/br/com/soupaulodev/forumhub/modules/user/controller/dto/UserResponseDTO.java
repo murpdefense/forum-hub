@@ -13,7 +13,6 @@ import java.util.UUID;
  * @param id the ID of the user
  * @param name the name of the user
  * @param username the username of the user
- * @param email the email of the user
  * @param createdAt the timestamp for when the user was created
  * @param updatedAt the timestamp for when the user was last updated
  *
@@ -22,6 +21,5 @@ import java.util.UUID;
 public record UserResponseDTO (UUID id,
                                String name,
                                String username,
-                               String email,
                                Instant createdAt,
                                Instant updatedAt) {}
