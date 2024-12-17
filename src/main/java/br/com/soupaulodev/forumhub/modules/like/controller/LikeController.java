@@ -30,7 +30,7 @@ import java.util.UUID;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @RestController
-@RequestMapping("/api/v1/like")
+@RequestMapping("/api/v1/likes")
 @Tag(name = "Like", description = "Operations related to likes")
 public class LikeController {
 
