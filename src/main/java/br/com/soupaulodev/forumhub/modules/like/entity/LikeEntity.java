@@ -17,7 +17,9 @@ import java.util.UUID;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Entity
-@Table(name = "tb_likes")
+@Table(name = "tb_likes", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "resource_type", "resource_id"})
+})
 public class LikeEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
