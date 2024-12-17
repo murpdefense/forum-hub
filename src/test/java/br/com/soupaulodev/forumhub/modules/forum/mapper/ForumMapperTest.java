@@ -39,7 +39,7 @@ class ForumMapperTest {
                 "This is a example forum.",
                 null);
 
-        assertThrows(ForumIllegalArgumentException.class, () -> ForumMapper.toEntity(dto, null));
+        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, null));
     }
 
     @Test
@@ -54,7 +54,7 @@ class ForumMapperTest {
                 "",
                 owner.getId().toString());
 
-        assertThrows(ForumIllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
+        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ForumMapperTest {
                 " ",
                 owner.getId().toString());
 
-        assertThrows(ForumIllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
+        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
     }
 
     @Test
@@ -115,7 +115,7 @@ class ForumMapperTest {
 
     @Test
     void shouldThrowExceptionWhenForumEntityIsNull() {
-        assertThrows(ForumIllegalArgumentException.class, () -> ForumMapper.toResponseDTO(null));
+        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toResponseDTO(null));
     }
 
     @Test
@@ -125,6 +125,6 @@ class ForumMapperTest {
                 "This is a example forum.",
                 null);
 
-        assertThrows(ForumIllegalArgumentException.class, () -> ForumMapper.toResponseDTO(forumEntity));
+        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toResponseDTO(forumEntity));
     }
 }

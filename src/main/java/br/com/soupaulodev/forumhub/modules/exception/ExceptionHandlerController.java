@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.exception;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.*;
-import org.apache.coyote.BadRequestException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;

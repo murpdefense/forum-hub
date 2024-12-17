@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
@@ -163,9 +164,9 @@ class UserControllerTest {
         UUID userId = UUID.randomUUID();
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenThrow(UserNotFoundException.class);
+        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenThrow(ResourceNotFoundException.class);
 
-        assertThrows(UserNotFoundException.class, () -> userController.getUserById(userId.toString()));
+        assertThrows(ResourceNotFoundException.class, () -> userController.getUserById(userId.toString()));
     }
 
     @Test
@@ -257,9 +258,9 @@ class UserControllerTest {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
 
         when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
-                .thenThrow(UserIllegalArgumentException.class);
+                .thenThrow(ResourceNotFoundException.class);
 
-        assertThrows(UserIllegalArgumentException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
     }
 
     @Test
@@ -277,9 +278,9 @@ class UserControllerTest {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
 
         when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
-                .thenThrow(UserNotFoundException.class);
+                .thenThrow(ResourceNotFoundException.class);
 
-        assertThrows(UserNotFoundException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
     }
 
     @Test
@@ -317,10 +318,10 @@ class UserControllerTest {
         SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
 
-        doThrow(new UserNotFoundException())
+        doThrow(new ResourceNotFoundException("User not found."))
                 .when(deleteUserUseCase).execute(any(UUID.class), eq(authenticatedUserId));
 
-        assertThrows(UserNotFoundException.class, () -> userController.deleteUser(UUID.randomUUID().toString()));
+        assertThrows(ResourceNotFoundException.class, () -> userController.deleteUser(UUID.randomUUID().toString()));
     }
 
 }

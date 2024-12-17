@@ -51,7 +51,7 @@ public class SignUpUseCase {
     /**
      * Handles the user registration process.
      * <p>
-     * This method first checks if the username is already taken. If it is, a {@link UserAlreadyExistsException} is thrown.
+     * This method first checks if the username is already taken. If it is, a {@link ResourceAlreadyExistsException} is thrown.
      * If the username is available, the user is created by encoding their password and saving the user entity to the database.
      * After successful registration, a JWT token is generated and returned as a cookie.
      * </p>

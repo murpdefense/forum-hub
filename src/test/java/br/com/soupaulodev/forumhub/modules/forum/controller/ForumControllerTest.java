@@ -1,5 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
@@ -110,9 +112,9 @@ class ForumControllerTest {
                 "Description Example",
                 UUID.randomUUID().toString());
 
-        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class))).thenThrow(new ForumAlreadyExistsException());
+        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class))).thenThrow(new ResourceAlreadyExistsException("Forum already exists"));
 
-        assertThrows(ForumAlreadyExistsException.class, () -> forumController.createForum(requestDTO));
+        assertThrows(ResourceAlreadyExistsException.class, () -> forumController.createForum(requestDTO));
     }
 
     @Test
@@ -178,9 +180,9 @@ class ForumControllerTest {
     void shouldGetForumThrowNotFoundException() {
         UUID forumId = UUID.randomUUID();
 
-        when(getForumUseCase.execute(forumId)).thenThrow(new ForumNotFoundException());
+        when(getForumUseCase.execute(forumId)).thenThrow(new ResourceNotFoundException("Forum not found"));
 
-        assertThrows(ForumNotFoundException.class, () -> forumController.getForum(forumId));
+        assertThrows(ResourceNotFoundException.class, () -> forumController.getForum(forumId));
     }
 
     @Test
@@ -226,9 +228,9 @@ class ForumControllerTest {
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
 
-        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ForumNotFoundException());
+        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ResourceNotFoundException("Forum not found"));
 
-        assertThrows(ForumNotFoundException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
     }
 
     @Test
@@ -243,9 +245,9 @@ class ForumControllerTest {
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
 
-        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ForumIllegalArgumentException(""));
+        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new IllegalArgumentException(""));
 
-        assertThrows(ForumIllegalArgumentException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
+        assertThrows(IllegalArgumentException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
     }
 
     @Test
@@ -268,9 +270,9 @@ class ForumControllerTest {
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
 
-        doThrow(new ForumNotFoundException()).when(deleteForumUseCase).execute(forumId, ownerId);
+        doThrow(new ResourceNotFoundException("Forum not found")).when(deleteForumUseCase).execute(forumId, ownerId);
 
-        assertThrows(ForumNotFoundException.class, () -> forumController.deleteForum(forumId.toString()));
+        assertThrows(ResourceNotFoundException.class, () -> forumController.deleteForum(forumId.toString()));
     }
 
     @Test
