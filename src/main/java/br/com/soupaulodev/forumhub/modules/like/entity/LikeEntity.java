@@ -1,7 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.like.entity;
 
-import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
+import br.com.soupaulodev.forumhub.config.UlidGenerator;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -11,7 +12,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entity representing a like on a topic.
+ * Entity representing a like on a resource.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Entity
 @Table(name = "tb_likes")
@@ -20,21 +23,17 @@ public class LikeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private UUID id;
+    private String id;
 
-    /**
-     * The user who liked the topic.
-     */
-    @ManyToOne
+    @Column(name = "resource_type", nullable = false)
+    private ResourceType resourceType;
+
+    @Column(name = "resource_id", nullable = false)
+    private UUID resourceId;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
-
-    /**
-     * The topic that was liked.
-     */
-    @ManyToOne
-    @JoinColumn(name = "topic_id", nullable = false)
-    private TopicEntity topic;
 
     /**
      * The timestamp when the like was created.
@@ -48,7 +47,7 @@ public class LikeEntity implements Serializable {
      * Initializes the id and createdAt fields.
      */
     public LikeEntity() {
-        this.id = UUID.randomUUID();
+        this.id = UlidGenerator.generate();
         this.createdAt = Instant.now();
     }
 
@@ -56,22 +55,31 @@ public class LikeEntity implements Serializable {
      * Constructs a new LikeEntity with the specified user and topic.
      * Initializes the id and createdAt fields.
      *
+     * @param resourceId the unique identifier of the resource that was liked
      * @param user the user who liked the topic
-     * @param topic the topic that was liked
      */
-    public LikeEntity(UserEntity user, TopicEntity topic) {
-        this.id = UUID.randomUUID();
+    public LikeEntity(ResourceType resourceType, UUID resourceId, UserEntity user) {
+        this();
+        this.resourceId = resourceId;
         this.user = user;
-        this.topic = topic;
-        this.createdAt = Instant.now();
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(ULID id) { this.id = id.toString(); }
+
+    public ResourceType getResourceType() { return resourceType; }
+
+    public void setResourceType(ResourceType resourceType) { this.resourceType = resourceType; }
+
+    public UUID getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(UUID resourceId) {
+        this.resourceId = resourceId;
     }
 
     public UserEntity getUser() {
@@ -80,14 +88,6 @@ public class LikeEntity implements Serializable {
 
     public void setUser(UserEntity user) {
         this.user = user;
-    }
-
-    public TopicEntity getTopic() {
-        return topic;
-    }
-
-    public void setTopic(TopicEntity topic) {
-        this.topic = topic;
     }
 
     public Instant getCreatedAt() {
