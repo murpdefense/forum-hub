@@ -1,9 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.like.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.ResourceAlreadyExistsException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
-import br.com.soupaulodev.forumhub.modules.like.mapper.LikeMapper;
+import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.like.repository.LikeRepository;
 import br.com.soupaulodev.forumhub.modules.like.usecase.strategy.LikeResourceStrategy;
 import br.com.soupaulodev.forumhub.modules.like.usecase.strategy.LikeResourceStrategyManager;
@@ -14,25 +13,25 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 /**
- * Use case for liking a resource.
- * This class provides the business logic for liking a resource.
+ * Use case for dislike a resource.
+ * This class provides the business logic for unliking a resource.
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
-public class LikeResourceUsecase {
+public class DislikeResourceUsecase {
 
     private final LikeResourceStrategyManager strategyManager;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
 
     /**
-     * Construct's a new {@link LikeResourceUsecase}.
+     * Construct's a new {@link DislikeResourceUsecase}.
      *
      * @param strategyManager the like resource strategy manager
      * @param userRepository   the user repository
      */
-    public LikeResourceUsecase(LikeResourceStrategyManager strategyManager, UserRepository userRepository, LikeRepository likeRepository) {
+    public DislikeResourceUsecase(LikeResourceStrategyManager strategyManager, UserRepository userRepository, LikeRepository likeRepository) {
         this.strategyManager = strategyManager;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
@@ -49,15 +48,13 @@ public class LikeResourceUsecase {
                 .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
 
         LikeResourceStrategy strategy = strategyManager.getStrategy(requestDTO.resourceType());
-        likeRepository.findByResourceTypeAndResourceIdAndUser(
+        LikeEntity like = likeRepository.findByResourceTypeAndResourceIdAndUser(
                         requestDTO.resourceType(),
                         UUID.fromString(requestDTO.resourceId()),
                         user)
-                        .ifPresent(likeEntity -> {
-                            throw new ResourceAlreadyExistsException("Like already exists");
-                        });
+                .orElseThrow(() -> new ResourceNotFoundException("Like does not exist"));
 
-        strategy.likeResource(UUID.fromString(requestDTO.resourceId()));
-        likeRepository.save(LikeMapper.toEntity(requestDTO, user));
+        strategy.dislikeResource(UUID.fromString(requestDTO.resourceId()));
+        likeRepository.delete(like);
     }
 }
