@@ -39,7 +39,7 @@ public class GetTopicDetailsUseCase {
 
         TopicEntity topicFound = topicRepository.findById(id)
                 .orElseThrow(TopicNotFoundException::new);
-        topicFound.getLikes();
+        topicFound.getHighsCount();
         topicFound.getComments();
         topicFound.getCreator();
 

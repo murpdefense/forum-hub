@@ -15,6 +15,9 @@ import java.util.UUID;
 
 /**
  * Use case for updating an existing topic.
+ * This class provides the business logic for updating an existing topic.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class UpdateTopicUseCase {
