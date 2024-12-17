@@ -53,6 +53,9 @@ public class CommentEntity implements Serializable {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> replies = new ArrayList<>();
 
+    @Column(name = "highs_count", nullable = false)
+    private Long highsCount = 0L;
+
     /**
      * Timestamp when the comment was created.
      */
@@ -82,8 +85,8 @@ public class CommentEntity implements Serializable {
      * Constructs a new CommentEntity with the specified content, user, and topic.
      *
      * @param content the content of the comment
-     * @param user the user who made the comment
-     * @param topic the topic to which the comment belongs
+     * @param user    the user who made the comment
+     * @param topic   the topic to which the comment belongs
      */
     public CommentEntity(String content, UserEntity user, TopicEntity topic) {
         this();
@@ -95,9 +98,9 @@ public class CommentEntity implements Serializable {
     /**
      * Constructs a new CommentEntity with the specified content, user, topic, and parent comment.
      *
-     * @param content the content of the comment
-     * @param user the user who made the comment
-     * @param topic the topic to which the comment belongs
+     * @param content       the content of the comment
+     * @param user          the user who made the comment
+     * @param topic         the topic to which the comment belongs
      * @param parentComment the parent comment if this comment is a reply
      */
     public CommentEntity(String content, UserEntity user, TopicEntity topic, CommentEntity parentComment) {
@@ -161,6 +164,29 @@ public class CommentEntity implements Serializable {
             this.replies.remove(reply);
             reply.parentComment = null;
         }
+    }
+
+    /**
+     * Gets the number of highs count.
+     *
+     * @return the number of highs count.
+     */
+    public Long getHighsCount() {
+        return highsCount;
+    }
+
+    /**
+     * Increments the number of highs count.
+     */
+    public void incrementHighs() {
+        this.highsCount++;
+    }
+
+    /**
+     * Decrements the number of highs count.
+     */
+    public void decrementHighs() {
+        this.highsCount--;
     }
 
     public Instant getCreatedAt() {

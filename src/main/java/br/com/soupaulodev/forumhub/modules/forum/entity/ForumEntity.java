@@ -39,6 +39,9 @@ public class ForumEntity implements Serializable {
     @Column(nullable = false, length = 50)
     private String description;
 
+    @Column(name = "highs_count", nullable = false)
+    private Long highsCount = 0L;
+
     /**
      * The owner of the forum.
      */
@@ -124,6 +127,12 @@ public class ForumEntity implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Long getHighsCount() { return highsCount; }
+
+    public void incrementHighs() { this.highsCount++; }
+
+    public void decrementHighs() { this.highsCount--; }
 
     public UserEntity getOwner() {
         return owner;

@@ -110,14 +110,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    /**
-     * The likes given by the user.
-     * <p>
-     * A user can give likes to various entities. These relationships are managed by the {@link LikeEntity} class.
-     * </p>
-     */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<LikeEntity> likes = new ArrayList<>();
+    @Column(name = "highs_count")
+    private Long highsCount = 0L;
 
     /**
      * The timestamp when the user was created.
@@ -162,9 +156,9 @@ public class UserEntity {
      * The username is automatically converted to lowercase and spaces are replaced with underscores.
      * </p>
      *
-     * @param name the full name of the user
+     * @param name     the full name of the user
      * @param username the username of the user
-     * @param email the email address of the user
+     * @param email    the email address of the user
      * @param password the password of the user
      */
     public UserEntity(String name, String username, String email, String password) {
@@ -291,9 +285,16 @@ public class UserEntity {
         }
     }
 
+    /**
+     * Checks if the user owns a specific forum.
+     *
+     * @param forum the forum to check for ownership.
+     * @return true if the user owns the forum, false otherwise.
+     */
     public boolean participateInForum(ForumEntity forum) {
         return participatingForums.contains(forum);
     }
+
     /**
      * Gets the list of forums in which the user is a participant.
      *
@@ -362,41 +363,21 @@ public class UserEntity {
     }
 
     /**
-     * Gets the list of likes given by the user.
+     * Gets the number of highs count.
      *
-     * @return {@link List} of {@link LikeEntity} the list of likes given by the user.
+     * @return the number of highs count.
      */
-    public List<LikeEntity> getLikes() {
-        return likes;
-    }
+    public Long getHighsCount() { return highsCount; }
 
     /**
-     * Adds a like to the user's likes collection.
-     *
-     * @param likes {@link LikeEntity} the like to add to the user's likes.
+     * Increments the number of highs count.
      */
-    public void addLikes(LikeEntity likes) {
-        if (!this.likes.contains(likes)) {
-            this.likes.add(likes);
-            if (likes.getUser() != this) {
-                likes.setUser(this);
-            }
-        }
-    }
+    public void incrementHighs() { this.highsCount++; }
 
     /**
-     * Removes a like from the user's likes collection.
-     *
-     * @param likes {@link LikeEntity} the like to remove from the user's likes.
+     * Decrements the number of highs count.
      */
-    public void removeLikes(LikeEntity likes) {
-        if (this.likes.contains(likes)) {
-            this.likes.remove(likes);
-            if (likes.getUser() == this) {
-                likes.setUser(null);
-            }
-        }
-    }
+    public void decrementHighs() { this.highsCount--; }
 
     /**
      * Gets the timestamp when the user was created.
