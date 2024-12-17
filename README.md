@@ -8,8 +8,9 @@ Acesse: [ONE - ForumHub](https://github.com/soupaulodev/one-forumhub)
 
 ## Descrição
 
-O projeto vai além dos requisitos do desafio, além de criar tópicos e autenticar usuários, possibilita que usuários
-interajam entre si, criando e acessando novos foruns, tópicos, comentários e curtindo seus tópicos favoritos.
+O projeto vai além dos requisitos do desafio. Além de permitir a criação de tópicos e a autenticação de usuários,
+ele possibilita a interação entre os usuários, permitindo que criem e acessem novos fóruns, participem de discussões
+por meio de tópicos e comentários, e distribuam highs em tudo o que gostarem.
 
 ## Tecnologias
 
