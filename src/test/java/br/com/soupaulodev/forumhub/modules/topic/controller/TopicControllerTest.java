@@ -97,8 +97,8 @@ class TopicControllerTest {
                 forumId,
                 creatorId,
                 creatorUsername,
-                0,
-                0,
+                0L,
+                0L,
                 now,
                 now
         );
@@ -157,8 +157,8 @@ class TopicControllerTest {
                         UUID.randomUUID(),
                         UUID.randomUUID(),
                         "creatorUsernameExample",
-                        0,
-                        0,
+                        0L,
+                        0L,
                         Instant.now(),
                         Instant.now()
                 )
@@ -185,8 +185,8 @@ class TopicControllerTest {
                 UUID.randomUUID(),
                 UUID.randomUUID(),
                 "creatorUsernameExample",
-                0,
-                0,
+                0L,
+                0L,
                 new ArrayList<>(),
                 now,
                 now
@@ -228,8 +228,8 @@ class TopicControllerTest {
                 forumId,
                 creatorId,
                 creatorUsername,
-                0,
-                0,
+                0L,
+                0L,
                 now,
                 now
         );

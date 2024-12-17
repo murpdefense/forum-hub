@@ -30,8 +30,8 @@ public record TopicResponseDTO (
         UUID forumId,
         UUID creatorId,
         String creatorUsername,
-        int likeCount,
-        int commentCount,
+        Long likeCount,
+        Long commentCount,
         Instant createdAt,
         Instant updatedAt
 ) {}

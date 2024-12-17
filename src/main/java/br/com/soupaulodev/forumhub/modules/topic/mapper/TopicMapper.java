@@ -60,7 +60,7 @@ public class TopicMapper {
                 topic.getForum().getId(),
                 topic.getCreator().getId(),
                 topic.getCreator().getUsername(),
-                topic.getLikesCount(),
+                topic.getHighsCount(),
                 topic.getCommentsCount(),
                 topic.getCreatedAt(),
                 topic.getUpdatedAt()
@@ -81,7 +81,7 @@ public class TopicMapper {
                 topic.getForum().getId(),
                 topic.getCreator().getId(),
                 topic.getCreator().getUsername(),
-                topic.getLikesCount(),
+                topic.getHighsCount(),
                 topic.getCommentsCount(),
                 topic.getComments().stream().map(CommentMapper::toResponseDTO).toList(),
                 topic.getCreatedAt(),

@@ -35,8 +35,8 @@ public record TopicDetailsResponseDTO(
         UUID forumId,
         UUID creatorId,
         String creatorUsername,
-        int likeCount,
-        int commentCount,
+        Long likeCount,
+        Long commentCount,
         List<CommentResponseDTO> comments,
         Instant createdAt,
         Instant updatedAt

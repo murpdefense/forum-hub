@@ -2,7 +2,6 @@ package br.com.soupaulodev.forumhub.modules.topic.entity;
 
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +10,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Entity representing a topic in the forum.
@@ -56,16 +57,10 @@ public class TopicEntity implements Serializable {
     private List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "comments_count")
-    private int commentsCount;
+    private Long commentsCount;
 
-    /**
-     * The likes associated with the topic.
-     */
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LikeEntity> likes = new ArrayList<>();
-
-    @Column(name = "likes_count")
-    private int likesCount;
+    @Column(name = "highs_count")
+    private Long highsCount = 0L;
 
     /**
      * The timestamp when the topic was created.
@@ -122,15 +117,11 @@ public class TopicEntity implements Serializable {
      * @param forum the forum to which the topic belongs
      */
     public TopicEntity(String title, String content, UserEntity creator, ForumEntity forum) {
-        Instant now = Instant.now();
-
-        this.id = UUID.randomUUID();
+        this();
         this.title = title;
         this.content = content;
         this.forum = forum;
         this.creator = creator;
-        this.createdAt = now;
-        this.updatedAt = now;
     }
 
     public UUID getId() {
@@ -203,33 +194,26 @@ public class TopicEntity implements Serializable {
         }
     }
 
-    public int getCommentsCount() {
+    public Long getCommentsCount() {
         return commentsCount;
     }
 
-    public List<LikeEntity> getLikes() {
-        return likes;
-    }
+    /**
+     * Gets the number of highs count.
+     *
+     * @return the number of highs count.
+     */
+    public Long getHighsCount() { return highsCount; }
 
-    public void addLike(LikeEntity like) {
-        if (like != null && !likes.contains(like)) {
-            likes.add(like);
-            like.setTopic(this);
-            likesCount++;
-        }
-    }
+    /**
+     * Increments the number of highs count.
+     */
+    public void incrementHighs() { this.highsCount++; }
 
-    public void removeLike(LikeEntity like) {
-        if (like != null && likes.contains(like)) {
-            likes.remove(like);
-            like.setTopic(null);
-            likesCount--;
-        }
-    }
-
-    public int getLikesCount() {
-        return likesCount;
-    }
+    /**
+     * Decrements the number of highs count.
+     */
+    public void decrementHighs() { this.highsCount--; }
 
     public Instant getCreatedAt() {
         return createdAt;
