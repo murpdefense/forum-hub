@@ -1,8 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
@@ -41,23 +40,23 @@ public class UpdateForumUseCase {
      * @param requestDTO the data transfer object containing the forum update data
      * @param authenticatedUserId the unique identifier of the authenticated user
      * @return the response data transfer object containing the updated forum data
-     * @throws ForumNotFoundException if the forum with the specified ID is not found
-     * @throws ForumIllegalArgumentException if the provided data is invalid
-     * @throws UnauthorizedException if the authenticated user is not the owner of the forum
+     * @throws ResourceNotFoundException if the forum with the specified ID is not found
+     * @throws IllegalArgumentException if the provided data is invalid
+     * @throws ForbiddenException if the authenticated user is not the owner of the forum
      */
     public ForumResponseDTO execute(UUID id, ForumUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
         ForumEntity forumFound = forumRepository.findById(id)
-                .orElseThrow(ForumNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Forum not found."));
 
         if (!forumFound.getOwner().getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to update this forum.");
+            throw new ForbiddenException("You are not allowed to update this forum.");
         }
 
         if (requestDTO == null
                 || (requestDTO.name() == null
                 && requestDTO.description() == null)) {
 
-            throw new ForumIllegalArgumentException("""
+            throw new IllegalArgumentException("""
                 You must provide at least one field to update:
                 - name
                 - description

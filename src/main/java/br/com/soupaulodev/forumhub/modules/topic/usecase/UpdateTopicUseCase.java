@@ -1,8 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
@@ -39,24 +38,24 @@ public class UpdateTopicUseCase {
      * @param id the unique identifier of the topic to be updated
      * @param requestDTO the data transfer object containing the topic update data
      * @return the response data transfer object containing the updated topic data
-     * @throws TopicNotFoundException if the topic specified by the id does not exist
-     * @throws TopicIllegalArgumentException if neither title nor content is provided for update
-     * @throws UnauthorizedException if the authenticated user is not the creator of the topic
+     * @throws ResourceNotFoundException if the topic specified by the id does not exist
+     * @throws IllegalArgumentException if neither title nor content is provided for update
+     * @throws ForbiddenException if the authenticated user is not the creator of the topic
      */
     public TopicResponseDTO execute(UUID id, TopicUpdateRequestDTO requestDTO, UUID autheticatedUserId) {
 
         TopicEntity topicFound = topicRepository.findById(id)
-                .orElseThrow(TopicNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
 
         if (!topicFound.getCreator().getId().equals(autheticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to update this topic.");
+            throw new ForbiddenException("You are not allowed to update this topic.");
         }
 
         if (requestDTO == null
                 || (requestDTO.title() == null
                 && requestDTO.content() == null)) {
 
-            throw new TopicIllegalArgumentException("""
+            throw new IllegalArgumentException("""
                 You must provide at least one field to update:
                 - title
                 - content

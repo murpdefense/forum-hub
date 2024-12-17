@@ -1,8 +1,5 @@
 package br.com.soupaulodev.forumhub.modules.forum.controller;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumAlreadyExistsException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;

@@ -1,6 +1,5 @@
 package br.com.soupaulodev.forumhub.modules.forum.mapper;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumIllegalArgumentException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;

@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
@@ -47,15 +46,14 @@ public class CreateTopicUseCase {
      *
      * @param requestDTO the data transfer object containing the topic creation data
      * @return the response data transfer object containing the created topic data
-     * @throws ForumNotFoundException if the forum specified in the request does not exist
-     * @throws UserNotFoundException if the user specified in the request does not exist
+     * @throws ResourceNotFoundException if the forum or user specified in the request does not exist
      */
     public TopicResponseDTO execute(TopicCreateRequestDTO requestDTO) {
 
         ForumEntity forum = forumRepository.findById(UUID.fromString(requestDTO.forumId()))
-                .orElseThrow(ForumNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Forum not found."));
         UserEntity user = userRepository.findById(UUID.fromString(requestDTO.creatorId()))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         TopicEntity topic = TopicMapper.toEntity(requestDTO, forum, user);
         topic.setCreator(user);

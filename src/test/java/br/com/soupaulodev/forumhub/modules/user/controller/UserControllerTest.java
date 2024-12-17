@@ -1,8 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;

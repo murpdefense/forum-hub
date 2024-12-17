@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.UUID;
  * </p>
  * <p>
  *     It interacts with the {@link UserRepository} to delete user data from the database.
- *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+ *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
@@ -40,20 +40,20 @@ public class DeleteUserUseCase {
      * <p>
      *     This method deletes a user from the database using the provided unique identifier.
      *     If the user is found and user is authenticated, the user is deleted from the database.
-     *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+     *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
      * </p>
      *
      * @param id the user's unique identifier of type {@link UUID}
      * @param authenticatedUserId the authenticated user's unique identifier
-     * @throws UserNotFoundException if no user with the given ID is found
-     * @throws UnauthorizedException if the authenticated user is not the owner of the user
+     * @throws ResourceNotFoundException if no user with the given ID is found
+     * @throws ForbiddenException if the authenticated user is not allowed to delete the user
      */
     public void execute(UUID id, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (!userDB.getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to delete this user.");
+            throw new ForbiddenException("You are not allowed to delete this user.");
         }
 
         userRepository.delete(userDB);

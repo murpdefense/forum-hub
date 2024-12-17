@@ -1,8 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserIllegalArgumentException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
@@ -17,13 +16,13 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the update of a user's information.
  * <p>
- *     The {@link UpdateUserUseCase} class processes requests to update a user's information.
- *     If successful, it returns the updated user data in a response data transfer object.
+ * The {@link UpdateUserUseCase} class processes requests to update a user's information.
+ * If successful, it returns the updated user data in a response data transfer object.
  * </p>
  * <p>
- *     It interacts with the {@link UserRepository} to update user data in the database.
- *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
- *     If no fields to update are provided, a {@link UserIllegalArgumentException} is thrown.
+ * It interacts with the {@link UserRepository} to update user data in the database.
+ * If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
+ * If no fields to update are provided, a {@link IllegalArgumentException} is thrown.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
@@ -37,7 +36,7 @@ public class UpdateUserUseCase {
     /**
      * Constructs a new {@link UpdateUserUseCase}.
      *
-     * @param userRepository the repository responsible for updating user data in the database
+     * @param userRepository  the repository responsible for updating user data in the database
      * @param passwordEncoder the password encoder used to securely hash user passwords
      */
     public UpdateUserUseCase(UserRepository userRepository,
@@ -50,38 +49,39 @@ public class UpdateUserUseCase {
     /**
      * Executes the use case to update a user's information.
      * <p>
-     *     This method updates a user's information in the database using the provided unique identifier and update data.
-     *     If the user is found and the update data is valid, the updated user data is returned in a response data transfer object.
+     * This method updates a user's information in the database using the provided unique identifier and update data.
+     * If the user is found and the update data is valid, the updated user data is returned in a response data transfer object.
      * </p>
      *
-     * @param id the user's unique identifier of type {@link UUID}
-     * @param requestDTO {@link UserUpdateRequestDTO} the data transfer object containing the user's update data
+     * @param id                  the user's unique identifier of type {@link UUID}
+     * @param requestDTO          {@link UserUpdateRequestDTO} the data transfer object containing the user's update data
      * @param authenticatedUserId the authenticated user's unique identifier
      * @return {@link UserResponseDTO} the data transfer object containing the updated user data
-     * @throws UserNotFoundException if no user with the given ID is found
-     * @throws UserIllegalArgumentException if no fields to update are provided
-     * @throws UnauthorizedException if the authenticated user is not the user being updated
+     * @throws ResourceNotFoundException if no user with the given ID is found
+     * @throws IllegalArgumentException  if no fields to update are provided
+     * @throws ForbiddenException        if the authenticated user is not allowed to update the user
      */
     public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
-        UserEntity userDB = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        UserEntity userDB = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (!userDB.getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to update this user.");
+            throw new ForbiddenException("You are not allowed to update this user.");
         }
 
         if (requestDTO == null
-            || (requestDTO.name() == null
-            && requestDTO.username() == null
-            && requestDTO.email() == null
-            && requestDTO.password() == null)) {
+                || (requestDTO.name() == null
+                && requestDTO.username() == null
+                && requestDTO.email() == null
+                && requestDTO.password() == null)) {
 
-            throw new UserIllegalArgumentException("""
-                You must provide at least one field to update:
-                - name
-                - username
-                - email
-                - password
-                """);
+            throw new IllegalArgumentException("""
+                    You must provide at least one field to update:
+                    - name
+                    - username
+                    - email
+                    - password
+                    """);
         }
 
         userDB.setName(requestDTO.name() != null ? requestDTO.name() : userDB.getName());

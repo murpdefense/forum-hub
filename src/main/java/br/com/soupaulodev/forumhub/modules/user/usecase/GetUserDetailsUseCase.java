@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
@@ -18,7 +18,7 @@ import java.util.UUID;
  * </p>
  * <p>
  *     It interacts with the {@link UserRepository} to retrieve user data from the database.
- *     If no user with the given ID is found, a {@link UserNotFoundException} is thrown.
+ *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
@@ -42,15 +42,16 @@ public class GetUserDetailsUseCase {
      * <p>
      *     This method retrieves a user from the database using the provided unique identifier. If the user is found,
      *     the user data is returned in a response data transfer object. If no user with the given ID is found,
-     *     a {@link UserNotFoundException} is thrown.
+     *     a {@link ResourceNotFoundException} is thrown.
      * </p>
      *
      * @param id the user's unique identifier of type {@link UUID}
      * @return {@link UserResponseDTO} the data transfer object containing the retrieved user data
-     * @throws UserNotFoundException if no user with the given ID is found
+     * @throws ResourceNotFoundException if no user with the given ID is found
      */
     public UserDetailsResponseDTO execute(UUID id, UUID authenticatedUserId) {
-        UserEntity userFound = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        UserEntity userFound = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (!userFound.getId().equals(authenticatedUserId)) {
             userFound.setEmail(null);

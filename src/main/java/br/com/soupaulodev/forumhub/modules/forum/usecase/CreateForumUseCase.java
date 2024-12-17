@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumAlreadyExistsException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
@@ -40,17 +40,16 @@ public class CreateForumUseCase {
      *
      * @param requestDTO the data transfer object containing the forum creation data
      * @return the response data transfer {@link ForumResponseDTO} object containing the created forum data
-     * @throws UserNotFoundException if the user does not exist
-     * @throws ForumAlreadyExistsException if a forum with the same name already exists
+     * @throws ResourceNotFoundException if the user or forum does not exist
      */
     @Transactional
     public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO) {
 
         UserEntity user = userRepository.findById(UUID.fromString(requestDTO.ownerId()))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (forumRepository.existsByName(requestDTO.name()).equals(true)) {
-            throw new ForumAlreadyExistsException();
+            throw new ResourceAlreadyExistsException("Forum already exists.");
         }
 
         ForumEntity forum = ForumMapper.toEntity(requestDTO, user);

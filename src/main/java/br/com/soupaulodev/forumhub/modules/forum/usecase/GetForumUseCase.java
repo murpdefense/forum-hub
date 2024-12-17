@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.ForumNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
@@ -31,12 +31,12 @@ public class GetForumUseCase {
      *
      * @param id the unique identifier of the forum
      * @return the response data transfer object containing the forum details
-     * @throws ForumNotFoundException if the forum with the specified ID is not found
+     * @throws ResourceNotFoundException if the forum with the specified ID is not found
      */
     public ForumResponseDTO execute(UUID id) {
 
         ForumEntity forumFound = forumRepository.findById(id)
-                .orElseThrow(ForumNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Forum not found."));
 
         return ForumMapper.toResponseDTO(forumFound);
     }

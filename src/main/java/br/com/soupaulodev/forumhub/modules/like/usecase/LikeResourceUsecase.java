@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.like.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.ResourceAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
 import br.com.soupaulodev.forumhub.modules.like.mapper.LikeMapper;

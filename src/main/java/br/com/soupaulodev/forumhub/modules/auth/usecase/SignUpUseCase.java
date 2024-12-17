@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.auth.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
@@ -58,12 +58,12 @@ public class SignUpUseCase {
      *
      * @param requestDTO The user registration data, including username, password, name, and email.
      * @return A {@link Cookie} containing the JWT token for the newly registered user.
-     * @throws UserAlreadyExistsException If the username is already taken by another user.
+     * @throws ResourceAlreadyExistsException If the username is already taken by another user.
      */
     public Cookie execute(UserCreateRequestDTO requestDTO) {
         if (userRepository.existsByUsername(requestDTO.username())) {
             logger.warn("Attempt to register with existing username: {}", requestDTO.username());
-            throw new UserAlreadyExistsException();
+            throw new ResourceAlreadyExistsException("Username already exists");
         }
 
         UserEntity user = new UserEntity();

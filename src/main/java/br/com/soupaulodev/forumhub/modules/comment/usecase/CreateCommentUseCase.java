@@ -5,10 +5,8 @@ import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentRespons
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.CommentNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UserNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
@@ -49,27 +47,28 @@ public class CreateCommentUseCase {
      *
      * @param requestDTO the DTO containing the data for the new comment
      * @return the response DTO with the created comment data
-     * @throws UserNotFoundException if the user or topic is not found
-     * @throws UnauthorizedException if the user is not allowed to create a comment for another user or topic
+     * @throws ResourceNotFoundException if the user, topic or parent comment does not exist
+     * @throws ForbiddenException if the user is not allowed to create a comment for the specified topic
+     * @throws ForbiddenException if the user is not allowed to create a comment for another user
      */
     public CommentResponseDTO execute(CommentCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 
         UserEntity user = userRepository.findById(UUID.fromString(requestDTO.userId()))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
         if (!user.getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to create a comment for another user");
+            throw new ForbiddenException("You are not allowed to create a comment for another user");
         }
 
         TopicEntity topic = topicRepository.findById(UUID.fromString(requestDTO.topicId()))
-                .orElseThrow(TopicNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
         if (!user.participateInForum(topic.getForum())) {
-            throw new UnauthorizedException("You are not allowed to create a comment for this topic");
+            throw new ForbiddenException("You are not allowed to create a comment for this topic");
         }
 
         CommentEntity parentComment = null;
         if (requestDTO.parentCommentId() != null) {
             parentComment = commentRepository.findById(UUID.fromString(requestDTO.parentCommentId()))
-                    .orElseThrow(() -> new CommentNotFoundException("Parent comment not found with ID: " + requestDTO.parentCommentId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent comment not found."));
         }
 
         CommentEntity entity = new CommentEntity(requestDTO.content(), user, topic, parentComment);

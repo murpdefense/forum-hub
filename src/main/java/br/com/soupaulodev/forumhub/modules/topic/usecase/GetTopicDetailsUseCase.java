@@ -1,6 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.mapper.TopicMapper;
@@ -33,12 +33,12 @@ public class GetTopicDetailsUseCase {
      *
      * @param id the unique identifier of the topic to be retrieved
      * @return the response data transfer object containing the topic data
-     * @throws TopicNotFoundException if the topic specified by the id does not exist
+     * @throws ResourceNotFoundException if the topic specified by the id does not exist
      */
     public TopicDetailsResponseDTO execute(UUID id) {
 
         TopicEntity topicFound = topicRepository.findById(id)
-                .orElseThrow(TopicNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
         topicFound.getHighsCount();
         topicFound.getComments();
         topicFound.getCreator();

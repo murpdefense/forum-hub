@@ -32,140 +32,14 @@ public class ExceptionHandlerController {
     }
 
     /**
-     * Handles CommentIllegalArgumentException.
+     * Handles ForbiddenException.
      *
      * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
+     * @return a ResponseEntity with a forbidden status and the exception message
      */
-    @ExceptionHandler(CommentIllegalArgumentException.class)
-    public ResponseEntity<?> handleCommentIllegalArgumentException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles CommentNotFoundException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<?> handleCommentNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles ForumAlreadyExistsException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a conflict status and the exception message
-     */
-    @ExceptionHandler(ForumAlreadyExistsException.class)
-    public ResponseEntity<?> handleForumAlreadyExistsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    /**
-     * Handles ForumIllegalArgumentException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(ForumIllegalArgumentException.class)
-    public ResponseEntity<?> handleForumIllegalArgumentException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles ForumNotFoundException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(ForumNotFoundException.class)
-    public ResponseEntity<?> handleForumNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles LikeAlreadyExistsException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a conflict status and the exception message
-     */
-    @ExceptionHandler(LikeAlreadyExistsException.class)
-    public ResponseEntity<?> handleLikeAlreadyExistsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    /**
-     * Handles LikeNotFoundException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(LikeNotFoundException.class)
-    public ResponseEntity<?> handleLikeNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(TokenExpiredCustomException.class)
-    public ResponseEntity<?> handleTokenExpiredCustomException(Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-    }
-
-    /**
-     * Handles TopicIllegalArgumentException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(TopicIllegalArgumentException.class)
-    public ResponseEntity<?> handleTopicIllegalArgumentException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles TopicNotFoundException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(TopicNotFoundException.class)
-    public ResponseEntity<?> handleTopicNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles UserAlreadyExistsException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a conflict status and the exception message
-     */
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExistsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    /**
-     * Handles UserIllegalArgumentException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(UserIllegalArgumentException.class)
-    public ResponseEntity<?> handleUserIllegalArgumentException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    /**
-     * Handles UserNotFoundException.
-     *
-     * @param e the exception to handle
-     * @return a ResponseEntity with a bad request status and the exception message
-     */
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handleForbiddenException(ForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     /**
@@ -180,6 +54,17 @@ public class ExceptionHandlerController {
     }
 
     /**
+     * Handles IllegalArgumentException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a bad request status and the exception message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    /**
      * Handles RateLimitExceededException.
      *
      * @param e the exception to handle
@@ -188,6 +73,28 @@ public class ExceptionHandlerController {
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<?> handleRateLimitExceededException(RateLimitExceededException e) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(e.getMessage());
+    }
+
+    /**
+     * Handles ResourceAlreadyExistsException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a conflict status and the exception message
+     */
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<?> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    /**
+     * Handles ResourceNotFoundException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a not found status and the exception message
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     /**

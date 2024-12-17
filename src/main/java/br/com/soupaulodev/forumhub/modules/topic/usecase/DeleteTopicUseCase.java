@@ -1,7 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.TopicNotFoundException;
-import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import org.springframework.stereotype.Service;
@@ -32,15 +32,15 @@ public class DeleteTopicUseCase {
      *
      * @param id the unique identifier of the topic to be deleted
      * @param authenticatedUserId the authenticated user's unique identifier
-     * @throws TopicNotFoundException if the topic specified by the id does not exist
-     * @throws UnauthorizedException if the authenticated user is not the creator of the topic
+     * @throws ResourceNotFoundException if the topic specified by the id does not exist
+     * @throws ForbiddenException if the authenticated user is not the creator of the topic
      */
     public void execute(UUID id, UUID authenticatedUserId) {
         TopicEntity topicDB = topicRepository.findById(id)
-                .orElseThrow(TopicNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
 
         if (!topicDB.getCreator().getId().equals(authenticatedUserId)) {
-            throw new UnauthorizedException("You are not allowed to delete this topic.");
+            throw new ForbiddenException("You are not allowed to delete this topic.");
         }
 
         topicRepository.delete(topicDB);
