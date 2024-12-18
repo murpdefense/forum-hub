@@ -9,10 +9,10 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 /**
  * Mapper class for converting between {@link ForumEntity} and Data Transfer Objects (DTOs).
  * <p>
- *     This class provides static methods to convert between {@link ForumEntity} objects and
- *     various DTO representations such as {@link ForumCreateRequestDTO}, {@link ForumUpdateRequestDTO},
- *     and {@link ForumResponseDTO}. These transformations help decouple the domain model from
- *     the API layer, ensuring proper data transfer between different components of the application.
+ * This class provides static methods to convert between {@link ForumEntity} objects and
+ * various DTO representations such as {@link ForumCreateRequestDTO}, {@link ForumUpdateRequestDTO},
+ * and {@link ForumResponseDTO}. These transformations help decouple the domain model from
+ * the API layer, ensuring proper data transfer between different components of the application.
  * </p>
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
@@ -22,16 +22,16 @@ public class ForumMapper {
     /**
      * Converts a {@link ForumCreateRequestDTO} to a {@link ForumEntity}.
      * <p>
-     *     This method maps the forum creation DTO, which contains the details of the new forum,
-     *     to a corresponding {@link ForumEntity} for persistence in the database.
+     * This method maps the forum creation DTO, which contains the details of the new forum,
+     * to a corresponding {@link ForumEntity} for persistence in the database.
      * </p>
      *
-     * @param dto the {@link ForumCreateRequestDTO} containing forum data to be converted
+     * @param dto   the {@link ForumCreateRequestDTO} containing forum data to be converted
      * @param owner {@link UserEntity} the owner of the forum
      * @return a new {@link ForumEntity} with the data from the {@link ForumCreateRequestDTO}
      */
     public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
-        if(owner == null) {
+        if (owner == null) {
             throw new IllegalArgumentException("Owner cannot be null");
         }
         if ((dto.name() == null || dto.name().isEmpty() || dto.name().isBlank())
@@ -47,11 +47,11 @@ public class ForumMapper {
     /**
      * Converts a {@link ForumUpdateRequestDTO} to a {@link ForumEntity}.
      * <p>
-     *     This method maps the forum update DTO, which contains updated details of the forum,
-     *     to a corresponding {@link ForumEntity} for modifying the forum's information in the database.
+     * This method maps the forum update DTO, which contains updated details of the forum,
+     * to a corresponding {@link ForumEntity} for modifying the forum's information in the database.
      * </p>
      *
-     * @param dto the {@link ForumUpdateRequestDTO} containing updated forum data to be converted
+     * @param dto   the {@link ForumUpdateRequestDTO} containing updated forum data to be converted
      * @param owner {@link UserEntity} the owner of the forum
      * @return a new {@link ForumEntity} with the updated data from the {@link ForumUpdateRequestDTO}
      */
@@ -65,9 +65,9 @@ public class ForumMapper {
     /**
      * Converts a {@link ForumEntity} to a {@link ForumResponseDTO}.
      * <p>
-     *     This method maps a {@link ForumEntity} to a {@link ForumResponseDTO}, which contains
-     *     forum data that is ready to be sent as a response to API calls. The response DTO
-     *     provides a simplified view of the forum, hiding sensitive information and internal details.
+     * This method maps a {@link ForumEntity} to a {@link ForumResponseDTO}, which contains
+     * forum data that is ready to be sent as a response to API calls. The response DTO
+     * provides a simplified view of the forum, hiding sensitive information and internal details.
      * </p>
      *
      * @param entity the {@link ForumEntity} object containing forum data to be converted
@@ -78,14 +78,15 @@ public class ForumMapper {
             throw new IllegalArgumentException("Forum owner cannot be null");
         }
         return new ForumResponseDTO(
-            entity.getId(),
-            entity.getName(),
-            entity.getDescription(),
-            entity.getOwner().getId(),
-            entity.getParticipants().size(),
-            entity.getTopics().size(),
-            entity.getCreatedAt(),
-            entity.getUpdatedAt()
+                entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getOwner().getId(),
+                entity.getHighsCount(),
+                entity.getParticipants().size(),
+                entity.getTopics().size(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

@@ -7,7 +7,6 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateReque
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.mapper.ForumMapper;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
-import br.com.soupaulodev.forumhub.security.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,29 +19,26 @@ import java.util.UUID;
 public class UpdateForumUseCase {
 
     private final ForumRepository forumRepository;
-    private final JwtUtil jwtUtil;
 
     /**
      * Constructs a new UpdateForumUsecase with the specified repository.
      *
      * @param forumRepository the repository for managing forums
      */
-    public UpdateForumUseCase(ForumRepository forumRepository,
-                              JwtUtil jwtUtil) {
+    public UpdateForumUseCase(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
-        this.jwtUtil = jwtUtil;
     }
 
     /**
      * Executes the use case to update a forum.
      *
-     * @param id the unique identifier of the forum to be updated
-     * @param requestDTO the data transfer object containing the forum update data
+     * @param id                  the unique identifier of the forum to be updated
+     * @param requestDTO          the data transfer object containing the forum update data
      * @param authenticatedUserId the unique identifier of the authenticated user
      * @return the response data transfer object containing the updated forum data
      * @throws ResourceNotFoundException if the forum with the specified ID is not found
-     * @throws IllegalArgumentException if the provided data is invalid
-     * @throws ForbiddenException if the authenticated user is not the owner of the forum
+     * @throws IllegalArgumentException  if the provided data is invalid
+     * @throws ForbiddenException        if the authenticated user is not the owner of the forum
      */
     public ForumResponseDTO execute(UUID id, ForumUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
         ForumEntity forumFound = forumRepository.findById(id)
@@ -57,10 +53,10 @@ public class UpdateForumUseCase {
                 && requestDTO.description() == null)) {
 
             throw new IllegalArgumentException("""
-                You must provide at least one field to update:
-                - name
-                - description
-                """);
+                    You must provide at least one field to update:
+                    - name
+                    - description
+                    """);
         }
 
         forumFound.setName(requestDTO.name() != null ? requestDTO.name() : forumFound.getName());

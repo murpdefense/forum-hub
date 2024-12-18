@@ -27,7 +27,7 @@ public class CreateForumUseCase {
      * Constructs a new CreateForumUsecase with the specified repositories.
      *
      * @param forumRepository the repository for managing forums
-     * @param userRepository the repository for managing users
+     * @param userRepository  the repository for managing users
      */
     public CreateForumUseCase(ForumRepository forumRepository,
                               UserRepository userRepository) {

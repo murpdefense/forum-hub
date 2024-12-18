@@ -10,14 +10,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a forum within the system.
  * <p>
- *     The {@link ForumEntity} class encapsulates the details of a forum, including their
- *     information (name, description) and relationships (owner, participants, topics).
- *     It also tracks the timestamps of forum creation and last update.
+ * The {@link ForumEntity} class encapsulates the details of a forum, including their
+ * information (name, description) and relationships (owner, participants, topics).
+ * It also tracks the timestamps of forum creation and last update.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br">soupaulodev</a>
@@ -53,13 +56,13 @@ public class ForumEntity implements Serializable {
      * The participants of the forum.
      */
     @ManyToMany(mappedBy = "participatingForums", fetch = FetchType.EAGER)
-    private List<UserEntity> participants = new ArrayList<>();
+    private final List<UserEntity> participants = new ArrayList<>();
 
     /**
      * The topics in the forum.
      */
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<TopicEntity> topics = new ArrayList<>();
+    private final List<TopicEntity> topics = new ArrayList<>();
 
     /**
      * The timestamp when the forum was created.
@@ -89,9 +92,9 @@ public class ForumEntity implements Serializable {
     /**
      * Constructs a new ForumEntity with the specified name, description, and owner.
      *
-     * @param name the name of the forum
+     * @param name        the name of the forum
      * @param description the description of the forum
-     * @param owner the owner of the forum
+     * @param owner       the owner of the forum
      */
     public ForumEntity(String name, String description, UserEntity owner) {
         Instant now = Instant.now();
@@ -128,11 +131,17 @@ public class ForumEntity implements Serializable {
         this.description = description;
     }
 
-    public Long getHighsCount() { return highsCount; }
+    public Long getHighsCount() {
+        return highsCount;
+    }
 
-    public void incrementHighs() { this.highsCount++; }
+    public void incrementHighs() {
+        this.highsCount++;
+    }
 
-    public void decrementHighs() { this.highsCount--; }
+    public void decrementHighs() {
+        this.highsCount--;
+    }
 
     public UserEntity getOwner() {
         return owner;

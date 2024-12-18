@@ -24,7 +24,7 @@ import java.util.UUID;
  * updating, and deleting forums.
  *
  * <p>
- *     The {@link ForumController} is responsible for:
+ * The {@link ForumController} is responsible for:
  *     <ul>
  *         <li>Handling forum creation requests.</li>
  *         <li>Handling forum retrieval requests by ID.</li>
@@ -51,8 +51,8 @@ public class ForumController {
      * Constructs a new {@link ForumController} with the specified use cases.
      *
      * @param createForumUseCase {@link CreateForumUseCase} the use case for creating forums
-     * @param listForumsUseCase {@link ListForumsUseCase} the use case for listing forums with pagination
-     * @param getForumUseCase {@link GetForumUseCase} the use case for getting forum details
+     * @param listForumsUseCase  {@link ListForumsUseCase} the use case for listing forums with pagination
+     * @param getForumUseCase    {@link GetForumUseCase} the use case for getting forum details
      * @param updateForumUseCase {@link UpdateForumUseCase} the use case for updating forums
      * @param deleteForumUseCase {@link DeleteForumUseCase} the use case for deleting forums
      */
@@ -101,7 +101,7 @@ public class ForumController {
     @Operation(summary = "List all forums")
     @ApiResponse(responseCode = "200", description = "Forums listed")
     public ResponseEntity<List<ForumResponseDTO>> listForums(@RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size) {
+                                                             @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok(listForumsUseCase.execute(page, size));
     }
@@ -120,7 +120,7 @@ public class ForumController {
             @ApiResponse(responseCode = "404", description = "Forum not found")
     })
     public ResponseEntity<ForumResponseDTO> getForum(@PathVariable
-                                                            UUID id) {
+                                                     UUID id) {
 
         return ResponseEntity.ok(getForumUseCase.execute(id));
     }
@@ -129,7 +129,7 @@ public class ForumController {
      * Endpoint for handling forum update operations.
      * This method updates a forum by its unique identifier, using the data provided in the request DTO
      *
-     * @param id the forum's unique identifier to be updated
+     * @param id              the forum's unique identifier to be updated
      * @param forumRequestDTO {@link ForumUpdateRequestDTO} the data transfer object containing the forum update data
      * @return a {@link ResponseEntity} of {@link ForumResponseDTO} with status 200 (OK) and the updated forum data
      */
@@ -167,9 +167,9 @@ public class ForumController {
             @ApiResponse(responseCode = "404", description = "Forum not found")
     })
     public ResponseEntity<Void> deleteForum(@Valid
-                                           @PathVariable
-                                           @org.hibernate.validator.constraints.UUID
-                                           String id) {
+                                            @PathVariable
+                                            @org.hibernate.validator.constraints.UUID
+                                            String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteForumUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
