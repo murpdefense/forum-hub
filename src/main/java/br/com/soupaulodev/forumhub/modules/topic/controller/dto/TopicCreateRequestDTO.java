@@ -7,15 +7,15 @@ import org.hibernate.validator.constraints.UUID;
 /**
  * DTO (Data Transfer Object) representing the request body for topic creation.
  * <p>
- *     This class is used to capture the topic's information, including its title, content, forum ID and creator ID,
- *     when creating a new topic. It uses Jakarta Bean Validation annotations to enforce that the input is validated
- *     before processing, ensuring that the topic is created correctly.
+ * This class is used to capture the topic's information, including its title, content, forum ID and creator ID,
+ * when creating a new topic. It uses Jakarta Bean Validation annotations to enforce that the input is validated
+ * before processing, ensuring that the topic is created correctly.
  * </p>
- * @param title the title of the topic
- * @param content the content of the topic
- * @param forumId the unique identifier of the forum to which the topic belongs
- * @param creatorId the unique identifier of the creator of the topic
  *
+ * @param title     the title of the topic
+ * @param content   the content of the topic
+ * @param forumId   the unique identifier of the forum to which the topic belongs
+ * @param creatorId the unique identifier of the creator of the topic
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public record TopicCreateRequestDTO(
@@ -29,4 +29,5 @@ public record TopicCreateRequestDTO(
 
         @UUID String forumId,
         @UUID String creatorId
-) {}
+) {
+}

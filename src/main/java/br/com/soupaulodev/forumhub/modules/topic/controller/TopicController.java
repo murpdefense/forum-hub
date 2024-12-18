@@ -27,7 +27,7 @@ import java.util.UUID;
  * updating, and deleting forums.
  *
  * <p>
- *     The {@link TopicController} is responsible for:
+ * The {@link TopicController} is responsible for:
  *     <ul>
  *         <li>Handling topic creation requests.</li>
  *         <li>Handling topic retrieval requests by ID.</li>
@@ -53,11 +53,11 @@ public class TopicController {
     /**
      * Constructs a new {@link TopicController} with the specified use cases.
      *
-     * @param createTopicUseCase the use case for creating topics
-     * @param listTopicsUseCase the use case for retrieving recent topics
+     * @param createTopicUseCase     the use case for creating topics
+     * @param listTopicsUseCase      the use case for retrieving recent topics
      * @param getTopicDetailsUseCase the use case for retrieving a topic
-     * @param updateTopicUseCase the use case for updating a topic
-     * @param deleteTopicUseCase the use case for deleting a topic
+     * @param updateTopicUseCase     the use case for updating a topic
+     * @param deleteTopicUseCase     the use case for deleting a topic
      */
     public TopicController(CreateTopicUseCase createTopicUseCase,
                            ListTopicsUseCase listTopicsUseCase,
@@ -106,7 +106,7 @@ public class TopicController {
             @ApiResponse(responseCode = "404", description = "Topic not found")
     })
     public ResponseEntity<TopicDetailsResponseDTO> getTopicDetails(@Valid @PathVariable
-                                                            @org.hibernate.validator.constraints.UUID String id) {
+                                                                   @org.hibernate.validator.constraints.UUID String id) {
         return ResponseEntity.ok(getTopicDetailsUseCase.execute(UUID.fromString(id)));
     }
 
@@ -135,7 +135,7 @@ public class TopicController {
      * Endpoint for handling topic update operations.
      * This method updates a topic by its unique identifier if the authenticated user is the topic's owner.
      *
-     * @param id the topic's unique identifier of type {@link UUID} to be updated
+     * @param id         the topic's unique identifier of type {@link UUID} to be updated
      * @param requestDTO the data transfer object containing the topic update data
      * @return a {@link ResponseEntity} of {@link TopicResponseDTO} with status 200 (OK) and the updated topic data
      */

@@ -54,7 +54,7 @@ public class TopicEntity implements Serializable {
      * The comments associated with the topic.
      */
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> comments = new ArrayList<>();
+    private final List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "comments_count")
     private Long commentsCount;
@@ -94,7 +94,7 @@ public class TopicEntity implements Serializable {
      * Constructor with title, content, and state.
      * Initializes the topic with a new UUID and the current timestamp.
      *
-     * @param title the title of the topic
+     * @param title   the title of the topic
      * @param content the content of the topic
      */
     public TopicEntity(String title, String content) {
@@ -111,10 +111,10 @@ public class TopicEntity implements Serializable {
      * Constructor with title, content, creator, and forum.
      * Initializes the topic with a new UUID and the current timestamp.
      *
-     * @param title the title of the topic
+     * @param title   the title of the topic
      * @param content the content of the topic
      * @param creator the creator of the topic
-     * @param forum the forum to which the topic belongs
+     * @param forum   the forum to which the topic belongs
      */
     public TopicEntity(String title, String content, UserEntity creator, ForumEntity forum) {
         this();
@@ -203,17 +203,23 @@ public class TopicEntity implements Serializable {
      *
      * @return the number of highs count.
      */
-    public Long getHighsCount() { return highsCount; }
+    public Long getHighsCount() {
+        return highsCount;
+    }
 
     /**
      * Increments the number of highs count.
      */
-    public void incrementHighs() { this.highsCount++; }
+    public void incrementHighs() {
+        this.highsCount++;
+    }
 
     /**
      * Decrements the number of highs count.
      */
-    public void decrementHighs() { this.highsCount--; }
+    public void decrementHighs() {
+        this.highsCount--;
+    }
 
     public Instant getCreatedAt() {
         return createdAt;

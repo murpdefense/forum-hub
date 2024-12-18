@@ -30,10 +30,10 @@ public class DeleteTopicUseCase {
     /**
      * Executes the use case to delete a topic.
      *
-     * @param id the unique identifier of the topic to be deleted
+     * @param id                  the unique identifier of the topic to be deleted
      * @param authenticatedUserId the authenticated user's unique identifier
      * @throws ResourceNotFoundException if the topic specified by the id does not exist
-     * @throws ForbiddenException if the authenticated user is not the creator of the topic
+     * @throws ForbiddenException        if the authenticated user is not the creator of the topic
      */
     public void execute(UUID id, UUID authenticatedUserId) {
         TopicEntity topicDB = topicRepository.findById(id)

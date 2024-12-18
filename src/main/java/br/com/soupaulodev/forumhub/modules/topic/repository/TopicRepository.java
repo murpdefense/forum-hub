@@ -13,4 +13,5 @@ import java.util.UUID;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Repository
-public interface TopicRepository extends JpaRepository<TopicEntity, UUID> {}
+public interface TopicRepository extends JpaRepository<TopicEntity, UUID> {
+}

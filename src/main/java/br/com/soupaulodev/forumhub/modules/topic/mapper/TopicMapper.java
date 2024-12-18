@@ -19,8 +19,8 @@ public class TopicMapper {
     /**
      * Converts a TopicCreateRequestDTO to a TopicEntity.
      *
-     * @param dto the TopicCreateRequestDTO containing the topic creation data
-     * @param forum the ForumEntity to which the topic belongs
+     * @param dto     the TopicCreateRequestDTO containing the topic creation data
+     * @param forum   the ForumEntity to which the topic belongs
      * @param creator the UserEntity who created the topic
      * @return the TopicEntity created from the DTO
      */

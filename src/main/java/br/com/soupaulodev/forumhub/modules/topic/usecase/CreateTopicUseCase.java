@@ -31,7 +31,7 @@ public class CreateTopicUseCase {
      *
      * @param topicRepository the repository for managing topics
      * @param forumRepository the repository for managing forums
-     * @param userRepository the repository for managing users
+     * @param userRepository  the repository for managing users
      */
     public CreateTopicUseCase(TopicRepository topicRepository,
                               ForumRepository forumRepository,
