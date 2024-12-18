@@ -11,12 +11,12 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the deletion of a user by their ID.
  * <p>
- *     The {@link DeleteUserUseCase} class processes requests to delete a user by their unique identifier.
- *     If successful, the user is deleted from the database.
+ * The {@link DeleteUserUseCase} class processes requests to delete a user by their unique identifier.
+ * If successful, the user is deleted from the database.
  * </p>
  * <p>
- *     It interacts with the {@link UserRepository} to delete user data from the database.
- *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
+ * It interacts with the {@link UserRepository} to delete user data from the database.
+ * If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
@@ -38,15 +38,15 @@ public class DeleteUserUseCase {
     /**
      * Executes the use case to delete a user by their ID.
      * <p>
-     *     This method deletes a user from the database using the provided unique identifier.
-     *     If the user is found and user is authenticated, the user is deleted from the database.
-     *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
+     * This method deletes a user from the database using the provided unique identifier.
+     * If the user is found and user is authenticated, the user is deleted from the database.
+     * If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
      * </p>
      *
-     * @param id the user's unique identifier of type {@link UUID}
+     * @param id                  the user's unique identifier of type {@link UUID}
      * @param authenticatedUserId the authenticated user's unique identifier
      * @throws ResourceNotFoundException if no user with the given ID is found
-     * @throws ForbiddenException if the authenticated user is not allowed to delete the user
+     * @throws ForbiddenException        if the authenticated user is not allowed to delete the user
      */
     public void execute(UUID id, UUID authenticatedUserId) {
         UserEntity userDB = userRepository.findById(id)

@@ -50,8 +50,8 @@ public class UserController {
     /**
      * Constructor for {@link UserController}.
      *
-     * @param listUsersUseCase {@link } the use case for handling all users retrieval
-     * @param getUserUseCase {@link GetUserDetailsUseCase} the use case for handling user retrieval by ID
+     * @param listUsersUseCase  {@link } the use case for handling all users retrieval
+     * @param getUserUseCase    {@link GetUserDetailsUseCase} the use case for handling user retrieval by ID
      * @param updateUserUseCase {@link UpdateUserUseCase} the use case for handling user update operations
      * @param deleteUserUseCase {@link DeleteUserUseCase} the use case for handling user deletion operations
      */
@@ -98,7 +98,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Users data retrieved successfully"),
     })
     public ResponseEntity<List<UserResponseDTO>> listUsers(@Valid @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                            @Valid @RequestParam(defaultValue = "10") @Min(10) int size) {
+                                                           @Valid @RequestParam(defaultValue = "10") @Min(10) int size) {
         return ResponseEntity.ok(listUsersUseCase.execute(page, size));
     }
 
@@ -107,7 +107,7 @@ public class UserController {
      * This method updates a user by their unique identifier, using the data provided in the request DTO
      * and returns the updated user data.
      *
-     * @param id the unique identifier of the user to be updated
+     * @param id         the unique identifier of the user to be updated
      * @param requestDTO the data transfer object {@link UserUpdateRequestDTO} containing user update data
      * @return a {@link ResponseEntity} of {@link UserResponseDTO} with status 200 (OK) and the updated user data
      */
@@ -120,7 +120,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
     })
     public ResponseEntity<UserResponseDTO> updateUser(@Valid @PathVariable("id") String id,
-                                      @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
+                                                      @Valid @RequestBody UserUpdateRequestDTO requestDTO) {
 
         UUID authenticatedUserId = getAuthenticatedUserId();
         return ResponseEntity.ok(updateUserUseCase.execute(UUID.fromString(id), requestDTO, authenticatedUserId));

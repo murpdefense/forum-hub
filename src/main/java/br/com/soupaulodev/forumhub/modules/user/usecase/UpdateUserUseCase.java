@@ -39,8 +39,7 @@ public class UpdateUserUseCase {
      * @param userRepository  the repository responsible for updating user data in the database
      * @param passwordEncoder the password encoder used to securely hash user passwords
      */
-    public UpdateUserUseCase(UserRepository userRepository,
-                             PasswordEncoder passwordEncoder) {
+    public UpdateUserUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -62,18 +61,17 @@ public class UpdateUserUseCase {
      * @throws ForbiddenException        if the authenticated user is not allowed to update the user
      */
     public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
-        UserEntity userDB = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        UserEntity userDB = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (!userDB.getId().equals(authenticatedUserId)) {
             throw new ForbiddenException("You are not allowed to update this user.");
         }
 
-        if (requestDTO == null
-                || (requestDTO.name() == null
-                && requestDTO.username() == null
-                && requestDTO.email() == null
-                && requestDTO.password() == null)) {
+        if (requestDTO == null ||
+                (requestDTO.name() == null &&
+                        requestDTO.username() == null &&
+                        requestDTO.email() == null
+                        && requestDTO.password() == null)) {
 
             throw new IllegalArgumentException("""
                     You must provide at least one field to update:
@@ -87,8 +85,7 @@ public class UpdateUserUseCase {
         userDB.setName(requestDTO.name() != null ? requestDTO.name() : userDB.getName());
         userDB.setUsername(requestDTO.username() != null ? requestDTO.username() : userDB.getUsername());
         userDB.setEmail(requestDTO.email() != null ? requestDTO.email() : userDB.getEmail());
-        userDB.setPassword(requestDTO.password() != null ?
-                passwordEncoder.encode(requestDTO.password()) : userDB.getPassword());
+        userDB.setPassword(requestDTO.password() != null ? passwordEncoder.encode(requestDTO.password()) : userDB.getPassword());
         userDB.setUpdatedAt(Instant.now());
 
         return UserMapper.toResponseDTO(userRepository.save(userDB));

@@ -7,10 +7,10 @@ import java.util.UUID;
 
 /**
  * Data transfer object for the forum in which the user participates.
+ *
  * @param id
  * @param name
  * @param createdAt
- *
  * @author <a href="https://soupaulodev.com.br">soupauldev</a>
  */
 public record ParticipatesInDTO(UUID id,

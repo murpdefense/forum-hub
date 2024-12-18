@@ -28,10 +28,10 @@ public class UserMapper {
      */
     public static UserEntity toEntity(UserCreateRequestDTO dto) {
         return new UserEntity(
-            dto.name(),
-            dto.username(),
-            dto.email(),
-            dto.password()
+                dto.name(),
+                dto.username(),
+                dto.email(),
+                dto.password()
         );
     }
 
@@ -70,6 +70,7 @@ public class UserMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getUsername(),
+                entity.getHighsCount(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -83,6 +84,7 @@ public class UserMapper {
                 entity.getEmail(),
                 entity.getOwnedForums().stream().map(OwnerOfDTO::from).toList(),
                 entity.getParticipatingForums().stream().map(ParticipatesInDTO::from).toList(),
+                entity.getHighsCount(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

@@ -13,12 +13,12 @@ import java.util.UUID;
 /**
  * Use case responsible for handling the retrieval of a user by their ID.
  * <p>
- *     The {@link GetUserDetailsUseCase} class processes requests to retrieve a user by their unique identifier.
- *     If successful, it returns the user data in a response data transfer object.
+ * The {@link GetUserDetailsUseCase} class processes requests to retrieve a user by their unique identifier.
+ * If successful, it returns the user data in a response data transfer object.
  * </p>
  * <p>
- *     It interacts with the {@link UserRepository} to retrieve user data from the database.
- *     If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
+ * It interacts with the {@link UserRepository} to retrieve user data from the database.
+ * If no user with the given ID is found, a {@link ResourceNotFoundException} is thrown.
  * </p>
  *
  * @author <a href="http://soupaulodev.com.br>soupaulodev</a>
@@ -40,9 +40,9 @@ public class GetUserDetailsUseCase {
     /**
      * Executes the use case to retrieve a user by their ID.
      * <p>
-     *     This method retrieves a user from the database using the provided unique identifier. If the user is found,
-     *     the user data is returned in a response data transfer object. If no user with the given ID is found,
-     *     a {@link ResourceNotFoundException} is thrown.
+     * This method retrieves a user from the database using the provided unique identifier. If the user is found,
+     * the user data is returned in a response data transfer object. If no user with the given ID is found,
+     * a {@link ResourceNotFoundException} is thrown.
      * </p>
      *
      * @param id the user's unique identifier of type {@link UUID}

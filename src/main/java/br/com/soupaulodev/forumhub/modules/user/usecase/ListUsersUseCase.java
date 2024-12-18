@@ -45,6 +45,7 @@ public class ListUsersUseCase {
      * The users are retrieved in descending order of creation date.
      * The users are paginated.
      * The users' emails are not included in the response.
+     *
      * @return a list of {@link UserResponseDTO} containing all users
      */
     public List<UserResponseDTO> execute(int page, int size) {

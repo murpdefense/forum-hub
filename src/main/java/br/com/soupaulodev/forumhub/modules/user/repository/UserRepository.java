@@ -23,24 +23,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUsername(String username);
 
     /**
-     * Finds a user by their username and email.
-     *
-     * @param username {@link String} the username of the user
-     * @param email {@link String} the email of the user
-     * @return an {@link Optional} containing the found {@link UserEntity}, or empty if no user is found
-     */
-    Optional<UserEntity> findByUsernameAndEmail(String username, String email);
-
-    /**
-     * Finds a user by their name or username.
-     *
-     * @param name {@link String} the name of the user
-     * @param username {@link String} the username of the user
-     * @return an {@link Optional} containing the found {@link UserEntity}, or empty if no user is found
-     */
-    Optional<UserEntity> findByNameOrUsername(String name, String username);
-
-    /**
      * Checks if a user with the given username exists.
      *
      * @param username {@link String}the username to check

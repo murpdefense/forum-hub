@@ -2,15 +2,16 @@ package br.com.soupaulodev.forumhub.modules.user.entity;
 
 import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
-import br.com.soupaulodev.forumhub.modules.like.entity.LikeEntity;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 
 /**
@@ -76,7 +77,7 @@ public class UserEntity {
      * </p>
      */
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ForumEntity> ownedForums = new ArrayList<>();
+    private final List<ForumEntity> ownedForums = new ArrayList<>();
 
     /**
      * The forums in which the user is a participant.
@@ -85,12 +86,8 @@ public class UserEntity {
      * </p>
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "forum_participants",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "forum_id")
-    )
-    private List<ForumEntity> participatingForums = new ArrayList<>();
+    @JoinTable(name = "forum_participants", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "forum_id"))
+    private final List<ForumEntity> participatingForums = new ArrayList<>();
 
     /**
      * The topics created by the user.
@@ -99,7 +96,7 @@ public class UserEntity {
      * </p>
      */
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<TopicEntity> topics = new ArrayList<>();
+    private final List<TopicEntity> topics = new ArrayList<>();
 
     /**
      * The comments made by the user.
@@ -108,7 +105,7 @@ public class UserEntity {
      * </p>
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<CommentEntity> comments = new ArrayList<>();
+    private final List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "highs_count")
     private Long highsCount = 0L;
@@ -291,8 +288,8 @@ public class UserEntity {
      * @param forum the forum to check for ownership.
      * @return true if the user owns the forum, false otherwise.
      */
-    public boolean participateInForum(ForumEntity forum) {
-        return participatingForums.contains(forum);
+    public boolean participatingInForum(ForumEntity forum) {
+        return !participatingForums.contains(forum);
     }
 
     /**
@@ -367,17 +364,23 @@ public class UserEntity {
      *
      * @return the number of highs count.
      */
-    public Long getHighsCount() { return highsCount; }
+    public Long getHighsCount() {
+        return highsCount;
+    }
 
     /**
      * Increments the number of highs count.
      */
-    public void incrementHighs() { this.highsCount++; }
+    public void incrementHighs() {
+        this.highsCount++;
+    }
 
     /**
      * Decrements the number of highs count.
      */
-    public void decrementHighs() { this.highsCount--; }
+    public void decrementHighs() {
+        this.highsCount--;
+    }
 
     /**
      * Gets the timestamp when the user was created.
@@ -426,14 +429,7 @@ public class UserEntity {
      */
     @Override
     public String toString() {
-        return "UserEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+        return "UserEntity{" + "id=" + id + ", name='" + name + '\'' + ", username='" + username + '\'' + ", email='" + email + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
     }
 
     /**

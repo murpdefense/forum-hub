@@ -72,7 +72,7 @@ public class UpdateCommentUseCase {
 
         TopicEntity topic = topicRepository.findById(commentFound.getTopic().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
-        if (!user.participateInForum(topic.getForum())) {
+        if (user.participatingInForum(topic.getForum())) {
             throw new ForbiddenException("You are not allowed to update a comment for this topic");
         }
 
