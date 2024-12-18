@@ -1,11 +1,10 @@
 package br.com.soupaulodev.forumhub.modules.user.controller;
 
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,8 +38,8 @@ import java.util.UUID;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @RestController
-@RequestMapping("/api/v1/user")
-@Tag(name = "User", description = "Endpoints for user operations")
+@RequestMapping("/api/v1/users")
+@Tag(name = "Users", description = "Endpoints for user operations")
 public class UserController {
     private final ListUsersUseCase listUsersUseCase;
     private final GetUserDetailsUseCase getUserDetailsUseCase;
@@ -78,10 +77,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User data retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UserDetailsResponseDTO> getUserById(@Valid @PathVariable("id") String id) {
-
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        return ResponseEntity.ok(getUserDetailsUseCase.execute(UUID.fromString(id), authenticatedUserId));
+    public ResponseEntity<UserResponseDTO> getUserById(@Valid
+                                                       @PathVariable("id")
+                                                       @org.hibernate.validator.constraints.UUID
+                                                       String id) {
+        return ResponseEntity.ok(getUserDetailsUseCase.execute(UUID.fromString(id)));
     }
 
     /**

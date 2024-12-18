@@ -2,7 +2,8 @@ package br.com.soupaulodev.forumhub.modules.user.controller;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.*;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
 import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
@@ -139,22 +140,19 @@ class UserControllerTest {
     void testGetUserDetails_shouldReturnUserDetailsByID() {
         UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
-        UserDetailsResponseDTO responseDTO = new UserDetailsResponseDTO(
+        UserResponseDTO responseDTO = new UserResponseDTO(
                 userId,
                 "test-name",
                 "test-username",
-                null,
-                List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
-                List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 0L,
                 now,
                 now);
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenReturn(responseDTO);
+        when(getUserDetailsUseCase.execute(any(UUID.class))).thenReturn(responseDTO);
 
-        ResponseEntity<UserDetailsResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
+        ResponseEntity<UserResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());
@@ -165,7 +163,7 @@ class UserControllerTest {
         UUID userId = UUID.randomUUID();
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenThrow(ResourceNotFoundException.class);
+        when(getUserDetailsUseCase.execute(any(UUID.class))).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> userController.getUserById(userId.toString()));
     }
@@ -174,22 +172,19 @@ class UserControllerTest {
     void testGetUserDetails_shouldReturnUserDetailsWithoutEmail() {
         UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
-        UserDetailsResponseDTO responseDTO = new UserDetailsResponseDTO(
+        UserResponseDTO responseDTO = new UserResponseDTO(
                 userId,
                 "test-name",
                 "test-username",
-                null,
-                List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
-                List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 0L,
                 now,
                 now);
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(UUID.randomUUID(), null));
 
-        when(getUserDetailsUseCase.execute(any(UUID.class), any(UUID.class))).thenReturn(responseDTO);
+        when(getUserDetailsUseCase.execute(any(UUID.class))).thenReturn(responseDTO);
 
-        ResponseEntity<UserDetailsResponseDTO> response = userController.getUserById(userId.toString());
+        ResponseEntity<UserResponseDTO> response = userController.getUserById(userId.toString());
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(responseDTO, response.getBody());

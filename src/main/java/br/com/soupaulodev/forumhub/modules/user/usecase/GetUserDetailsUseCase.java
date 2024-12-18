@@ -1,7 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
-import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
@@ -49,14 +48,9 @@ public class GetUserDetailsUseCase {
      * @return {@link UserResponseDTO} the data transfer object containing the retrieved user data
      * @throws ResourceNotFoundException if no user with the given ID is found
      */
-    public UserDetailsResponseDTO execute(UUID id, UUID authenticatedUserId) {
+    public UserResponseDTO execute(UUID id) {
         UserEntity userFound = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        if (!userFound.getId().equals(authenticatedUserId)) {
-            userFound.setEmail(null);
-        }
-
-        return UserMapper.toDetailsResponseDTO(userFound);
+        return UserMapper.toResponseDTO(userFound);
     }
 }
