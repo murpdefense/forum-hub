@@ -24,8 +24,5 @@ public record ForumCreateRequestDTO(@NotBlank
 
                                     @NotBlank
                                     @Length(min = 3, max = 50)
-                                    String description,
-
-                                    @UUID
-                                    String ownerId) {
+                                    String description) {
 }

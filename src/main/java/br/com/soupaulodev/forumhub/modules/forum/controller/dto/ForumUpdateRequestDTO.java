@@ -21,7 +21,5 @@ public record ForumUpdateRequestDTO(@Size(max = 50)
                                     String name,
 
                                     @Size(max = 50)
-                                    String description,
-
-                                    @UUID String ownerId) {
+                                    String description) {
 }

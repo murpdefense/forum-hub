@@ -20,8 +20,7 @@ class ForumMapperTest {
                 "password");
         ForumCreateRequestDTO dto = new ForumCreateRequestDTO(
                 "Forum Example",
-                "This is a example forum.",
-                owner.getId().toString());
+                "This is a example forum.");
         ForumEntity forumEntity = ForumMapper.toEntity(dto, owner);
 
         assertInstanceOf(ForumEntity.class, forumEntity);
@@ -36,8 +35,7 @@ class ForumMapperTest {
     void shouldThrowExceptionWhenOwnerIsNull() {
         ForumCreateRequestDTO dto = new ForumCreateRequestDTO(
                 "Forum Example",
-                "This is a example forum.",
-                null);
+                "This is a example forum.");
 
         assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, null));
     }
@@ -51,8 +49,7 @@ class ForumMapperTest {
                 "password");
         ForumCreateRequestDTO dto = new ForumCreateRequestDTO(
                 "",
-                "",
-                owner.getId().toString());
+                "");
 
         assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
     }
@@ -66,8 +63,7 @@ class ForumMapperTest {
                 "password");
         ForumCreateRequestDTO dto = new ForumCreateRequestDTO(
                 " ",
-                " ",
-                owner.getId().toString());
+                " ");
 
         assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
     }
@@ -81,8 +77,7 @@ class ForumMapperTest {
                 "password");
         ForumUpdateRequestDTO dto = new ForumUpdateRequestDTO(
                 "Forum Example",
-                "This is a example forum.",
-                owner.getId().toString());
+                "This is a example forum.");
         ForumEntity forumEntity = ForumMapper.toEntity(dto, owner);
 
         assertInstanceOf(ForumEntity.class, forumEntity);

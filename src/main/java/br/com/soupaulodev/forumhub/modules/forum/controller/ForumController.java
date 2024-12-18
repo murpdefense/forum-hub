@@ -83,7 +83,8 @@ public class ForumController {
             @ApiResponse(responseCode = "409", description = "Forum already exists")
     })
     public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumCreateRequestDTO requestDTO) {
-        ForumResponseDTO responseDTO = createForumUseCase.execute(requestDTO);
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        ForumResponseDTO responseDTO = createForumUseCase.execute(requestDTO, authenticatedUserId);
 
         URI uri = URI.create("/forums/" + responseDTO.id());
         return ResponseEntity.created(uri).body(responseDTO);

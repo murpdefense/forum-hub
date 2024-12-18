@@ -35,8 +35,8 @@ import static org.mockito.Mockito.when;
  *
  *
  * <p>
- *     The {@link ForumControllerTest} class is responsible for testing the behavior of the {@link ForumController} class.
- *     The tests cover the following operations:
+ * The {@link ForumControllerTest} class is responsible for testing the behavior of the {@link ForumController} class.
+ * The tests cover the following operations:
  *     <ul>
  *         <li>Creating a forum.</li>
  *         <li>Listing forums.</li>
@@ -81,22 +81,24 @@ class ForumControllerTest {
     void shouldCreateForumSuccessfully() {
         ForumCreateRequestDTO requestDTO = new ForumCreateRequestDTO(
                 "Forum Example",
-                "Description Example",
-                UUID.randomUUID().toString());
+                "Description Example");
+
+        UUID userId = UUID.randomUUID();
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
         Instant now = Instant.now();
         ForumResponseDTO responseDTO = new ForumResponseDTO(
                 UUID.randomUUID(),
                 "Forum Example",
                 "Description Example",
-                UUID.randomUUID(),
+                userId,
                 0L,
                 1,
                 0,
                 now,
                 now);
 
-        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class))).thenReturn(responseDTO);
+        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class), any(UUID.class))).thenReturn(responseDTO);
 
         ResponseEntity<ForumResponseDTO> response = forumController.createForum(requestDTO);
 
@@ -110,10 +112,12 @@ class ForumControllerTest {
 
         ForumCreateRequestDTO requestDTO = new ForumCreateRequestDTO(
                 "Forum Example",
-                "Description Example",
-                UUID.randomUUID().toString());
+                "Description Example");
 
-        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class))).thenThrow(new ResourceAlreadyExistsException("Forum already exists"));
+        UUID userId = UUID.randomUUID();
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
+
+        when(createForumUseCase.execute(any(ForumCreateRequestDTO.class), any(UUID.class))).thenThrow(new ResourceAlreadyExistsException("Forum already exists"));
 
         assertThrows(ResourceAlreadyExistsException.class, () -> forumController.createForum(requestDTO));
     }
@@ -196,8 +200,7 @@ class ForumControllerTest {
 
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
-                "Description Example",
-                ownerId.toString());
+                "Description Example");
 
         Instant now = Instant.now();
         ForumResponseDTO responseDTO = new ForumResponseDTO(
@@ -224,16 +227,15 @@ class ForumControllerTest {
     @Test
     void shouldUpdateForumThrowNotFoundException() {
         UUID forumId = UUID.randomUUID();
-        UUID ownerId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
 
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
-                "Description Example",
-                UUID.randomUUID().toString());
+                "Description Example");
 
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
 
-        when(updateForumUseCase.execute(forumId, requestDTO, ownerId)).thenThrow(new ResourceNotFoundException("Forum not found"));
+        when(updateForumUseCase.execute(forumId, requestDTO, userId)).thenThrow(new ResourceNotFoundException("Forum not found"));
 
         assertThrows(ResourceNotFoundException.class, () -> forumController.updateForum(forumId.toString(), requestDTO));
     }
@@ -245,8 +247,7 @@ class ForumControllerTest {
 
         ForumUpdateRequestDTO requestDTO = new ForumUpdateRequestDTO(
                 "Forum Example",
-                "Description Example",
-                UUID.randomUUID().toString());
+                "Description Example");
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(ownerId, null));
 

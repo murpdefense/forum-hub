@@ -43,9 +43,9 @@ public class CreateForumUseCase {
      * @throws ResourceNotFoundException if the user or forum does not exist
      */
     @Transactional
-    public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO) {
+    public ForumResponseDTO execute(ForumCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 
-        UserEntity user = userRepository.findById(UUID.fromString(requestDTO.ownerId()))
+        UserEntity user = userRepository.findById(authenticatedUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (forumRepository.existsByName(requestDTO.name()).equals(true)) {
