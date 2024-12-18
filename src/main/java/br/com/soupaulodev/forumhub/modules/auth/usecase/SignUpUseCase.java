@@ -36,9 +36,9 @@ public class SignUpUseCase {
     /**
      * Constructor for initializing the SignUpUseCase with the necessary dependencies.
      *
-     * @param userRepository The repository used to interact with user data in the database.
+     * @param userRepository  The repository used to interact with user data in the database.
      * @param passwordEncoder The password encoder used to securely hash user passwords.
-     * @param cookieUtil Utility class for generating cookies containing JWT tokens.
+     * @param cookieUtil      Utility class for generating cookies containing JWT tokens.
      */
     public SignUpUseCase(UserRepository userRepository,
                          PasswordEncoder passwordEncoder,

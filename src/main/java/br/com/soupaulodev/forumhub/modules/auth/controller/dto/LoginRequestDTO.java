@@ -17,14 +17,15 @@ import org.hibernate.validator.constraints.Length;
  * @param password the password of the user attempting to log in
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
-public record LoginRequestDTO (
+public record LoginRequestDTO(
 
-    @NotBlank
-    @NotNull
-    String username,
+        @NotBlank
+        @NotNull
+        String username,
 
-    @NotBlank
-    @NotNull
-    @Length(min = 8, max = 50)
-    String password
-) {}
+        @NotBlank
+        @NotNull
+        @Length(min = 8, max = 50)
+        String password
+) {
+}

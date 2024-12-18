@@ -40,9 +40,9 @@ public class LoginUseCase {
     /**
      * Constructs a new {@link LoginUseCase} instance.
      *
-     * @param userRepository The repository responsible for retrieving user data from the database.
+     * @param userRepository        The repository responsible for retrieving user data from the database.
      * @param authenticationManager The manager responsible for authenticating user credentials.
-     * @param cookieUtil Utility class responsible for generating cookies with JWT tokens.
+     * @param cookieUtil            Utility class responsible for generating cookies with JWT tokens.
      */
     public LoginUseCase(UserRepository userRepository, AuthenticationManager authenticationManager, CookieUtil cookieUtil) {
         this.authenticationManager = authenticationManager;
@@ -59,7 +59,7 @@ public class LoginUseCase {
      *
      * @param requestDTO The login request containing the username and password to authenticate.
      * @return A {@link Cookie} containing the JWT token for the authenticated user.
-     * @throws BadCredentialsException If the authentication fails due to invalid credentials.
+     * @throws BadCredentialsException   If the authentication fails due to invalid credentials.
      * @throws UsernameNotFoundException If the user is not found in the database.
      */
     public Cookie execute(LoginRequestDTO requestDTO) {

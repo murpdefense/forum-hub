@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 /**
  * Controller for handling authentication-related endpoints.
  * This controller provides endpoints for user login, registration (signup), and logout.
@@ -50,7 +49,7 @@ public class AuthController {
      * Constructor for the AuthController.
      * Initializes the controller with the necessary use cases for login, signup, and logout.
      *
-     * @param loginUseCase the use case for handling login operations
+     * @param loginUseCase  the use case for handling login operations
      * @param signUpUseCase the use case for handling user signup operations
      * @param logoutUseCase the use case for handling logout operations
      */
@@ -68,7 +67,7 @@ public class AuthController {
      * The token is set in the response as a cookie.
      *
      * @param requestDTO the login request containing username and password
-     * @param response the HTTP response to which the JWT token will be added as a cookie
+     * @param response   the HTTP response to which the JWT token will be added as a cookie
      * @return a ResponseEntity with status 200 (OK) if login is successful
      */
     @PostMapping("/login")
@@ -91,7 +90,7 @@ public class AuthController {
      * A JWT token is generated and added to the response as a cookie.
      *
      * @param signUpRequest the user details for signup
-     * @param response the HTTP response to which the JWT token will be added as a cookie
+     * @param response      the HTTP response to which the JWT token will be added as a cookie
      * @return a ResponseEntity with status 200 (OK) if registration is successful
      */
     @PostMapping("/signup")
