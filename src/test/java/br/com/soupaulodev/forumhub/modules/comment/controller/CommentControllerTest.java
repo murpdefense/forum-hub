@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,16 +66,18 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
+        Instant now = Instant.now();
         CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", userId.toString(), topicId.toString(), null);
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
                 userId,
                 topicId,
+                0L,
                 null,
-                null,
-                null,
-                null
+                new ArrayList<>(),
+                now,
+                now
         );
 
         when(authentication.getPrincipal()).thenReturn(userId.toString());
@@ -91,15 +95,17 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
+        Instant now = Instant.now();
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
                 userId,
                 topicId,
+                0L,
                 null,
-                null,
-                null,
-                null
+                new ArrayList<>(),
+                now,
+                now
         );
 
         when(authentication.getPrincipal()).thenReturn(userId.toString());
@@ -117,16 +123,18 @@ class CommentControllerTest {
         UUID userId = UUID.randomUUID();
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
+        Instant now = Instant.now();
         CommentUpdateRequestDTO requestDTO = new CommentUpdateRequestDTO("Content Updated");
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
                 userId,
                 topicId,
+                0L,
                 null,
-                null,
-                null,
-                null
+                new ArrayList<>(),
+                now,
+                now
         );
 
         when(authentication.getPrincipal()).thenReturn(userId.toString());
