@@ -37,12 +37,12 @@ public class CommentController {
      * Constructs a new CommentController with the specified use cases.
      *
      * @param createCommentUseCase the use case for creating comments
-     * @param listCommentsUseCase the use case for listing comments
+     * @param listCommentsUseCase  the use case for listing comments
      * @param updateCommentUseCase the use case for updating comments
      * @param deleteCommentUseCase the use case for deleting comments
      */
     public CommentController(CreateCommentUseCase createCommentUseCase,
-                                ListCommentsUseCase listCommentsUseCase,
+                             ListCommentsUseCase listCommentsUseCase,
                              UpdateCommentUseCase updateCommentUseCase,
                              DeleteCommentUseCase deleteCommentUseCase) {
         this.createCommentUseCase = createCommentUseCase;
@@ -85,11 +85,12 @@ public class CommentController {
                                                                  @Valid @RequestParam(defaultValue = "5") @Min(5) int size) {
         return ResponseEntity.ok(listCommentsUseCase.execute(page, size));
     }
+
     /**
      * Endpoint for handling comment updates.
      * This method updates a comment by its unique identifier, using the data provided in the request DTO.
      *
-     * @param id the comment's unique identifier to be updated
+     * @param id         the comment's unique identifier to be updated
      * @param requestDTO the DTO containing the comment data
      * @return the response entity of CommentResponseDTO with status 200 (OK) and the updated comment data
      */

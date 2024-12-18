@@ -18,6 +18,7 @@ public record CommentResponseDTO (
     String content,
     UUID user,
     UUID topic,
+    Long highs,
     UUID parentCommentId,
     Set<CommentResponseDTO> replies,
     Instant createdAt,

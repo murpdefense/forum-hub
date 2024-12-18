@@ -31,8 +31,8 @@ public class CreateCommentUseCase {
      * Constructs a new CreateCommentUsecase with the specified repositories.
      *
      * @param commentRepository the repository for managing comments
-     * @param userRepository the repository for managing users
-     * @param topicRepository the repository for managing topics
+     * @param userRepository    the repository for managing users
+     * @param topicRepository   the repository for managing topics
      */
     public CreateCommentUseCase(CommentRepository commentRepository,
                                 UserRepository userRepository,
@@ -48,8 +48,8 @@ public class CreateCommentUseCase {
      * @param requestDTO the DTO containing the data for the new comment
      * @return the response DTO with the created comment data
      * @throws ResourceNotFoundException if the user, topic or parent comment does not exist
-     * @throws ForbiddenException if the user is not allowed to create a comment for the specified topic
-     * @throws ForbiddenException if the user is not allowed to create a comment for another user
+     * @throws ForbiddenException        if the user is not allowed to create a comment for the specified topic
+     * @throws ForbiddenException        if the user is not allowed to create a comment for another user
      */
     public CommentResponseDTO execute(CommentCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 

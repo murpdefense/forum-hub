@@ -9,7 +9,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Entity representing a comment in the forum.
@@ -51,7 +53,7 @@ public class CommentEntity implements Serializable {
      * Replies to this comment.
      */
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> replies = new ArrayList<>();
+    private final List<CommentEntity> replies = new ArrayList<>();
 
     @Column(name = "highs_count", nullable = false)
     private Long highsCount = 0L;

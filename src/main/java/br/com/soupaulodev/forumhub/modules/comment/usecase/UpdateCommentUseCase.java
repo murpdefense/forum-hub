@@ -47,9 +47,9 @@ public class UpdateCommentUseCase {
      * @param id         the UUID of the comment to be updated
      * @param requestDTO the DTO containing the updated comment data
      * @return the response DTO with the updated comment data
-     * @throws ResourceNotFoundException       if the comment, user or topic is not found
-     * @throws IllegalArgumentException if the new content is the same as the old content or if the content is empty
-     * @throws ForbiddenException if the user is not allowed to update the comment
+     * @throws ResourceNotFoundException if the comment, user or topic is not found
+     * @throws IllegalArgumentException  if the new content is the same as the old content or if the content is empty
+     * @throws ForbiddenException        if the user is not allowed to update the comment
      */
     public CommentResponseDTO execute(UUID id, CommentUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
 

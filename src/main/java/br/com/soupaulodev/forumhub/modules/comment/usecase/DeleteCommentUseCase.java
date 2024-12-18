@@ -28,8 +28,8 @@ public class DeleteCommentUseCase {
      * Constructs a new DeleteCommentUsecase with the specified repository.
      *
      * @param commentRepository the repository for managing comments
-     * @param userRepository the repository for managing users
-     * @param topicRepository the repository for managing topics
+     * @param userRepository    the repository for managing users
+     * @param topicRepository   the repository for managing topics
      */
     public DeleteCommentUseCase(CommentRepository commentRepository,
                                 UserRepository userRepository,
@@ -44,14 +44,14 @@ public class DeleteCommentUseCase {
      *
      * @param id the UUID of the comment to be deleted
      * @throws ResourceNotFoundException if the comment, user or topic is not found
-     * @throws ForbiddenException if the user is not allowed to delete the comment
+     * @throws ForbiddenException        if the user is not allowed to delete the comment
      */
     public void execute(UUID id, UUID getAuthenticatedUserId) {
 
         CommentEntity commentFound = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found."));
 
-        if(!commentFound.getUser().getId().equals(getAuthenticatedUserId)) {
+        if (!commentFound.getUser().getId().equals(getAuthenticatedUserId)) {
             throw new ForbiddenException("You are not allowed to delete a comment for another user");
         }
 
