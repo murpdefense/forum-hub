@@ -35,8 +35,8 @@ import static org.mockito.Mockito.*;
  * deleting topics.
  *
  * <p>
- *     The {@link TopicControllerTest} class is responsible for testing the behavior of the {@link TopicController} class.
- *     The tests cover the following operations:
+ * The {@link TopicControllerTest} class is responsible for testing the behavior of the {@link TopicController} class.
+ * The tests cover the following operations:
  *     <ul>
  *         <li>Creating a topic.</li>
  *         <li>Listing topics.</li>
