@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.topic.controller;
 
-import br.com.soupaulodev.forumhub.modules.exception.usecase.*;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO;
@@ -123,9 +124,10 @@ class TopicControllerTest {
                 forumId.toString(),
                 creatorId.toString());
 
-        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class))).thenThrow(new ForumNotFoundException());
+        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class)))
+                .thenThrow(new ResourceNotFoundException("Topic not found"));
 
-        assertThrows(ForumNotFoundException.class, () -> topicController.createTopic(requestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> topicController.createTopic(requestDTO));
     }
 
     @Test
@@ -139,9 +141,10 @@ class TopicControllerTest {
                 forumId.toString(),
                 creatorId.toString());
 
-        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class))).thenThrow(new UserNotFoundException());
+        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class)))
+                .thenThrow(new ResourceNotFoundException("Topic not found"));
 
-        assertThrows(UserNotFoundException.class, () -> topicController.createTopic(requestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> topicController.createTopic(requestDTO));
     }
 
     @Test
@@ -204,9 +207,9 @@ class TopicControllerTest {
     void shouldThrowExceptionWhenGettingNonExistentTopicDetails() {
         UUID topicId = UUID.randomUUID();
 
-        when(getTopicDetailsUseCase.execute(topicId)).thenThrow(new TopicNotFoundException());
+        when(getTopicDetailsUseCase.execute(topicId)).thenThrow(new ResourceNotFoundException("Topic not found"));
 
-        assertThrows(TopicNotFoundException.class, () -> topicController.getTopicDetails(topicId.toString()));
+        assertThrows(ResourceNotFoundException.class, () -> topicController.getTopicDetails(topicId.toString()));
     }
 
     @Test
@@ -255,7 +258,8 @@ class TopicControllerTest {
                 "Topic Example",
                 "Description Example");
 
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(nonCreatorId, null));
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(nonCreatorId, null));
 
         when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(nonCreatorId)))
                 .thenThrow(new UnauthorizedException("You are not allowed to update this topic."));
@@ -272,12 +276,13 @@ class TopicControllerTest {
                 "Topic Example",
                 "Description Example");
 
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
 
         when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
-                .thenThrow(new TopicNotFoundException());
+                .thenThrow(new ResourceNotFoundException("Topic not found"));
 
-        assertThrows(TopicNotFoundException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
+        assertThrows(ResourceNotFoundException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
     }
 
     @Test
@@ -290,9 +295,9 @@ class TopicControllerTest {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
 
         when(updateTopicUseCase.execute(any(UUID.class), any(TopicUpdateRequestDTO.class), eq(authenticatedUserId)))
-                .thenThrow(new TopicIllegalArgumentException("You must provide at least one field to update:\n- title\n- content"));
+                .thenThrow(new IllegalArgumentException("You must provide at least one field to update:\n- title\n- content"));
 
-        assertThrows(TopicIllegalArgumentException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
+        assertThrows(IllegalArgumentException.class, () -> topicController.updateTopic(topicId.toString(), requestDTO));
     }
 
     @Test
@@ -318,9 +323,9 @@ class TopicControllerTest {
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(creatorId, null));
 
-        doThrow(new TopicNotFoundException()).when(deleteTopicUseCase).execute(topicId, creatorId);
+        doThrow(new ResourceNotFoundException("Topic not found")).when(deleteTopicUseCase).execute(topicId, creatorId);
 
-        assertThrows(TopicNotFoundException.class, () -> topicController.deleteTopic(topicId.toString()));
+        assertThrows(ResourceNotFoundException.class, () -> topicController.deleteTopic(topicId.toString()));
     }
 
     @Test
