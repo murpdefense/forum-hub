@@ -10,9 +10,8 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Mapper class for converting between {@link CommentEntity} and Data Transfer Objects (DTOs).
@@ -61,9 +60,9 @@ public class CommentMapper {
         TopicResponseDTO topic = TopicMapper.toResponseDTO(commentEntity.getTopic());
         UUID parentComment = commentEntity.getParentComment() != null ? commentEntity.getParentComment().getId() : null;
 
-        Set<CommentResponseDTO> replies = commentEntity.getReplies().stream()
+        List<CommentResponseDTO> replies = commentEntity.getReplies().stream()
                 .map(CommentMapper::toResponseDTO)
-                .collect(Collectors.toSet());
+                .toList();
 
         return new CommentResponseDTO(
                 commentEntity.getId(),

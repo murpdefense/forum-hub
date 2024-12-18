@@ -1,6 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.comment.controller.dto;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public record CommentResponseDTO (
     UUID topic,
     Long highs,
     UUID parentCommentId,
-    Set<CommentResponseDTO> replies,
+    List<CommentResponseDTO> replies,
     Instant createdAt,
     Instant updatedAt
 ) {}
