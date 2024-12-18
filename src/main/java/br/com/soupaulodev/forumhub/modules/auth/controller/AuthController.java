@@ -5,10 +5,12 @@ import br.com.soupaulodev.forumhub.modules.auth.usecase.LoginUseCase;
 import br.com.soupaulodev.forumhub.modules.auth.usecase.LogoutUseCase;
 import br.com.soupaulodev.forumhub.modules.auth.usecase.SignUpUseCase;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
+import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserDetailsResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 
 /**
@@ -100,11 +104,12 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid request data"),
             @ApiResponse(responseCode = "409", description = "Username already exists")
     })
-    public ResponseEntity<String> signUp(@Valid @RequestBody UserCreateRequestDTO signUpRequest, HttpServletResponse response) {
-        response.addCookie(signUpUseCase.execute(signUpRequest));
+    public ResponseEntity<UserDetailsResponseDTO> signUp(@Valid @RequestBody UserCreateRequestDTO signUpRequest, HttpServletResponse response) {
+        Map<String, Object> result = signUpUseCase.execute(signUpRequest);
+        response.addCookie((Cookie) result.get("cookie"));
 
         logger.info("User {} registered successfully", signUpRequest.username());
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok((UserDetailsResponseDTO) result.get("user"));
     }
 
     /**

@@ -3,6 +3,7 @@ package br.com.soupaulodev.forumhub.modules.auth.usecase;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import br.com.soupaulodev.forumhub.security.utils.CookieUtil;
 import jakarta.servlet.http.Cookie;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * Use case responsible for handling the user registration process in the application.
@@ -57,10 +60,10 @@ public class SignUpUseCase {
      * </p>
      *
      * @param requestDTO The user registration data, including username, password, name, and email.
-     * @return A {@link Cookie} containing the JWT token for the newly registered user.
+     * @return A map containing the newly created user entity and the JWT token cookie.
      * @throws ResourceAlreadyExistsException If the username is already taken by another user.
      */
-    public Cookie execute(UserCreateRequestDTO requestDTO) {
+    public Map<String, Object> execute(UserCreateRequestDTO requestDTO) {
         if (userRepository.existsByUsername(requestDTO.username())) {
             logger.warn("Attempt to register with existing username: {}", requestDTO.username());
             throw new ResourceAlreadyExistsException("Username already exists");
@@ -71,9 +74,16 @@ public class SignUpUseCase {
         user.setPassword(passwordEncoder.encode(requestDTO.password()));
         user.setName(requestDTO.name());
         user.setEmail(requestDTO.email());
+        userRepository.save(user);
 
-        UserEntity userCreated = userRepository.save(user);
+        Cookie cookie = cookieUtil.generateCookieWithToken(user);
 
-        return cookieUtil.generateCookieWithToken(userCreated);
+        Map<String, Object> String = Map.of(
+            "user", UserMapper.toDetailsResponseDTO(user),
+            "cookie", cookie
+        );
+
+        logger.info("User {} registered successfully", requestDTO.username());
+        return String;
     }
 }
