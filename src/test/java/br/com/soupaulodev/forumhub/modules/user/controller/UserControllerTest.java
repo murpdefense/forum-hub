@@ -76,8 +76,8 @@ class UserControllerTest {
         UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
         List<UserResponseDTO> responseDTO = List.of(
-                new UserResponseDTO(userId, "test-name", "test-username", now, now),
-                new UserResponseDTO(UUID.randomUUID(), "test-name", "test-username", now, now));
+                new UserResponseDTO(userId, "test-name", "test-username", 0L, now, now),
+                new UserResponseDTO(UUID.randomUUID(), "test-name", "test-username",0L, now, now));
         int page = 0;
         int size = 10;
 
@@ -146,6 +146,7 @@ class UserControllerTest {
                 null,
                 List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                0L,
                 now,
                 now);
 
@@ -180,6 +181,7 @@ class UserControllerTest {
                 null,
                 List.of(new OwnerOfDTO(UUID.randomUUID(), "test-name", Instant.now())),
                 List.of(new ParticipatesInDTO(UUID.randomUUID(), "test-name", Instant.now())),
+                0L,
                 now,
                 now);
 
@@ -207,6 +209,7 @@ class UserControllerTest {
                 userId,
                 "test-name",
                 "test-username",
+                0L,
                 now,
                 now);
 
