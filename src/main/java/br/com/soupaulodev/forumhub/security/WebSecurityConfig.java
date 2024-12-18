@@ -36,7 +36,6 @@ import java.util.Arrays;
  * - Configures session management to be stateless (i.e., no session is created).
  * - Customizes access rules for different routes, allowing public access to certain endpoints while protecting others.
  * - Defines a password encoder and authentication manager to support secure login.
- *
  * The class also integrates the {@link JwtAuthenticationFilter} for JWT validation in HTTP requests.
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
