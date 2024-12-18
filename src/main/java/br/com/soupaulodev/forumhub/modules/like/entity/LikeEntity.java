@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "tb_likes", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_id", "resource_type", "resource_id"})
+        @UniqueConstraint(columnNames = {"user_id", "resource_type", "resource_id"})
 })
 public class LikeEntity implements Serializable {
     @Serial
@@ -58,10 +58,11 @@ public class LikeEntity implements Serializable {
      * Initializes the id and createdAt fields.
      *
      * @param resourceId the unique identifier of the resource that was liked
-     * @param user the user who liked the topic
+     * @param user       the user who liked the topic
      */
     public LikeEntity(ResourceType resourceType, UUID resourceId, UserEntity user) {
         this();
+        this.resourceType = resourceType;
         this.resourceId = resourceId;
         this.user = user;
     }
@@ -70,11 +71,17 @@ public class LikeEntity implements Serializable {
         return id;
     }
 
-    public void setId(ULID id) { this.id = id.toString(); }
+    public void setId(ULID id) {
+        this.id = id.toString();
+    }
 
-    public ResourceType getResourceType() { return resourceType; }
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
 
-    public void setResourceType(ResourceType resourceType) { this.resourceType = resourceType; }
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
 
     public UUID getResourceId() {
         return resourceId;

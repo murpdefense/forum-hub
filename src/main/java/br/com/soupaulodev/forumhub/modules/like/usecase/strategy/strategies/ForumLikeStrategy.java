@@ -5,6 +5,7 @@ import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
 import br.com.soupaulodev.forumhub.modules.like.entity.ResourceType;
 import br.com.soupaulodev.forumhub.modules.like.usecase.strategy.LikeResourceStrategy;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
  *
  * @author <a href="https://soupaulodev.com.br>soupaulodev</a>
  */
+@Service
 public class ForumLikeStrategy implements LikeResourceStrategy {
 
     private final ForumRepository forumRepository;

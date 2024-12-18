@@ -30,7 +30,7 @@ public class LikeResourceUsecase {
      * Construct's a new {@link LikeResourceUsecase}.
      *
      * @param strategyManager the like resource strategy manager
-     * @param userRepository   the user repository
+     * @param userRepository  the user repository
      */
     public LikeResourceUsecase(LikeResourceStrategyManager strategyManager, UserRepository userRepository, LikeRepository likeRepository) {
         this.strategyManager = strategyManager;
@@ -41,7 +41,7 @@ public class LikeResourceUsecase {
     /**
      * Executes the use case.
      *
-     * @param requestDTO         the request DTO
+     * @param requestDTO          the request DTO
      * @param authenticatedUserId the authenticated user id
      */
     public void execute(LikeRequestDTO requestDTO, UUID authenticatedUserId) {
@@ -53,9 +53,9 @@ public class LikeResourceUsecase {
                         requestDTO.resourceType(),
                         UUID.fromString(requestDTO.resourceId()),
                         user)
-                        .ifPresent(likeEntity -> {
-                            throw new ResourceAlreadyExistsException("Like already exists");
-                        });
+                .ifPresent(likeEntity -> {
+                    throw new ResourceAlreadyExistsException("Like already exists");
+                });
 
         strategy.likeResource(UUID.fromString(requestDTO.resourceId()));
         likeRepository.save(LikeMapper.toEntity(requestDTO, user));

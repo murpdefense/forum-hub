@@ -14,14 +14,14 @@ public interface LikeResourceStrategy {
     /**
      * Likes a resource.
      *
-     * @param resourceId
+     * @param resourceId the unique identifier of the resource to be liked
      */
     void likeResource(UUID resourceId);
 
     /**
      * Dislikes a resource.
      *
-     * @param resourceId
+     * @param resourceId the unique identifier of the resource to be disliked
      */
     void dislikeResource(UUID resourceId);
 

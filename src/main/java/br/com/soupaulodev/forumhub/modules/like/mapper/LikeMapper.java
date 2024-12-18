@@ -15,7 +15,8 @@ public class LikeMapper {
 
     /**
      * Converts a LikeResponseDTO to a LikeEntity.
-     * @param dto The LikeResponseDTO to be converted.
+     *
+     * @param dto  The LikeResponseDTO to be converted.
      * @param user The UserEntity that liked the resource.
      */
     public static LikeEntity toEntity(LikeRequestDTO dto, UserEntity user) {

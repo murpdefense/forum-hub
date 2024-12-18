@@ -29,7 +29,7 @@ public class DislikeResourceUsecase {
      * Construct's a new {@link DislikeResourceUsecase}.
      *
      * @param strategyManager the like resource strategy manager
-     * @param userRepository   the user repository
+     * @param userRepository  the user repository
      */
     public DislikeResourceUsecase(LikeResourceStrategyManager strategyManager, UserRepository userRepository, LikeRepository likeRepository) {
         this.strategyManager = strategyManager;
@@ -40,7 +40,7 @@ public class DislikeResourceUsecase {
     /**
      * Executes the use case.
      *
-     * @param requestDTO         the request DTO
+     * @param requestDTO          the request DTO
      * @param authenticatedUserId the authenticated user id
      */
     public void execute(LikeRequestDTO requestDTO, UUID authenticatedUserId) {

@@ -1,8 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.like.controller;
 
 import br.com.soupaulodev.forumhub.modules.like.controller.dto.LikeRequestDTO;
-import br.com.soupaulodev.forumhub.modules.like.usecase.LikeResourceUsecase;
 import br.com.soupaulodev.forumhub.modules.like.usecase.DislikeResourceUsecase;
+import br.com.soupaulodev.forumhub.modules.like.usecase.LikeResourceUsecase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,7 +20,7 @@ import java.util.UUID;
  * The like-related operations are managed by interacting with the use cases for liking and unliking topics.
  *
  * <p>
- *     The {@link LikeController} is responsible for:
+ * The {@link LikeController} is responsible for:
  *     <ul>
  *         <li>Handling like requests.</li>
  *         <li>Handling unlike requests.</li>
@@ -40,7 +40,7 @@ public class LikeController {
     /**
      * Constructs a new LikeController with the specified use cases.
      *
-     * @param likeResourceUsecase the use case for liking a topic
+     * @param likeResourceUsecase    the use case for liking a topic
      * @param dislikeResourceUsecase the use case for disliking a topic
      */
     public LikeController(LikeResourceUsecase likeResourceUsecase, DislikeResourceUsecase dislikeResourceUsecase) {
