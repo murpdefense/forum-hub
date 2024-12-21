@@ -57,7 +57,7 @@ public class TopicEntity implements Serializable {
     private final List<CommentEntity> comments = new ArrayList<>();
 
     @Column(name = "comments_count")
-    private Long commentsCount;
+    private Long commentsCount = 0L;
 
     @Column(name = "highs_count")
     private Long highsCount = 0L;
