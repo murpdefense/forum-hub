@@ -49,6 +49,8 @@ public class TopicController {
     private final GetTopicDetailsUseCase getTopicDetailsUseCase;
     private final UpdateTopicUseCase updateTopicUseCase;
     private final DeleteTopicUseCase deleteTopicUseCase;
+    private final HighTopicUseCase highTopicUseCase;
+    private final UnHighTopicUseCase unHighTopicUseCase;
 
     /**
      * Constructs a new {@link TopicController} with the specified use cases.
@@ -58,17 +60,23 @@ public class TopicController {
      * @param getTopicDetailsUseCase the use case for retrieving a topic
      * @param updateTopicUseCase     the use case for updating a topic
      * @param deleteTopicUseCase     the use case for deleting a topic
+     * @param highTopicUseCase       the use case for high a topic
+     * @param unHighTopicUseCase     the use case for unHigh a topic
      */
     public TopicController(CreateTopicUseCase createTopicUseCase,
                            ListTopicsUseCase listTopicsUseCase,
                            GetTopicDetailsUseCase getTopicDetailsUseCase,
                            UpdateTopicUseCase updateTopicUseCase,
-                           DeleteTopicUseCase deleteTopicUseCase) {
+                           DeleteTopicUseCase deleteTopicUseCase,
+                           HighTopicUseCase highTopicUseCase,
+                           UnHighTopicUseCase unHighTopicUseCase) {
         this.createTopicUseCase = createTopicUseCase;
         this.getTopicDetailsUseCase = getTopicDetailsUseCase;
         this.listTopicsUseCase = listTopicsUseCase;
         this.updateTopicUseCase = updateTopicUseCase;
         this.deleteTopicUseCase = deleteTopicUseCase;
+        this.highTopicUseCase = highTopicUseCase;
+        this.unHighTopicUseCase = unHighTopicUseCase;
     }
 
     /**
@@ -173,6 +181,46 @@ public class TopicController {
     public ResponseEntity<Void> deleteTopic(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteTopicUseCase.execute(UUID.fromString(id), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling high topic operations.
+     * This method high a topic by its unique identifier.
+     *
+     * @param topicId the topic's unique identifier of type {@link UUID} to be high
+     * @return a {@link ResponseEntity} with status 204 (No Content)
+     */
+    @Operation(summary = "High a topic by ID", description = "High a topic by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Topic high"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
+    @PostMapping("/high/{id}")
+    public ResponseEntity<Void> highTopic(@Valid @PathVariable("id") @org.hibernate.validator.constraints.UUID String topicId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        highTopicUseCase.execute(UUID.fromString(topicId), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling unHigh topic operations.
+     * This method unHigh a topic by its unique identifier.
+     *
+     * @param topicId the topic's unique identifier of type {@link UUID} to be unHigh
+     * @return a {@link ResponseEntity} with status 204 (No Content)
+     */
+    @Operation(summary = "UnHigh a topic by ID", description = "UnHigh a topic by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Topic unHigh"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
+    @DeleteMapping("/high/{id}")
+    public ResponseEntity<Void> unHighTopic(@Valid @PathVariable("id") @org.hibernate.validator.constraints.UUID String topicId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        unHighTopicUseCase.execute(UUID.fromString(topicId), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
