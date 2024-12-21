@@ -10,6 +10,8 @@ import java.util.UUID;
 /**
  * Repository interface for {@link UserEntity}.
  * Extends {@link JpaRepository} to provide CRUD operations for {@link UserEntity}.
+ *
+ * @author <a href="http://soupaulodev.com.br">soupaulodev</a>
  */
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
