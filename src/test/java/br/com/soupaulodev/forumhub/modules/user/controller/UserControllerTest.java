@@ -62,9 +62,12 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+    private final UUID userId = UUID.randomUUID();
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
     }
 
     @AfterEach
@@ -74,7 +77,6 @@ class UserControllerTest {
 
     @Test
     void testGetAllUsers_shouldReturnAllUsers() {
-        UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
         List<UserResponseDTO> responseDTO = List.of(
                 new UserResponseDTO(userId, "test-name", "test-username", 0L, now, now),
@@ -138,7 +140,6 @@ class UserControllerTest {
 
     @Test
     void testGetUserDetails_shouldReturnUserDetailsByID() {
-        UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
         UserResponseDTO responseDTO = new UserResponseDTO(
                 userId,
@@ -147,40 +148,6 @@ class UserControllerTest {
                 0L,
                 now,
                 now);
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
-
-        when(getUserDetailsUseCase.execute(any(UUID.class))).thenReturn(responseDTO);
-
-        ResponseEntity<UserResponseDTO> response = userController.getUserById(UUID.randomUUID().toString());
-
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(responseDTO, response.getBody());
-    }
-
-    @Test
-    void testGetUserDetails_shouldThrowUserNotFoundExceptionWhenUserNotFoundById() {
-        UUID userId = UUID.randomUUID();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
-
-        when(getUserDetailsUseCase.execute(any(UUID.class))).thenThrow(ResourceNotFoundException.class);
-
-        assertThrows(ResourceNotFoundException.class, () -> userController.getUserById(userId.toString()));
-    }
-
-    @Test
-    void testGetUserDetails_shouldReturnUserDetailsWithoutEmail() {
-        UUID userId = UUID.randomUUID();
-        Instant now = Instant.now();
-        UserResponseDTO responseDTO = new UserResponseDTO(
-                userId,
-                "test-name",
-                "test-username",
-                0L,
-                now,
-                now);
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(UUID.randomUUID(), null));
 
         when(getUserDetailsUseCase.execute(any(UUID.class))).thenReturn(responseDTO);
 
@@ -191,8 +158,32 @@ class UserControllerTest {
     }
 
     @Test
+    void testGetUserDetails_shouldThrowUserNotFoundExceptionWhenUserNotFoundById() {
+        when(getUserDetailsUseCase.execute(any(UUID.class))).thenThrow(ResourceNotFoundException.class);
+
+        assertThrows(ResourceNotFoundException.class, () -> userController.getUserById(userId.toString()));
+    }
+
+    @Test
+    void testGetUserDetails_shouldReturnUserDetailsWithoutEmail() {
+        Instant now = Instant.now();
+        UserResponseDTO responseDTO = new UserResponseDTO(
+                userId,
+                "test-name",
+                "test-username",
+                0L,
+                now,
+                now);
+        when(getUserDetailsUseCase.execute(any(UUID.class))).thenReturn(responseDTO);
+
+        ResponseEntity<UserResponseDTO> response = userController.getUserById(userId.toString());
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+    }
+
+    @Test
     void testUpdateUser_shouldUpdateUserSuccessfully() {
-        UUID userId = UUID.randomUUID();
         Instant now = Instant.now();
 
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
@@ -208,11 +199,7 @@ class UserControllerTest {
                 now,
                 now);
 
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
-        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
+        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(userId)))
                 .thenReturn(userResponseDTO);
 
         ResponseEntity<UserResponseDTO> response = userController.updateUser(userId.toString(), userUpdateRequestDTO);
@@ -223,19 +210,13 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser_shouldThrowExceptionWhenUpdatingUserIsNotSelf() {
-        UUID userId = UUID.randomUUID();
-
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 "test-name",
                 "test-username",
                 "test@mail.com",
                 "test-password");
 
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
-        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
+        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(userId)))
                 .thenThrow(UnauthorizedException.class);
 
         assertThrows(UnauthorizedException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
@@ -243,19 +224,13 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser_shouldThrowExceptionWhenUpdatingUserWithNoFieldsToUpdate() {
-        UUID userId = UUID.randomUUID();
-
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 null,
                 null,
                 null,
                 null);
 
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
-        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
+        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(userId)))
                 .thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
@@ -263,19 +238,13 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser_shouldThrowExceptionWhenUserNotFoundWhenUpdatingUser() {
-        UUID userId = UUID.randomUUID();
-
         UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO(
                 "test-name",
                 "test-username",
                 "test@mail.com",
                 "test-password");
 
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
-        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(authenticatedUserId)))
+        when(updateUserUseCase.execute(any(UUID.class), any(UserUpdateRequestDTO.class), eq(userId)))
                 .thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> userController.updateUser(userId.toString(), userUpdateRequestDTO));
@@ -283,13 +252,7 @@ class UserControllerTest {
 
     @Test
     void testDeleteUser_shouldDeleteUserSuccessfully() {
-        UUID userId = UUID.randomUUID();
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
-        doNothing().when(deleteUserUseCase).execute(any(UUID.class), eq(authenticatedUserId));
+        doNothing().when(deleteUserUseCase).execute(any(UUID.class), eq(userId));
 
         ResponseEntity<Void> response = userController.deleteUser(userId.toString());
         assertEquals(204, response.getStatusCode().value());
@@ -298,26 +261,16 @@ class UserControllerTest {
 
     @Test
     void testDeleteUser_shouldThrowExceptionWhenDeletingUserIsNotSelf() {
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
         doThrow(new UnauthorizedException("You are not allowed to delete this user."))
-                .when(deleteUserUseCase).execute(any(UUID.class), eq(authenticatedUserId));
+                .when(deleteUserUseCase).execute(any(UUID.class), eq(userId));
 
         assertThrows(UnauthorizedException.class, () -> userController.deleteUser(UUID.randomUUID().toString()));
     }
 
     @Test
     void testDeleteUser_shouldThrowExceptionWhenUserNotFoundWhenDeletingUser() {
-        UUID authenticatedUserId = UUID.randomUUID();
-
-        SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUserId, null));
-
         doThrow(new ResourceNotFoundException("User not found."))
-                .when(deleteUserUseCase).execute(any(UUID.class), eq(authenticatedUserId));
+                .when(deleteUserUseCase).execute(any(UUID.class), eq(userId));
 
         assertThrows(ResourceNotFoundException.class, () -> userController.deleteUser(UUID.randomUUID().toString()));
     }
