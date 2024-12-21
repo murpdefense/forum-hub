@@ -73,6 +73,8 @@ public class CreateCommentUseCase {
 
         CommentEntity entity = new CommentEntity(requestDTO.content(), user, topic, parentComment);
         commentRepository.save(entity);
+        topic.incrementComments();
+        topicRepository.save(topic);
 
         return CommentMapper.toResponseDTO(entity);
     }

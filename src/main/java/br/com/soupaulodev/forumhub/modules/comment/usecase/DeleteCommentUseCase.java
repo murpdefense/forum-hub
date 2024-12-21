@@ -65,5 +65,7 @@ public class DeleteCommentUseCase {
         }
 
         commentRepository.delete(commentFound);
+        topic.decrementComments();
+        topicRepository.save(topic);
     }
 }
