@@ -2,10 +2,7 @@ package br.com.soupaulodev.forumhub.modules.user.controller;
 
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,6 +42,8 @@ public class UserController {
     private final GetUserDetailsUseCase getUserDetailsUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final HighUserUseCase highUserUseCase;
+    private final UnHighUserUseCase unHighUserUseCase;
 
     /**
      * Constructor for {@link UserController}.
@@ -53,15 +52,21 @@ public class UserController {
      * @param getUserUseCase    {@link GetUserDetailsUseCase} the use case for handling user retrieval by ID
      * @param updateUserUseCase {@link UpdateUserUseCase} the use case for handling user update operations
      * @param deleteUserUseCase {@link DeleteUserUseCase} the use case for handling user deletion operations
+     * @param highUserUseCase {@link HighUserUseCase} the use case for handling user highing operations
+     * @param unHighUserUseCase {@link UnHighUserUseCase} the use case for handling user unhighing operations
      */
     public UserController(ListUsersUseCase listUsersUseCase,
                           GetUserDetailsUseCase getUserUseCase,
                           UpdateUserUseCase updateUserUseCase,
-                          DeleteUserUseCase deleteUserUseCase) {
+                          DeleteUserUseCase deleteUserUseCase,
+                          HighUserUseCase highUserUseCase,
+                          UnHighUserUseCase unHighUserUseCase) {
         this.listUsersUseCase = listUsersUseCase;
         this.getUserDetailsUseCase = getUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
+        this.highUserUseCase = highUserUseCase;
+        this.unHighUserUseCase = unHighUserUseCase;
     }
 
     /**
@@ -143,6 +148,48 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@Valid @PathVariable("id") String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteUserUseCase.execute(UUID.fromString(id), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling highing a user.
+     * This method highes a user by their unique identifier.
+     *
+     * @param highedUserId the unique identifier of the user to be highed
+     * @return a {@link ResponseEntity} of {@link Void} with status 204 (NO_CONTENT) to indicate the successful highing
+     */
+    @Operation(summary = "High user", description = "High user by their unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User highed successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    @PostMapping("/{id}/high")
+    public ResponseEntity<Void> highUser(@Valid @PathVariable("id")
+                                         @org.hibernate.validator.constraints.UUID String highedUserId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        highUserUseCase.execute(UUID.fromString(highedUserId), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling unhighing a user.
+     * This method unhighes a user by their unique identifier.
+     *
+     * @param highedUserId the unique identifier of the user to be unhighed
+     * @return a {@link ResponseEntity} of {@link Void} with status 204 (NO_CONTENT) to indicate the successful unhighing
+     */
+    @Operation(summary = "Unhigh user", description = "Unhigh user by their unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User unhighed successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    @DeleteMapping("/{id}/high")
+    public ResponseEntity<Void> unhighUser(@Valid @PathVariable("id")
+                                         @org.hibernate.validator.constraints.UUID String highedUserId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        unHighUserUseCase.execute(UUID.fromString(highedUserId), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
