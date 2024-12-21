@@ -3,10 +3,7 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.ListCommentsUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,6 +29,8 @@ public class CommentController {
     private final ListCommentsUseCase listCommentsUseCase;
     private final UpdateCommentUseCase updateCommentUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
+    private final HighCommentUseCase highCommentUseCase;
+    private final UnHighCommentUseCase unHighCommentUseCase;
 
     /**
      * Constructs a new CommentController with the specified use cases.
@@ -40,15 +39,21 @@ public class CommentController {
      * @param listCommentsUseCase  the use case for listing comments
      * @param updateCommentUseCase the use case for updating comments
      * @param deleteCommentUseCase the use case for deleting comments
+     * @param highCommentUseCase   the use case for highing comments
+     * @param unHighCommentUseCase the use case for unhighing comments
      */
     public CommentController(CreateCommentUseCase createCommentUseCase,
                              ListCommentsUseCase listCommentsUseCase,
                              UpdateCommentUseCase updateCommentUseCase,
-                             DeleteCommentUseCase deleteCommentUseCase) {
+                             DeleteCommentUseCase deleteCommentUseCase,
+                             HighCommentUseCase highCommentUseCase,
+                             UnHighCommentUseCase unHighCommentUseCase) {
         this.createCommentUseCase = createCommentUseCase;
         this.listCommentsUseCase = listCommentsUseCase;
         this.updateCommentUseCase = updateCommentUseCase;
         this.deleteCommentUseCase = deleteCommentUseCase;
+        this.highCommentUseCase = highCommentUseCase;
+        this.unHighCommentUseCase = unHighCommentUseCase;
     }
 
     /**
@@ -126,6 +131,48 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(@Valid @PathVariable @org.hibernate.validator.constraints.UUID String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteCommentUseCase.execute(UUID.fromString(id), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling comment high operations.
+     * This method high a comment by its unique identifier.
+     *
+     * @param commentId the comment's unique identifier to be highed
+     * @return a response entity with status 204 (No Content)
+     */
+    @Operation(summary = "High a comment", description = "High a comment by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Comment highed"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Comment not found")
+    })
+    @PostMapping("/high/{id}")
+    public ResponseEntity<CommentResponseDTO> highComment(@Valid @PathVariable("id")
+                                                          @org.hibernate.validator.constraints.UUID String commentId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        highCommentUseCase.execute(UUID.fromString(commentId), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling comment unhigh operations.
+     * This method unhigh a comment by its unique identifier.
+     *
+     * @param commentId the comment's unique identifier to be unhighed
+     * @return a response entity with status 204 (No Content)
+     */
+    @Operation(summary = "Unhigh a comment", description = "Unhigh a comment by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Comment unhighed"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Comment not found")
+    })
+    @DeleteMapping("/high/{id}")
+    public ResponseEntity<Void> unHighComment(@Valid @PathVariable("id")
+                                             @org.hibernate.validator.constraints.UUID String commentId) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        unHighCommentUseCase.execute(UUID.fromString(commentId), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
