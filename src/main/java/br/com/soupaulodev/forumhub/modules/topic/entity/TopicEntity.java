@@ -194,6 +194,14 @@ public class TopicEntity implements Serializable {
         }
     }
 
+    public void incrementComments() {
+        this.commentsCount++;
+    }
+
+    public void decrementComments() {
+        this.commentsCount--;
+    }
+
     public Long getCommentsCount() {
         return commentsCount;
     }
