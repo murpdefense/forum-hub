@@ -64,6 +64,9 @@ public class ForumEntity implements Serializable {
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private final List<TopicEntity> topics = new ArrayList<>();
 
+    @Column(name = "topics_count", nullable = false)
+    private Long topicsCount = 0L;
+
     /**
      * The timestamp when the forum was created.
      */
@@ -141,6 +144,18 @@ public class ForumEntity implements Serializable {
 
     public void decrementHighs() {
         this.highsCount--;
+    }
+
+    public Long getTopicsCount() {
+        return topicsCount;
+    }
+
+    public void incrementTopicsCount() {
+        this.topicsCount++;
+    }
+
+    public void decrementTopicsCount() {
+        this.topicsCount--;
     }
 
     public UserEntity getOwner() {

@@ -60,6 +60,10 @@ public class CreateTopicUseCase {
         topic.setForum(forum);
 
         TopicEntity topicSaved = topicRepository.save(topic);
+
+        forum.incrementTopicsCount();
+        forumRepository.save(forum);
+
         return TopicMapper.toResponseDTO(topicSaved);
     }
 }
