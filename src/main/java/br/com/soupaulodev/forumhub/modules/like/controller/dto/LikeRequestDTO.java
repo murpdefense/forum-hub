@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.UUID;
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public record LikeRequestDTO(
-        @Enumerated(EnumType.STRING) @NotBlank ResourceType resourceType,
+        @Enumerated(EnumType.STRING) ResourceType resourceType,
         @UUID @NotBlank String resourceId
 ) {
 }
