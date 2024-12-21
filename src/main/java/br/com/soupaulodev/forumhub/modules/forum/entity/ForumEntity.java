@@ -28,71 +28,44 @@ import java.util.UUID;
 @Transactional
 public class ForumEntity implements Serializable {
 
-    /**
-     * Serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The unique identifier of the forum.
-     */
     @Id
     private UUID id;
 
-    /**
-     * The name of the forum.
-     */
     @Column(nullable = false, length = 50, unique = true)
     private String name;
 
-    /**
-     * The description of the forum.
-     */
     @Column(nullable = false, length = 50)
     private String description;
 
-    /**
-     * The number of highs the forum has received.
-     */
     @Column(name = "highs_count", nullable = false)
     private Long highsCount = 0L;
 
-    /**
-     * The number of topics in the forum.
-     */
     @Column(name = "topics_count", nullable = false)
     private Long topicsCount = 0L;
 
-    /**
-     * The owner of the forum.
-     */
+
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private UserEntity owner;
 
-    /**
-     * The participants of the forum.
-     */
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ForumHighsEntity> highs = new ArrayList<>();
+
     @ManyToMany(mappedBy = "participatingForums", fetch = FetchType.EAGER)
     private final List<UserEntity> participants = new ArrayList<>();
 
-    /**
-     * The topics in the forum.
-     */
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private final List<TopicEntity> topics = new ArrayList<>();
 
-    /**
-     * The timestamp when the forum was created.
-     */
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    /**
-     * The timestamp when the forum was last updated.
-     */
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
@@ -247,6 +220,15 @@ public class ForumEntity implements Serializable {
             owner = null;
             oldOwner.removeOwnedForum(this);
         }
+    }
+
+    /**
+     * Gets the highs of the forum.
+     *
+     * @return the highs of the forum.
+     */
+    public List<ForumHighsEntity> getHighs() {
+        return highs;
     }
 
     /**
