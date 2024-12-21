@@ -185,7 +185,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "User not found"),
     })
-    @DeleteMapping("/high/{id}")
+    @DeleteMapping("/unhigh/{id}")
     public ResponseEntity<Void> unHighUser(@Valid @PathVariable("id")
                                          @org.hibernate.validator.constraints.UUID String highedUserId) {
         UUID authenticatedUserId = getAuthenticatedUserId();

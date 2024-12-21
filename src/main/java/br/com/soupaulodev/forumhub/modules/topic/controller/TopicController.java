@@ -217,7 +217,7 @@ public class TopicController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Topic not found")
     })
-    @DeleteMapping("/high/{id}")
+    @DeleteMapping("/unhigh/{id}")
     public ResponseEntity<Void> unHighTopic(@Valid @PathVariable("id") @org.hibernate.validator.constraints.UUID String topicId) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         unHighTopicUseCase.execute(UUID.fromString(topicId), authenticatedUserId);
