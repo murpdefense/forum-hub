@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.UUID;
  *
  * @param name        the name of the forum
  * @param description the description of the forum
- * @param ownerId     the unique identifier of the forum owner
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public record ForumCreateRequestDTO(@NotBlank
