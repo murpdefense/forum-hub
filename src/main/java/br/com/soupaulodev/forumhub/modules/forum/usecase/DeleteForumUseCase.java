@@ -4,6 +4,8 @@ import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
+import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -15,14 +17,17 @@ import java.util.UUID;
 public class DeleteForumUseCase {
 
     private final ForumRepository forumRepository;
+    private final UserRepository userRepository;
 
     /**
      * Constructs a new DeleteForumUsecase with the specified repository.
      *
      * @param forumRepository the repository for managing forums
      */
-    public DeleteForumUseCase(ForumRepository forumRepository) {
+    public DeleteForumUseCase(ForumRepository forumRepository,
+                              UserRepository userRepository) {
         this.forumRepository = forumRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -41,6 +46,13 @@ public class DeleteForumUseCase {
             throw new ForbiddenException("You are not allowed to delete this forum.");
         }
 
+        UserEntity owner = userRepository.findById(authenticatedUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        owner.removeOwnedForum(forumDB);
+        owner.removeParticipatingForum(forumDB);
+        forumDB.removeOwner();
+        forumDB.removeParticipant(owner);
         forumRepository.delete(forumDB);
     }
 }

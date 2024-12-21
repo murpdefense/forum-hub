@@ -156,6 +156,14 @@ public class ForumEntity implements Serializable {
         }
     }
 
+    public void removeOwner() {
+        if (owner != null) {
+            UserEntity oldOwner = owner;
+            owner = null;
+            oldOwner.removeOwnedForum(this);
+        }
+    }
+
     public List<UserEntity> getParticipants() {
         return participants;
     }
@@ -164,6 +172,13 @@ public class ForumEntity implements Serializable {
         if (!participants.contains(user)) {
             participants.add(user);
             user.addParticipatingForum(this);
+        }
+    }
+
+    public void removeParticipant(UserEntity user) {
+        if (participants.contains(user)) {
+            participants.remove(user);
+            user.removeParticipatingForum(this);
         }
     }
 

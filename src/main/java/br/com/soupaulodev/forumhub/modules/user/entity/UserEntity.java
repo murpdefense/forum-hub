@@ -282,6 +282,15 @@ public class UserEntity {
         }
     }
 
+    public void removeOwnedForum(ForumEntity forum) {
+        if (ownedForums.contains(forum)) {
+            ownedForums.remove(forum);
+            if (forum.getOwner() == this) {
+                forum.setOwner(null);
+            }
+        }
+    }
+
     /**
      * Checks if the user owns a specific forum.
      *
@@ -310,6 +319,13 @@ public class UserEntity {
         if (!participatingForums.contains(forum)) {
             participatingForums.add(forum);
             forum.addParticipant(this);
+        }
+    }
+
+    public void removeParticipatingForum(ForumEntity forum) {
+        if (participatingForums.contains(forum)) {
+            participatingForums.remove(forum);
+            forum.removeParticipant(this);
         }
     }
 
