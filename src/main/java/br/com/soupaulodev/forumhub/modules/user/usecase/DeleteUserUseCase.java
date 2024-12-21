@@ -2,6 +2,7 @@ package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
+import br.com.soupaulodev.forumhub.modules.like.repository.LikeRepository;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,18 @@ import java.util.UUID;
 public class DeleteUserUseCase {
 
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     /**
      * Constructs a new {@link DeleteUserUseCase}.
      *
      * @param userRepository the repository responsible for deleting user data from the database
+     * @param likeRepository the repository responsible for deleting likes data from the database
      */
-    public DeleteUserUseCase(UserRepository userRepository) {
+    public DeleteUserUseCase(UserRepository userRepository,
+                             LikeRepository likeRepository) {
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     /**
@@ -56,6 +61,8 @@ public class DeleteUserUseCase {
             throw new ForbiddenException("You are not allowed to delete this user.");
         }
 
+
         userRepository.delete(userDB);
+        likeRepository.deleteAllByUser(userDB);
     }
 }

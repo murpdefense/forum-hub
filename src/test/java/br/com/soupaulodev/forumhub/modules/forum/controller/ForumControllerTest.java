@@ -93,7 +93,7 @@ class ForumControllerTest {
                 userId,
                 0L,
                 1,
-                0,
+                0L,
                 now,
                 now);
 
@@ -136,7 +136,7 @@ class ForumControllerTest {
                         UUID.randomUUID(),
                         0L,
                         1,
-                        0,
+                        0L,
                         now,
                         now),
                 new ForumResponseDTO(
@@ -146,7 +146,7 @@ class ForumControllerTest {
                         UUID.randomUUID(),
                         0L,
                         1,
-                        0,
+                        0L,
                         now,
                         now));
 
@@ -171,7 +171,7 @@ class ForumControllerTest {
                 UUID.randomUUID(),
                 0L,
                 1,
-                0,
+                0L,
                 now,
                 now);
 
@@ -209,7 +209,7 @@ class ForumControllerTest {
                 ownerId,
                 0L,
                 1,
-                0,
+                0L,
                 now,
                 now);
 

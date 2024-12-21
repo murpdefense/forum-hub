@@ -62,7 +62,7 @@ public class CommentEntity implements Serializable {
      * Timestamp when the comment was created.
      */
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     /**

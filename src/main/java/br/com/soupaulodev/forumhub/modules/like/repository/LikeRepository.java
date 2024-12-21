@@ -43,4 +43,20 @@ public interface LikeRepository extends JpaRepository<LikeEntity, UUID> {
      * @return Long of count
      */
     Long countByResourceTypeAndResourceId(ResourceType resourceType, UUID resourceId);
+
+    /**
+     * Delete all likes by user.
+     *
+     * @param user the user
+     */
+    void deleteAllByUser(UserEntity user);
+
+    /**
+     * Delete by resource type and resource id and user.
+     *
+     * @param resourceType the resource type
+     * @param resourceId   the resource id
+     * @param user         the user
+     */
+    void deleteByResourceTypeAndResourceIdAndUser(ResourceType resourceType, UUID resourceId, UserEntity user);
 }

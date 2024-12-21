@@ -84,7 +84,7 @@ public class ForumMapper {
                 entity.getOwner().getId(),
                 entity.getHighsCount(),
                 entity.getParticipants().size(),
-                entity.getTopics().size(),
+                entity.getTopicsCount(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

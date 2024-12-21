@@ -28,7 +28,7 @@ public record ForumResponseDTO(UUID id,
                                UUID owner,
                                Long highs,
                                int participants,
-                               int topicCount,
+                               Long topicCount,
                                Instant createdAt,
                                Instant updatedAt) {
 }

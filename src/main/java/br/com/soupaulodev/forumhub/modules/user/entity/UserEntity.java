@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +19,20 @@ import java.util.UUID;
 /**
  * Represents a user within the system.
  * <p>
- * The {@link UserEntity} class encapsulates the details of a user, including their personal
- * information (name, username, email), associated forums (both owned and participated in),
- * topics, comments, and likes. It also tracks the timestamps of user creation and updates.
+ * The {@link UserEntity} class encapsulates the details of a user.
  * </p>
  *
- * @author soupaulodev
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Entity
 @Table(name = "tb_user")
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+    /**
+     * Serial version UID for serialization.
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Unique identifier of the user.
@@ -71,6 +77,12 @@ public class UserEntity {
     private String password;
 
     /**
+     * The number of highs count of the user.
+     */
+    @Column(name = "highs_count")
+    private Long highsCount = 0L;
+
+    /**
      * The forums owned by the user.
      * <p>
      * A user can own multiple forums. These relationships are managed by the {@link ForumEntity} class.
@@ -107,9 +119,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private final List<CommentEntity> comments = new ArrayList<>();
 
-    @Column(name = "highs_count")
-    private Long highsCount = 0L;
-
     /**
      * The timestamp when the user was created.
      * <p>
@@ -117,7 +126,7 @@ public class UserEntity {
      * </p>
      */
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     /**
@@ -127,11 +136,11 @@ public class UserEntity {
      * </p>
      */
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     /**
-     * Default constructor for initializing the user with a unique ID and creation timestamps.
+     * Default constructor for initializing the user with a unique ID and current timestamps.
      * <p>
      * This constructor assigns the current time to both the `createdAt` and `updatedAt` fields
      * and generates a new UUID for the user ID.
@@ -141,7 +150,6 @@ public class UserEntity {
         Instant now = Instant.now();
 
         this.id = UUID.randomUUID();
-
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -150,7 +158,6 @@ public class UserEntity {
      * Constructor to create a user with the specified details.
      * <p>
      * This constructor initializes a user entity with the specified name, username, email, and password.
-     * The username is automatically converted to lowercase and spaces are replaced with underscores.
      * </p>
      *
      * @param name     the full name of the user
@@ -161,12 +168,9 @@ public class UserEntity {
     public UserEntity(String name, String username, String email, String password) {
         this();
         this.name = name;
-        this.username = username.toLowerCase().replace(" ", "_");
+        this.username = username;
         this.email = email;
         this.password = password;
-
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
     }
 
     /**
@@ -260,6 +264,23 @@ public class UserEntity {
     }
 
     /**
+     * Gets the number of highs count.
+     *
+     * @return the number of highs count.
+     */
+    public Long getHighsCount() { return highsCount; }
+
+    /**
+     * Increments the number of highs count.
+     */
+    public void incrementHighs() { this.highsCount++; }
+
+    /**
+     * Decrements the number of highs count.
+     */
+    public void decrementHighs() { this.highsCount--; }
+
+    /**
      * Gets the list of forums owned by the user.
      *
      * @return {@link List} of {@link ForumEntity} the list of forums owned by the user.
@@ -277,16 +298,21 @@ public class UserEntity {
         if (!ownedForums.contains(forum)) {
             ownedForums.add(forum);
             if (forum.getOwner() != this) {
-                forum.setOwner(this);
+                forum.addOwner(this);
             }
         }
     }
 
+    /**
+     * Removes a forum from the user's owned forums collection.
+     *
+     * @param forum the forum to remove from the user's owned forums.
+     */
     public void removeOwnedForum(ForumEntity forum) {
         if (ownedForums.contains(forum)) {
             ownedForums.remove(forum);
             if (forum.getOwner() == this) {
-                forum.setOwner(null);
+                forum.addOwner(null);
             }
         }
     }
@@ -297,18 +323,14 @@ public class UserEntity {
      * @param forum the forum to check for ownership.
      * @return true if the user owns the forum, false otherwise.
      */
-    public boolean participatingInForum(ForumEntity forum) {
-        return !participatingForums.contains(forum);
-    }
+    public boolean participatingInForum(ForumEntity forum) { return !participatingForums.contains(forum); }
 
     /**
      * Gets the list of forums in which the user is a participant.
      *
      * @return {@link List} of {@link ForumEntity} the list of forums in which the user is a participant.
      */
-    public List<ForumEntity> getParticipatingForums() {
-        return participatingForums;
-    }
+    public List<ForumEntity> getParticipatingForums() { return participatingForums; }
 
     /**
      * Adds a forum to the user's participating forums collection.
@@ -322,6 +344,11 @@ public class UserEntity {
         }
     }
 
+    /**
+     * Removes a forum from the user's participating forums collection.
+     *
+     * @param forum {@link ForumEntity} the forum to remove from the user's participating forums.
+     */
     public void removeParticipatingForum(ForumEntity forum) {
         if (participatingForums.contains(forum)) {
             participatingForums.remove(forum);
@@ -362,110 +389,62 @@ public class UserEntity {
     }
 
     /**
-     * Add a comment to the user's comments collection.
-     *
-     * @param comments {@link CommentEntity} the comment to add to the user's comments.
-     */
-    public void addComment(CommentEntity comments) {
-        if (!this.comments.contains(comments)) {
-            this.comments.add(comments);
-            if (comments.getUser() != this) {
-                comments.setUser(this);
-            }
-        }
-    }
-
-    /**
-     * Gets the number of highs count.
-     *
-     * @return the number of highs count.
-     */
-    public Long getHighsCount() {
-        return highsCount;
-    }
-
-    /**
-     * Increments the number of highs count.
-     */
-    public void incrementHighs() {
-        this.highsCount++;
-    }
-
-    /**
-     * Decrements the number of highs count.
-     */
-    public void decrementHighs() {
-        this.highsCount--;
-    }
-
-    /**
      * Gets the timestamp when the user was created.
      *
      * @return the timestamp when the user was created.
      */
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 
     /**
      * Sets the timestamp when the user was created.
      *
      * @param createdAt the new timestamp to set for user creation.
      */
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
     /**
      * Gets the timestamp when the user was last updated.
      *
      * @return the timestamp when the user was last updated.
      */
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Instant getUpdatedAt() { return updatedAt; }
 
     /**
      * Sets the timestamp when the user was last updated.
      *
      * @param updatedAt the new timestamp to set for the last update of the user.
      */
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 
     /**
-     * Returns a string representation of the UserEntity object.
-     * <p>
-     * The string includes the user's ID, name, username, email, and the timestamps of creation and last update.
-     * This is useful for logging and debugging purposes.
-     * </p>
+     * Returns a string representation of the user.
      *
-     * @return a string representation of the UserEntity object.
+     * @return a string representation of the user.
      */
     @Override
     public String toString() {
-        return "UserEntity{" + "id=" + id + ", name='" + name + '\'' + ", username='" + username + '\'' + ", email='" + email + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+        return "UserEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 
     /**
-     * Compares this UserEntity object to another object for equality.
-     * <p>
-     * This method checks whether the given object is an instance of {@link UserEntity}, and if so,
-     * compares the ID of the two {@link UserEntity} objects for equality. If the IDs are the same, the objects are considered equal.
-     * </p>
+     * Compares this user to the specified object.
      *
-     * @param obj the object to compare this {@link UserEntity} to.
-     * @return true if the objects are equal (i.e., they have the same ID), false otherwise.
+     * @param obj the object to compare this user against.
+     * @return {@code true} if the object is equal to this user, {@code false} otherwise.
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+
+        if (obj == null || getClass() != obj.getClass()) return false;
+
         UserEntity that = (UserEntity) obj;
         return Objects.equals(this.id, that.id);
     }

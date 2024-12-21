@@ -67,7 +67,7 @@ public class TopicEntity implements Serializable {
      * Automatically set when the topic is created.
      */
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     /**
@@ -75,7 +75,7 @@ public class TopicEntity implements Serializable {
      * Automatically updated when the topic is modified.
      */
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     /**
@@ -176,22 +176,6 @@ public class TopicEntity implements Serializable {
 
     public List<CommentEntity> getComments() {
         return comments;
-    }
-
-    public void addComments(CommentEntity comment) {
-        if (comment != null && !comments.contains(comment)) {
-            comments.add(comment);
-            comment.setTopic(this);
-            commentsCount++;
-        }
-    }
-
-    public void removeComment(CommentEntity comment) {
-        if (comment != null && comments.contains(comment)) {
-            comments.remove(comment);
-            comment.setTopic(null);
-            commentsCount--;
-        }
     }
 
     public void incrementComments() {

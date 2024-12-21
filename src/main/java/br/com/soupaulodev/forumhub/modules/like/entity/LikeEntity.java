@@ -41,7 +41,7 @@ public class LikeEntity implements Serializable {
      * The timestamp when the like was created.
      */
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     /**
