@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.UUID;
  * @param title     the title of the topic
  * @param content   the content of the topic
  * @param forumId   the unique identifier of the forum to which the topic belongs
- * @param creatorId the unique identifier of the creator of the topic
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 public record TopicCreateRequestDTO(
@@ -27,7 +26,6 @@ public record TopicCreateRequestDTO(
         @Size(max = 500)
         String content,
 
-        @UUID String forumId,
-        @UUID String creatorId
+        @UUID String forumId
 ) {
 }

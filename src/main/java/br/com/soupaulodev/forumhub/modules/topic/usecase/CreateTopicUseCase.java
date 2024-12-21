@@ -48,11 +48,11 @@ public class CreateTopicUseCase {
      * @return the response data transfer object containing the created topic data
      * @throws ResourceNotFoundException if the forum or user specified in the request does not exist
      */
-    public TopicResponseDTO execute(TopicCreateRequestDTO requestDTO) {
+    public TopicResponseDTO execute(TopicCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 
         ForumEntity forum = forumRepository.findById(UUID.fromString(requestDTO.forumId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Forum not found."));
-        UserEntity user = userRepository.findById(UUID.fromString(requestDTO.creatorId()))
+        UserEntity user = userRepository.findById(authenticatedUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         TopicEntity topic = TopicMapper.toEntity(requestDTO, forum, user);

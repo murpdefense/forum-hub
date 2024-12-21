@@ -86,8 +86,8 @@ public class TopicController {
             @ApiResponse(responseCode = "409", description = "Topic already exists")
     })
     public ResponseEntity<TopicResponseDTO> createTopic(@Valid @RequestBody TopicCreateRequestDTO requestDTO) {
-
-        TopicResponseDTO responseDTO = createTopicUseCase.execute(requestDTO);
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        TopicResponseDTO responseDTO = createTopicUseCase.execute(requestDTO, authenticatedUserId);
 
         URI location = URI.create("/topics/" + responseDTO.id());
         return ResponseEntity.created(location).body(responseDTO);
