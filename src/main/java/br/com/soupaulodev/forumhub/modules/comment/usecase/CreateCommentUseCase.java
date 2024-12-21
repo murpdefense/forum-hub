@@ -53,11 +53,8 @@ public class CreateCommentUseCase {
      */
     public CommentResponseDTO execute(CommentCreateRequestDTO requestDTO, UUID authenticatedUserId) {
 
-        UserEntity user = userRepository.findById(UUID.fromString(requestDTO.userId()))
+        UserEntity user = userRepository.findById(authenticatedUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        if (!user.getId().equals(authenticatedUserId)) {
-            throw new ForbiddenException("You are not allowed to create a comment for another user");
-        }
 
         TopicEntity topic = topicRepository.findById(UUID.fromString(requestDTO.topicId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
@@ -69,6 +66,9 @@ public class CreateCommentUseCase {
         if (requestDTO.parentCommentId() != null) {
             parentComment = commentRepository.findById(UUID.fromString(requestDTO.parentCommentId()))
                     .orElseThrow(() -> new ResourceNotFoundException("Parent comment not found."));
+            if(parentComment.getTopic() != topic) {
+                throw new IllegalArgumentException("Parent comment does not belong to the specified topic.");
+            }
         }
 
         CommentEntity entity = new CommentEntity(requestDTO.content(), user, topic, parentComment);

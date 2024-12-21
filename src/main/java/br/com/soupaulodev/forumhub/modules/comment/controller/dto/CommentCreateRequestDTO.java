@@ -13,7 +13,6 @@ import org.hibernate.validator.constraints.UUID;
  * </p>
  *
  * @param content
- * @param userId
  * @param topicId
  * @param parentCommentId
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
@@ -22,8 +21,6 @@ public record CommentCreateRequestDTO(
         @NotBlank
         @Size(max = 500)
         String content,
-        @UUID
-        String userId,
         @UUID
         String topicId,
         String parentCommentId
