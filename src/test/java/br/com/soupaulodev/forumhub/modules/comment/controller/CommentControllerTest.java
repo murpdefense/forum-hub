@@ -67,7 +67,7 @@ class CommentControllerTest {
         UUID commentId = UUID.randomUUID();
         UUID topicId = UUID.randomUUID();
         Instant now = Instant.now();
-        CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", userId.toString(), topicId.toString(), null);
+        CommentCreateRequestDTO requestDTO = new CommentCreateRequestDTO("Content", topicId.toString(), null);
         CommentResponseDTO responseDTO = new CommentResponseDTO(
                 commentId,
                 "Content",
