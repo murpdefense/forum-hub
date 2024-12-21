@@ -68,8 +68,12 @@ class TopicControllerTest {
     @InjectMocks
     private TopicController topicController;
 
+    private final UUID userId = UUID.randomUUID();
+
     @BeforeEach
     void setUp() {
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
         MockitoAnnotations.openMocks(this);
     }
 
@@ -87,8 +91,7 @@ class TopicControllerTest {
         TopicCreateRequestDTO requestDTO = new TopicCreateRequestDTO(
                 "Topic Example",
                 "Description Example",
-                forumId.toString(),
-                creatorId.toString());
+                forumId.toString());
 
         Instant now = Instant.now();
         TopicResponseDTO responseDTO = new TopicResponseDTO(
@@ -104,7 +107,7 @@ class TopicControllerTest {
                 now
         );
 
-        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class))).thenReturn(responseDTO);
+        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class), any(UUID.class))).thenReturn(responseDTO);
 
         ResponseEntity<TopicResponseDTO> createdTopic = topicController.createTopic(requestDTO);
 
@@ -116,15 +119,13 @@ class TopicControllerTest {
     @Test
     void shouldThrowForumNotFoundExceptionWhenCreatingTopicWithNonExistentForum() {
         UUID forumId = UUID.randomUUID();
-        UUID creatorId = UUID.randomUUID();
 
         TopicCreateRequestDTO requestDTO = new TopicCreateRequestDTO(
                 "Topic Example",
                 "Description Example",
-                forumId.toString(),
-                creatorId.toString());
+                forumId.toString());
 
-        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class)))
+        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class), any(UUID.class)))
                 .thenThrow(new ResourceNotFoundException("Topic not found"));
 
         assertThrows(ResourceNotFoundException.class, () -> topicController.createTopic(requestDTO));
@@ -133,15 +134,13 @@ class TopicControllerTest {
     @Test
     void shouldThrowUserNotFoundExceptionWhenCreatingTopicWithNonExistentCreator() {
         UUID forumId = UUID.randomUUID();
-        UUID creatorId = UUID.randomUUID();
 
         TopicCreateRequestDTO requestDTO = new TopicCreateRequestDTO(
                 "Topic Example",
                 "Description Example",
-                forumId.toString(),
-                creatorId.toString());
+                forumId.toString());
 
-        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class)))
+        when(createTopicUseCase.execute(any(TopicCreateRequestDTO.class), any(UUID.class)))
                 .thenThrow(new ResourceNotFoundException("Topic not found"));
 
         assertThrows(ResourceNotFoundException.class, () -> topicController.createTopic(requestDTO));
