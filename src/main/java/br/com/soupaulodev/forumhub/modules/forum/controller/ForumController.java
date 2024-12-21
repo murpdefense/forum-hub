@@ -46,6 +46,8 @@ public class ForumController {
     private final GetForumUseCase getForumUseCase;
     private final UpdateForumUseCase updateForumUseCase;
     private final DeleteForumUseCase deleteForumUseCase;
+    private final HighForumUseCase highForumUseCase;
+    private final UnHighForumUseCase unHighForumUseCase;
 
     /**
      * Constructs a new {@link ForumController} with the specified use cases.
@@ -55,17 +57,23 @@ public class ForumController {
      * @param getForumUseCase    {@link GetForumUseCase} the use case for getting forum details
      * @param updateForumUseCase {@link UpdateForumUseCase} the use case for updating forums
      * @param deleteForumUseCase {@link DeleteForumUseCase} the use case for deleting forums
+     * @param highForumUseCase {@link HighForumUseCase} the use case for high forums
+     * @param unHighForumUseCase {@link UnHighForumUseCase} the use case for unhigh forums
      */
     public ForumController(CreateForumUseCase createForumUseCase,
                            ListForumsUseCase listForumsUseCase,
                            GetForumUseCase getForumUseCase,
                            UpdateForumUseCase updateForumUseCase,
-                           DeleteForumUseCase deleteForumUseCase) {
+                           DeleteForumUseCase deleteForumUseCase,
+                           HighForumUseCase highForumUseCase,
+                           UnHighForumUseCase unHighForumUseCase) {
         this.createForumUseCase = createForumUseCase;
         this.listForumsUseCase = listForumsUseCase;
         this.getForumUseCase = getForumUseCase;
         this.updateForumUseCase = updateForumUseCase;
         this.deleteForumUseCase = deleteForumUseCase;
+        this.highForumUseCase = highForumUseCase;
+        this.unHighForumUseCase = unHighForumUseCase;
     }
 
     /**
@@ -173,6 +181,48 @@ public class ForumController {
                                             String id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         deleteForumUseCase.execute(UUID.fromString(id), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling forum high operations.
+     * This method high a forum by its unique identifier.
+     *
+     * @param id the forum's unique identifier to be high
+     * @return a response entity with status 204 (No Content)
+     */
+    @Operation(summary = "High forum by ID", description = "High a forum by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Forum high"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Forum not found")
+    })
+    @PostMapping("/high/{id}")
+    public ResponseEntity<Void> highForum(@Valid @PathVariable("id")
+                                          @org.hibernate.validator.constraints.UUID String id) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        highForumUseCase.execute(UUID.fromString(id), authenticatedUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for handling forum unhigh operations.
+     * This method unhigh a forum by its unique identifier.
+     *
+     * @param id the forum's unique identifier to be unhigh
+     * @return a response entity with status 204 (No Content)
+     */
+    @Operation(summary = "Unhigh forum by ID", description = "Unhigh a forum by its unique identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Forum unhigh"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Forum not found")
+    })
+    @DeleteMapping("/high/{id}")
+    public ResponseEntity<Void> unHighForum(@Valid @PathVariable("id")
+                                          @org.hibernate.validator.constraints.UUID String id) {
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        unHighForumUseCase.execute(UUID.fromString(id), authenticatedUserId);
         return ResponseEntity.noContent().build();
     }
 
