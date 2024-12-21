@@ -4,8 +4,6 @@ import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
-import br.com.soupaulodev.forumhub.modules.like.entity.ResourceType;
-import br.com.soupaulodev.forumhub.modules.like.repository.LikeRepository;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
@@ -23,7 +21,6 @@ public class DeleteTopicUseCase {
 
     private final TopicRepository topicRepository;
     private final ForumRepository forumRepository;
-    private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
     /**
@@ -31,17 +28,14 @@ public class DeleteTopicUseCase {
      *
      * @param topicRepository the repository for managing topics
      * @param forumRepository the repository for managing forums
-     * @param likeRepository  the repository for managing likes
      * @param userRepository   the repository for managing users
      *
      */
     public DeleteTopicUseCase(TopicRepository topicRepository,
                               ForumRepository forumRepository,
-                              LikeRepository likeRepository,
                               UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.forumRepository = forumRepository;
-        this.likeRepository = likeRepository;
         this.userRepository = userRepository;
     }
 
@@ -68,6 +62,5 @@ public class DeleteTopicUseCase {
 
         topicRepository.delete(topicDB);
         forumRepository.save(forumFound);
-        likeRepository.deleteByResourceTypeAndResourceIdAndUser(ResourceType.TOPIC, id, topicDB.getCreator());
     }
 }

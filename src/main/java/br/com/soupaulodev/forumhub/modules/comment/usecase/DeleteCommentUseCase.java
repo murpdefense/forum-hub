@@ -4,8 +4,6 @@ import br.com.soupaulodev.forumhub.modules.comment.entity.CommentEntity;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ForbiddenException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
-import br.com.soupaulodev.forumhub.modules.like.entity.ResourceType;
-import br.com.soupaulodev.forumhub.modules.like.repository.LikeRepository;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
@@ -25,7 +23,6 @@ public class DeleteCommentUseCase {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
-    private final LikeRepository likeRepository;
 
     /**
      * Constructs a new DeleteCommentUsecase with the specified repository.
@@ -36,12 +33,10 @@ public class DeleteCommentUseCase {
      */
     public DeleteCommentUseCase(CommentRepository commentRepository,
                                 UserRepository userRepository,
-                                TopicRepository topicRepository,
-                                LikeRepository likeRepository) {
+                                TopicRepository topicRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.topicRepository = topicRepository;
-        this.likeRepository = likeRepository;
     }
 
     /**
@@ -72,6 +67,5 @@ public class DeleteCommentUseCase {
         commentRepository.delete(commentFound);
         topic.decrementComments();
         topicRepository.save(topic);
-        likeRepository.deleteByResourceTypeAndResourceIdAndUser(ResourceType.COMMENT, id, user);
     }
 }
