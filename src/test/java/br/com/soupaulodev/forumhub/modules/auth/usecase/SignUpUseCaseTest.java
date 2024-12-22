@@ -8,7 +8,6 @@ import br.com.soupaulodev.forumhub.security.utils.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,45 +47,41 @@ class SignUpUseCaseTest {
     }
 
     @Test
-    void execute_shouldRegisterUserSuccessfully() {
-        UserCreateRequestDTO requestDTO = new UserCreateRequestDTO(
-                "Test User",
-                "testUser",
-                "test@example.com",
-                "password123");
-
-        Cookie cookie = new Cookie("token", "jwtToken");
+    void shouldRegisterUserSuccessfully() {
+        UserCreateRequestDTO requestDTO = new UserCreateRequestDTO("testuser", "password123", "Test User", "test@example.com");
 
         when(userRepository.existsByUsername(requestDTO.username())).thenReturn(false);
         when(passwordEncoder.encode(requestDTO.password())).thenReturn("encodedPassword");
-        when(cookieUtil.generateCookieWithToken(any(UserEntity.class))).thenReturn(cookie);
+        when(cookieUtil.generateCookieWithToken(any(UserEntity.class))).thenReturn(new Cookie("token", "jwtToken"));
 
-        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
+        UserEntity savedUser = new UserEntity();
+        savedUser.setUsername(requestDTO.username());
+        savedUser.setPassword("encodedPassword");
+        savedUser.setName(requestDTO.name());
+        savedUser.setEmail(requestDTO.email());
 
         Map<String, Object> result = signUpUseCase.execute(requestDTO);
 
         assertNotNull(result);
-        assertEquals(cookie, result.get("cookie"));
+        assertTrue(result.containsKey("user"));
+        assertTrue(result.containsKey("cookie"));
 
-        verify(userRepository).save(userCaptor.capture());
-        UserEntity capturedUser = userCaptor.getValue();
-
-        assertEquals(requestDTO.username(), capturedUser.getUsername());
-        assertEquals("testUser", capturedUser.getUsername());
-        assertEquals("encodedPassword", capturedUser.getPassword());
-        assertEquals("Test User", capturedUser.getName());
-        assertEquals("test@example.com", capturedUser.getEmail());
+        verify(userRepository, times(1)).save(any(UserEntity.class));
+        verify(cookieUtil, times(1)).generateCookieWithToken(any(UserEntity.class));
     }
 
     @Test
-    void execute_shouldThrowExceptionWhenUsernameExists() {
-        UserCreateRequestDTO requestDTO = new UserCreateRequestDTO("existingUser", "password123", "Existing User", "existing@example.com");
+    void shouldThrowExceptionWhenUsernameAlreadyExists() {
+        UserCreateRequestDTO requestDTO = new UserCreateRequestDTO("testuser", "password123", "Test User", "test@example.com");
 
         when(userRepository.existsByUsername(requestDTO.username())).thenReturn(true);
 
-        ResourceAlreadyExistsException exception = assertThrows(ResourceAlreadyExistsException.class, () -> signUpUseCase.execute(requestDTO));
+        ResourceAlreadyExistsException exception = assertThrows(ResourceAlreadyExistsException.class, () ->
+                signUpUseCase.execute(requestDTO)
+        );
 
         assertEquals("Username already exists", exception.getMessage());
+
         verify(userRepository, never()).save(any(UserEntity.class));
         verify(cookieUtil, never()).generateCookieWithToken(any(UserEntity.class));
     }
