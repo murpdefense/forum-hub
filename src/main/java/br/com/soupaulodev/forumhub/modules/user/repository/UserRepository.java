@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Repository interface for {@link UserEntity}.
- * Extends {@link JpaRepository} to provide CRUD operations for {@link UserEntity}.
+ * Repository for managing {@link UserEntity} persistence.
+ * Extends {@link JpaRepository} to provide basic CRUD operations.
  *
- * @author <a href="http://soupaulodev.com.br">soupaulodev</a>
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
@@ -19,16 +19,16 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     /**
      * Finds a user by their username.
      *
-     * @param username {@link String} the username of the user
-     * @return an {@link Optional} containing the found {@link UserEntity}, or empty if no user is found
+     * @param username the username to search for
+     * @return an Optional containing the {@link UserEntity} if found, or empty if not
      */
     Optional<UserEntity> findByUsername(String username);
 
     /**
-     * Checks if a user with the given username exists.
+     * Checks if a user exists by their username.
      *
-     * @param username {@link String}the username to check
-     * @return true {@link Boolean} if a user with the given username exists, false otherwise
+     * @param username the username to check
+     * @return true if a user with the given username exists, otherwise false
      */
-    Boolean existsByUsername(String username);
+    boolean existsByUsername(String username);
 }
