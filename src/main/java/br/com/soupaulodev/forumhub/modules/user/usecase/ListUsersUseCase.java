@@ -11,16 +11,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Use case for retrieving all users.
- * This class provides the business logic for retrieving all users.
- *
+ * Use case for retrieving a paginated list of all users.
  * <p>
- * The {@link ListUsersUseCase} is responsible for:
- * <ul>
- *     <li>Retrieving all users.</li>
- * </ul>
+ * This service fetches users from the repository with pagination and sorting based on creation date.
+ * The returned list excludes sensitive information, such as emails, and provides a structured response.
  * </p>
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
@@ -30,28 +27,33 @@ public class ListUsersUseCase {
 
     private final UserRepository userRepository;
 
-    /**
-     * Constructor for {@link ListUsersUseCase}.
-     *
-     * @param userRepository {@link UserRepository} the repository for handling user-related operations
-     */
     public ListUsersUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     /**
-     * Executes the use case.
-     * Retrieves all users.
-     * The users are retrieved in descending order of creation date.
-     * The users are paginated.
-     * The users' emails are not included in the response.
+     * Retrieves a paginated list of users.
+     * <p>
+     * This method retrieves users from the repository, paginated by the given parameters (page, size),
+     * and sorted by the creation date in descending order. It returns a list of user data transfer objects (DTOs),
+     * with email information excluded.
+     * </p>
      *
-     * @return a list of {@link UserResponseDTO} containing all users
+     * @param page the page number to retrieve (0-based index)
+     * @param size the number of users per page
+     * @return a list of {@link UserResponseDTO} containing user details, excluding emails
+     * @throws IllegalArgumentException if the page or size parameters are invalid (negative or zero)
      */
     public List<UserResponseDTO> execute(int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new IllegalArgumentException("Page and size must be positive numbers.");
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<UserEntity> entities = userRepository.findAll(pageable);
 
-        return entities.getContent().stream().map(UserMapper::toResponseDTO).toList();
+        return entities.getContent().stream()
+                .map(UserMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 }
