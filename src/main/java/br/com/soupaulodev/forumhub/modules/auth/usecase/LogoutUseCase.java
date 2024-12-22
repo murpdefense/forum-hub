@@ -4,14 +4,22 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Service;
 
 /**
- * Use case responsible for handling the logout process in the application.
+ * Handles the logout process by invalidating the user's JWT token.
  * <p>
- * The {@link LogoutUseCase} class processes the logout request by invalidating the JWT token cookie.
- * It generates a cookie with the name "JWT_TOKEN" and sets its expiration time to 0, effectively logging the user out.
+ * The {@link LogoutUseCase} class manages the creation of a cookie with the name "JWT_TOKEN",
+ * setting its value to null and its expiration time to 0, thereby logging the user out.
  * </p>
  * <p>
- * The cookie is also marked as HttpOnly and Secure to ensure it is only sent over secure connections and cannot be accessed via JavaScript.
+ * The generated cookie is marked as HttpOnly and Secure to enhance security,
+ * ensuring it is transmitted only over HTTPS and cannot be accessed via JavaScript.
  * </p>
+ *
+ * <p><strong>Usage:</strong></p>
+ * <pre>
+ * LogoutUseCase logoutUseCase = new LogoutUseCase();
+ * Cookie logoutCookie = logoutUseCase.execute();
+ * </pre>
+ * <p>This cookie can then be added to the HTTP response to log the user out.</p>
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
@@ -19,13 +27,14 @@ import org.springframework.stereotype.Service;
 public class LogoutUseCase {
 
     /**
-     * Executes the logout process by invalidating the JWT token stored in the user's cookies.
+     * Generates an expired cookie to invalidate the JWT token.
      * <p>
-     * This method creates a cookie with the same name as the JWT token, sets its value to null,
-     * and sets its expiration to 0, effectively removing the token from the client's browser.
+     * This method creates a new {@link Cookie} with the name "JWT_TOKEN",
+     * null value, and an expiration time of 0 seconds, effectively removing it
+     * from the client's browser upon inclusion in the HTTP response.
      * </p>
      *
-     * @return A {@link Cookie} with the "JWT_TOKEN" name and an expired value, effectively logging out the user.
+     * @return A {@link Cookie} configured to log the user out.
      */
     public Cookie execute() {
         Cookie cookie = new Cookie("JWT_TOKEN", null);

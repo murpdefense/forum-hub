@@ -14,17 +14,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+
 /**
  * Use case responsible for handling the login process for the application.
  * <p>
- * The {@link LoginUseCase} class processes login requests by authenticating the user credentials.
- * If successful, it generates and returns a cookie containing a JWT token for the authenticated user.
- * </p>
- * <p>
- * It interacts with the {@link AuthenticationManager} to authenticate the user and with the
- * {@link UserRepository} to retrieve user information from the database. If authentication is successful,
- * a JWT token is generated using the {@link CookieUtil} class, which is then sent as a cookie to the client.
- * </p>
+ * This class processes login requests by authenticating user credentials.
+ * If successful, it generates and returns a cookie containing a JWT token.
+ * It interacts with the AuthenticationManager for authentication and
+ * UserRepository to retrieve user data. If authentication succeeds,
+ * a JWT token is generated using the CookieUtil class.
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
@@ -37,13 +35,6 @@ public class LoginUseCase {
     private final UserRepository userRepository;
     private final CookieUtil cookieUtil;
 
-    /**
-     * Constructs a new {@link LoginUseCase} instance.
-     *
-     * @param userRepository        The repository responsible for retrieving user data from the database.
-     * @param authenticationManager The manager responsible for authenticating user credentials.
-     * @param cookieUtil            Utility class responsible for generating cookies with JWT tokens.
-     */
     public LoginUseCase(UserRepository userRepository, AuthenticationManager authenticationManager, CookieUtil cookieUtil) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -51,30 +42,54 @@ public class LoginUseCase {
     }
 
     /**
-     * Executes the login process by authenticating the provided credentials and generating a JWT cookie.
-     * <p>
-     * This method authenticates the user by verifying the username and password. If the authentication is successful,
-     * it generates a JWT token and returns it as a cookie. If authentication fails, an exception is thrown.
-     * </p>
+     * Executes the login process by authenticating the provided credentials
+     * and generating a JWT cookie if successful.
      *
-     * @param requestDTO The login request containing the username and password to authenticate.
-     * @return A {@link Cookie} containing the JWT token for the authenticated user.
-     * @throws BadCredentialsException   If the authentication fails due to invalid credentials.
+     * @param requestDTO The login request containing username and password.
+     * @return A Cookie containing the JWT token for the authenticated user.
+     * @throws BadCredentialsException   If authentication fails due to invalid credentials.
      * @throws UsernameNotFoundException If the user is not found in the database.
      */
     public Cookie execute(LoginRequestDTO requestDTO) {
+        authenticateUser(requestDTO.username(), requestDTO.password());
+        UserEntity user = getUserEntity(requestDTO.username());
+        Cookie jwtCookie = cookieUtil.generateCookieWithToken(user);
+
+        logger.info("User {} successfully authenticated and cookie generated.", requestDTO.username());
+        return jwtCookie;
+    }
+
+    /**
+     * Authenticates the user credentials using the AuthenticationManager.
+     *
+     * @param username The username of the user attempting to log in.
+     * @param password The password of the user attempting to log in.
+     * @throws BadCredentialsException If authentication fails.
+     */
+    private void authenticateUser(String username, String password) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(requestDTO.username(), requestDTO.password())
+                    new UsernamePasswordAuthenticationToken(username, password)
             );
-
-            UserEntity user = userRepository.findByUsername(requestDTO.username())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            return cookieUtil.generateCookieWithToken(user);
-        } catch (AuthenticationException e) {
-            logger.warn("Failed login attempt for username: {}", requestDTO.username());
-            throw new BadCredentialsException("Invalid username or password");
+            logger.debug("Authentication successful for username: {}", username);
+        } catch (AuthenticationException ex) {
+            logger.warn("Authentication failed for username: {}", username);
+            throw new BadCredentialsException("Invalid username or password", ex);
         }
+    }
+
+    /**
+     * Retrieves the UserEntity for the given username from the UserRepository.
+     *
+     * @param username The username of the user.
+     * @return The UserEntity corresponding to the username.
+     * @throws UsernameNotFoundException If the user is not found.
+     */
+    private UserEntity getUserEntity(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    logger.error("User not found: {}", username);
+                    return new UsernameNotFoundException("User not found");
+                });
     }
 }

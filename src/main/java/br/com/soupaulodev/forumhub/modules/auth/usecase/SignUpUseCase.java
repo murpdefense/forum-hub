@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * Use case responsible for handling the user registration process in the application.
+ * Handles the user registration process in the application.
  * <p>
- * The {@link SignUpUseCase} class handles the creation of new users in the system.
- * It checks if the username already exists, encodes the password, and saves the user to the database.
- * Upon successful registration, it generates a JWT token cookie for the newly created user.
+ * This use case ensures that new users can register in the system by checking
+ * if the username is available, securely hashing their password, saving the user,
+ * and generating a JWT token as a cookie upon successful registration.
  * </p>
  * <p>
- * If the username is already taken, an exception is thrown.
+ * If the username already exists, a {@link ResourceAlreadyExistsException} is thrown.
  * </p>
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
@@ -30,18 +30,18 @@ import java.util.Map;
 @Service
 public class SignUpUseCase {
 
-    private final Logger logger = LoggerFactory.getLogger(SignUpUseCase.class);
+    private static final Logger logger = LoggerFactory.getLogger(SignUpUseCase.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CookieUtil cookieUtil;
 
     /**
-     * Constructor for initializing the SignUpUseCase with the necessary dependencies.
+     * Constructs a {@link SignUpUseCase} instance with the required dependencies.
      *
-     * @param userRepository  The repository used to interact with user data in the database.
-     * @param passwordEncoder The password encoder used to securely hash user passwords.
-     * @param cookieUtil      Utility class for generating cookies containing JWT tokens.
+     * @param userRepository  Repository for interacting with user data.
+     * @param passwordEncoder Encoder for securely hashing passwords.
+     * @param cookieUtil      Utility class for generating JWT cookies.
      */
     public SignUpUseCase(UserRepository userRepository,
                          PasswordEncoder passwordEncoder,
@@ -52,38 +52,58 @@ public class SignUpUseCase {
     }
 
     /**
-     * Handles the user registration process.
+     * Registers a new user in the system.
      * <p>
-     * This method first checks if the username is already taken. If it is, a {@link ResourceAlreadyExistsException} is thrown.
-     * If the username is available, the user is created by encoding their password and saving the user entity to the database.
-     * After successful registration, a JWT token is generated and returned as a cookie.
+     * This method verifies the availability of the username, securely encodes the password,
+     * and saves the user to the database. Upon success, it generates a JWT token cookie.
      * </p>
      *
-     * @param requestDTO The user registration data, including username, password, name, and email.
-     * @return A map containing the newly created user entity and the JWT token cookie.
-     * @throws ResourceAlreadyExistsException If the username is already taken by another user.
+     * @param requestDTO The registration details (username, password, name, email).
+     * @return A map containing the created user details and a JWT cookie.
+     * @throws ResourceAlreadyExistsException If the username is already taken.
      */
     public Map<String, Object> execute(UserCreateRequestDTO requestDTO) {
-        if (userRepository.existsByUsername(requestDTO.username())) {
-            logger.warn("Attempt to register with existing username: {}", requestDTO.username());
+        validateUsernameAvailability(requestDTO.username());
+
+        UserEntity user = createUserEntity(requestDTO);
+        userRepository.save(user);
+
+        Cookie jwtCookie = cookieUtil.generateCookieWithToken(user);
+
+        logger.info("User {} registered successfully", requestDTO.username());
+
+        return Map.of(
+                "user", UserMapper.toDetailsResponseDTO(user),
+                "cookie", jwtCookie
+        );
+    }
+
+    /**
+     * Checks if the username is already taken.
+     *
+     * @param username The username to check.
+     * @throws ResourceAlreadyExistsException If the username is already in use.
+     */
+    private void validateUsernameAvailability(String username) {
+        if (userRepository.existsByUsername(username)) {
+            logger.warn("Attempt to register with existing username: {}", username);
             throw new ResourceAlreadyExistsException("Username already exists");
         }
+    }
 
+    /**
+     * Creates a {@link UserEntity} from the registration request.
+     *
+     * @param requestDTO The registration details.
+     * @return The constructed {@link UserEntity}.
+     */
+    private UserEntity createUserEntity(UserCreateRequestDTO requestDTO) {
         UserEntity user = new UserEntity();
         user.setUsername(requestDTO.username());
         user.setPassword(passwordEncoder.encode(requestDTO.password()));
         user.setName(requestDTO.name());
         user.setEmail(requestDTO.email());
-        userRepository.save(user);
 
-        Cookie cookie = cookieUtil.generateCookieWithToken(user);
-
-        Map<String, Object> String = Map.of(
-            "user", UserMapper.toDetailsResponseDTO(user),
-            "cookie", cookie
-        );
-
-        logger.info("User {} registered successfully", requestDTO.username());
-        return String;
+        return user;
     }
 }
