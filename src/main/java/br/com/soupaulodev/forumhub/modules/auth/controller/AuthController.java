@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-
 /**
  * Controller for handling authentication-related endpoints.
  * This controller provides endpoints for user login, registration (signup), and logout.
