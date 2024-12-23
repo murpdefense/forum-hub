@@ -313,7 +313,6 @@ class UserControllerTest {
 
     @Test
     void testHighUser_shouldThrowExceptionWhenUnauthorized() {
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         doThrow(new UnauthorizedException("You are not allowed to unhigh this user."))
                 .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
 
@@ -355,7 +354,6 @@ class UserControllerTest {
 
     @Test
     void testUnHighUser_shouldThrowExceptionWhenUnauthorized() {
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         doThrow(new UnauthorizedException("You are not allowed to unhigh this user."))
                 .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
 
