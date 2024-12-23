@@ -4,10 +4,7 @@ import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundExc
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.user.usecase.DeleteUserUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.GetUserDetailsUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.ListUsersUseCase;
-import br.com.soupaulodev.forumhub.modules.user.usecase.UpdateUserUseCase;
+import br.com.soupaulodev.forumhub.modules.user.usecase.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +55,12 @@ class UserControllerTest {
 
     @Mock
     private DeleteUserUseCase deleteUserUseCase;
+
+    @Mock
+    private HighUserUseCase highUserUseCase;
+
+    @Mock
+    private UnHighUserUseCase unHighUserUseCase;
 
     @InjectMocks
     private UserController userController;
@@ -275,4 +278,87 @@ class UserControllerTest {
         assertThrows(ResourceNotFoundException.class, () -> userController.deleteUser(UUID.randomUUID().toString()));
     }
 
+    @Test
+    void testHighUser_shouldHighUserSuccessfully() {
+        doNothing().when(highUserUseCase).execute(any(UUID.class), eq(userId));
+
+        ResponseEntity<Void> response = userController.highUser(userId.toString());
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testHighUser_shouldThrowExceptionWhenHighingUserIsSelf() {
+        doThrow(new IllegalArgumentException("User cannot high himself"))
+                .when(highUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.highUser(userId.toString()));
+    }
+
+    @Test
+    void testHighUser_shouldThrowExceptionWhenHighingUserNotFound() {
+        doThrow(new IllegalArgumentException("User not found"))
+                .when(highUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.highUser(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testHighUser_shouldThrowExceptionWhenUserAlreadyHighed() {
+        doThrow(new IllegalArgumentException("User already highed"))
+                .when(highUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.highUser(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testHighUser_shouldThrowExceptionWhenUnauthorized() {
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        doThrow(new UnauthorizedException("You are not allowed to unhigh this user."))
+                .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(UnauthorizedException.class, () -> userController.unHighUser(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testUnHighUser_shouldUnHighUserSuccessfully() {
+        doNothing().when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        ResponseEntity<Void> response = userController.unHighUser(userId.toString());
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testUnHighUser_shouldThrowExceptionWhenUnHighingUserIsSelf() {
+        doThrow(new IllegalArgumentException("User cannot unhigh himself"))
+                .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.unHighUser(userId.toString()));
+    }
+
+    @Test
+    void testUnHighUser_shouldThrowExceptionWhenUnHighingUserNotFound() {
+        doThrow(new IllegalArgumentException("User not found"))
+                .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.unHighUser(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testUnHighUser_shouldThrowExceptionWhenUserNotHighed() {
+        doThrow(new IllegalArgumentException("User not highed"))
+                .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(IllegalArgumentException.class, () -> userController.unHighUser(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testUnHighUser_shouldThrowExceptionWhenUnauthorized() {
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        doThrow(new UnauthorizedException("You are not allowed to unhigh this user."))
+                .when(unHighUserUseCase).execute(any(UUID.class), eq(userId));
+
+        assertThrows(UnauthorizedException.class, () -> userController.unHighUser(UUID.randomUUID().toString()));
+    }
 }
