@@ -29,21 +29,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for the {@link ForumController}.
- * This class contains tests for the forum-related operations, such as creating, listing, retrieving, updating, and deleting forums.
- *
- *
- * <p>
- * The {@link ForumControllerTest} class is responsible for testing the behavior of the {@link ForumController} class.
- * The tests cover the following operations:
- *     <ul>
- *         <li>Creating a forum.</li>
- *         <li>Listing forums.</li>
- *         <li>Rerieving a forum by its ID.</li>
- *         <li>Updating a forum.</li>
- *         <li>Deleting a forum.</li>
- * </p>
- *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 class ForumControllerTest {
@@ -62,6 +47,12 @@ class ForumControllerTest {
 
     @Mock
     private DeleteForumUseCase deleteForumUseCase;
+
+    @Mock
+    private HighForumUseCase highForumUseCase;
+
+    @Mock
+    private UnHighForumUseCase unHighForumUseCase;
 
     @InjectMocks
     private ForumController forumController;
@@ -291,5 +282,31 @@ class ForumControllerTest {
                 .when(deleteForumUseCase).execute(any(UUID.class), eq(nonOwnerId));
 
         assertThrows(UnauthorizedException.class, () -> forumController.deleteForum(forumId.toString()));
+    }
+
+    @Test
+    void shouldHighForumSuccessfully() {
+        UUID forumId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
+
+        ResponseEntity<Void> response = forumController.highForum(forumId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void shouldUnHighForumSuccessfully() {
+        UUID forumId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null));
+
+        ResponseEntity<Void> response = forumController.unHighForum(forumId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
     }
 }
