@@ -26,6 +26,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class UpdateUserUseCaseTest {
 
     @Mock
