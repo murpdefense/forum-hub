@@ -3,10 +3,7 @@ package br.com.soupaulodev.forumhub.modules.comment.controller;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentResponseDTO;
 import br.com.soupaulodev.forumhub.modules.comment.controller.dto.CommentUpdateRequestDTO;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.CreateCommentUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.DeleteCommentUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.ListCommentsUseCase;
-import br.com.soupaulodev.forumhub.modules.comment.usecase.UpdateCommentUseCase;
+import br.com.soupaulodev.forumhub.modules.comment.usecase.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +23,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
+ */
 class CommentControllerTest {
 
     @Mock
@@ -39,6 +39,12 @@ class CommentControllerTest {
 
     @Mock
     private DeleteCommentUseCase deleteCommentUseCase;
+
+    @Mock
+    private HighCommentUseCase highCommentUseCase;
+
+    @Mock
+    private UnHighCommentUseCase unHighCommentUseCase;
 
     @Mock
     private SecurityContext securityContext;
@@ -158,5 +164,31 @@ class CommentControllerTest {
 
         assertEquals(204, response.getStatusCode().value());
         verify(deleteCommentUseCase, times(1)).execute(commentId, userId);
+    }
+
+    @Test
+    void shouldHighCommentSuccessfully() {
+        UUID userId = UUID.randomUUID();
+        UUID commentId = UUID.randomUUID();
+
+        when(authentication.getPrincipal()).thenReturn(userId.toString());
+
+        ResponseEntity<Void> response = commentController.highComment(commentId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        verify(highCommentUseCase, times(1)).execute(commentId, userId);
+    }
+
+    @Test
+    void shouldUnHighCommentSuccessfully() {
+        UUID userId = UUID.randomUUID();
+        UUID commentId = UUID.randomUUID();
+
+        when(authentication.getPrincipal()).thenReturn(userId.toString());
+
+        ResponseEntity<Void> response = commentController.unHighComment(commentId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        verify(unHighCommentUseCase, times(1)).execute(commentId, userId);
     }
 }
