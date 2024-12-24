@@ -148,7 +148,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Comment not found")
     })
     @PostMapping("/high/{id}")
-    public ResponseEntity<CommentResponseDTO> highComment(@Valid @PathVariable("id")
+    public ResponseEntity<Void> highComment(@Valid @PathVariable("id")
                                                           @org.hibernate.validator.constraints.UUID String commentId) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         highCommentUseCase.execute(UUID.fromString(commentId), authenticatedUserId);
