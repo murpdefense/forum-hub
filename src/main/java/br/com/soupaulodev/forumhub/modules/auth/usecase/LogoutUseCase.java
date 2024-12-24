@@ -1,6 +1,8 @@
 package br.com.soupaulodev.forumhub.modules.auth.usecase;
 
 import jakarta.servlet.http.Cookie;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogoutUseCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(LogoutUseCase.class);
+
     /**
      * Generates an expired cookie to invalidate the JWT token.
      * <p>
@@ -43,6 +47,7 @@ public class LogoutUseCase {
         cookie.setMaxAge(0);
         cookie.setPath("/");
 
+        logger.info("User logged out successfully. JWT token invalidated.");
         return cookie;
     }
 }

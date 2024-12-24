@@ -7,6 +7,8 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserUpdateRequest
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ import java.util.UUID;
  */
 @Service
 public class UpdateUserUseCase {
+
+    private static final Logger logger = LoggerFactory.getLogger(UpdateUserUseCase.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -61,9 +65,13 @@ public class UpdateUserUseCase {
      * @throws ForbiddenException        if the authenticated user is not allowed to update the user
      */
     public UserResponseDTO execute(UUID id, UserUpdateRequestDTO requestDTO, UUID authenticatedUserId) {
-        UserEntity userDB = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        UserEntity userDB = userRepository.findById(id).orElseThrow(() -> {
+            logger.warn("User with ID {} not found", id);
+            return new ResourceNotFoundException("User not found.");
+        });
 
         if (!userDB.getId().equals(authenticatedUserId)) {
+            logger.warn("User with ID {} is not allowed to update user with ID {}", authenticatedUserId, id);
             throw new ForbiddenException("You are not allowed to update this user.");
         }
 
@@ -72,7 +80,7 @@ public class UpdateUserUseCase {
                         requestDTO.username() == null &&
                         requestDTO.email() == null
                         && requestDTO.password() == null)) {
-
+            logger.error("No fields to update provided for user with ID {}", id);
             throw new IllegalArgumentException("""
                     You must provide at least one field to update:
                     - name
@@ -88,6 +96,7 @@ public class UpdateUserUseCase {
         userDB.setPassword(requestDTO.password() != null ? passwordEncoder.encode(requestDTO.password()) : userDB.getPassword());
         userDB.setUpdatedAt(Instant.now());
 
+        logger.info("User with ID {} updated successfully", id);
         return UserMapper.toResponseDTO(userRepository.save(userDB));
     }
 }

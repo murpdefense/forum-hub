@@ -118,6 +118,7 @@ public class UserController {
     public ResponseEntity<Void> unHighUser(@PathVariable("id") String highedUserId) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         unHighUserUseCase.execute(UUID.fromString(highedUserId), authenticatedUserId);
+
         return ResponseEntity.noContent().build();
     }
 

@@ -5,6 +5,8 @@ import br.com.soupaulodev.forumhub.modules.user.controller.dto.UserResponseDTO;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.mapper.UserMapper;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -28,6 +30,8 @@ import java.util.UUID;
 @Service
 public class GetUserDetailsUseCase {
 
+    private static final Logger logger =  LoggerFactory.getLogger(GetUserDetailsUseCase.class);
+
     private final UserRepository userRepository;
 
     public GetUserDetailsUseCase(UserRepository userRepository) {
@@ -48,8 +52,12 @@ public class GetUserDetailsUseCase {
      */
     public UserResponseDTO execute(UUID id) {
         UserEntity userEntity = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with ID " + id + " not found."));
+                .orElseThrow(() -> {
+                    logger.warn("User with ID {} not found.", id);
+                    return new ResourceNotFoundException("User with ID " + id + " not found.");
+                });
 
+        logger.info("User with ID {} found.", id);
         return UserMapper.toResponseDTO(userEntity);
     }
 }
