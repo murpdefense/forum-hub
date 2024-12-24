@@ -1,5 +1,7 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceAlreadyExistsException;
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserHighsEntity;
@@ -79,7 +81,7 @@ class HighUserUseCaseTest {
         when(userHighsRepository.findByHighedUser_IdAndHighingUser_Id(highedUser, authenticatedUserId))
                 .thenReturn(Optional.of(new UserHighsEntity()));
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ResourceAlreadyExistsException exception = assertThrows(ResourceAlreadyExistsException.class,
                 () -> highUserUseCase.execute(highedUser, authenticatedUserId));
 
         assertEquals("User already highed", exception.getMessage());
@@ -91,7 +93,7 @@ class HighUserUseCaseTest {
                 .thenReturn(Optional.empty());
         when(userRepository.findById(highedUser)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                 () -> highUserUseCase.execute(highedUser, authenticatedUserId));
 
         assertEquals("User not found", exception.getMessage());
@@ -104,7 +106,7 @@ class HighUserUseCaseTest {
         when(userRepository.findById(highedUser)).thenReturn(Optional.of(new UserEntity()));
         when(userRepository.findById(authenticatedUserId)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                 () -> highUserUseCase.execute(highedUser, authenticatedUserId));
 
         assertEquals("User not found", exception.getMessage());

@@ -1,5 +1,6 @@
 package br.com.soupaulodev.forumhub.modules.user.usecase;
 
+import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserHighsEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserHighsRepository;
@@ -79,7 +80,7 @@ class UnHighUserUseCaseTest {
         when(userHighsRepository.findByHighedUser_IdAndHighingUser_Id(unHighedUser, authenticatedUserId))
                 .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                         unHighUserUseCase.execute(unHighedUser, authenticatedUserId),
                 "User not highed");
 
