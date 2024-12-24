@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Global exception handler for the application.
+ *
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @RestControllerAdvice
 public class ExceptionHandlerController {
