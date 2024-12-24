@@ -30,22 +30,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for the {@link TopicController}.
- * This class contains tests for the topic-related operations, such as creating, listing, retrieving by ID, updating, and
- * deleting topics.
- *
- * <p>
- * The {@link TopicControllerTest} class is responsible for testing the behavior of the {@link TopicController} class.
- * The tests cover the following operations:
- *     <ul>
- *         <li>Creating a topic.</li>
- *         <li>Listing topics.</li>
- *         <li>Retrieving a topic by ID.</li>
- *         <li>Updating a topic.</li>
- *         <li>Deleting a topic.</li>
- *     </ul>
- * </p>
- *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 class TopicControllerTest {
@@ -64,6 +48,12 @@ class TopicControllerTest {
 
     @Mock
     private DeleteTopicUseCase deleteTopicUseCase;
+
+    @Mock
+    private HighTopicUseCase highTopicUseCase;
+
+    @Mock
+    private UnHighTopicUseCase unHighTopicUseCase;
 
     @InjectMocks
     private TopicController topicController;
@@ -338,5 +328,31 @@ class TopicControllerTest {
                 .when(deleteTopicUseCase).execute(any(UUID.class), eq(nonCreatorId));
 
         assertThrows(UnauthorizedException.class, () -> topicController.deleteTopic(topicId.toString()));
+    }
+
+    @Test
+    void shouldHighTopicSuccessfully() {
+        UUID topicId = UUID.randomUUID();
+        UUID authenticatedUserId = UUID.randomUUID();
+
+        doNothing().when(highTopicUseCase).execute(any(UUID.class), eq(authenticatedUserId));
+
+        ResponseEntity<Void> response = topicController.highTopic(topicId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void shouldUnHighTopicSuccessfully() {
+        UUID topicId = UUID.randomUUID();
+        UUID authenticatedUserId = UUID.randomUUID();
+
+        doNothing().when(unHighTopicUseCase).execute(any(UUID.class), eq(authenticatedUserId));
+
+        ResponseEntity<Void> response = topicController.unHighTopic(topicId.toString());
+
+        assertEquals(204, response.getStatusCode().value());
+        assertNull(response.getBody());
     }
 }
