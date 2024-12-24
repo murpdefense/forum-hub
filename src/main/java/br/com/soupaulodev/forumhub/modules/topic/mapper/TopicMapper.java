@@ -1,6 +1,5 @@
 package br.com.soupaulodev.forumhub.modules.topic.mapper;
 
-import br.com.soupaulodev.forumhub.modules.comment.mapper.CommentMapper;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicCreateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicDetailsResponseDTO;
@@ -8,6 +7,8 @@ import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicResponseDTO
 import br.com.soupaulodev.forumhub.modules.topic.controller.dto.TopicUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.topic.entity.TopicEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+
+import java.util.List;
 
 /**
  * Mapper class for converting between TopicEntity and various DTOs.
@@ -83,7 +84,8 @@ public class TopicMapper {
                 topic.getCreator().getUsername(),
                 topic.getHighsCount(),
                 topic.getCommentsCount(),
-                topic.getComments().stream().map(CommentMapper::toResponseDTO).toList(),
+                List.of(), //TODO - Convert TopicMapper to Spring Component and inject CommentMapper
+//                topic.getComments().stream().map(CommentMapper::toResponseDTO).toList(),
                 topic.getCreatedAt(),
                 topic.getUpdatedAt()
         );

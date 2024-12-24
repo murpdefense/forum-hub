@@ -22,20 +22,16 @@ import java.util.UUID;
 @Service
 public class UpdateCommentUseCase {
 
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
 
-    /**
-     * Constructs a new UpdateCommentUsecase with the specified repository.
-     *
-     * @param commentRepository the repository for managing comments
-     * @param userRepository    the repository for managing users
-     * @param topicRepository   the repository for managing topics
-     */
-    public UpdateCommentUseCase(CommentRepository commentRepository,
+    public UpdateCommentUseCase(CommentMapper commentMapper,
+                                CommentRepository commentRepository,
                                 UserRepository userRepository,
                                 TopicRepository topicRepository) {
+        this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.topicRepository = topicRepository;
@@ -80,6 +76,6 @@ public class UpdateCommentUseCase {
         commentFound.setUpdatedAt(Instant.now());
 
         commentRepository.save(commentFound);
-        return CommentMapper.toResponseDTO(commentFound);
+        return commentMapper.toResponseDTO(commentFound);
     }
 }

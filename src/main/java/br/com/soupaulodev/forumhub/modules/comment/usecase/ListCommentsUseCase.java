@@ -20,14 +20,12 @@ import java.util.List;
 @Service
 public class ListCommentsUseCase {
 
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
 
-    /**
-     * Constructs a new ListCommentsUseCase with the specified repository.
-     *
-     * @param commentRepository the repository for managing comments
-     */
-    public ListCommentsUseCase(CommentRepository commentRepository) {
+    public ListCommentsUseCase(CommentMapper commentMapper,
+                               CommentRepository commentRepository) {
+        this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
     }
 
@@ -40,7 +38,7 @@ public class ListCommentsUseCase {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<CommentEntity> entities = commentRepository.findAll(pageable);
         return entities.getContent().stream().filter(comment -> comment.getParentComment() == null)
-                .map(CommentMapper::toResponseDTO)
+                .map(commentMapper::toResponseDTO)
                 .toList();
     }
 }

@@ -21,18 +21,21 @@ import java.util.UUID;
  * and verifies the parent comment (if provided) belongs to the correct topic.
  * The user must be a participant of the forum associated with the topic, and any parent comment must be part of the same topic.
  *
- * @author <a href="https://soupaulodev.com.br">souapulodev</a>
+ * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
 @Service
 public class CreateCommentUseCase {
 
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
 
-    public CreateCommentUseCase(CommentRepository commentRepository,
+    public CreateCommentUseCase(CommentMapper commentMapper,
+                                CommentRepository commentRepository,
                                 UserRepository userRepository,
                                 TopicRepository topicRepository) {
+        this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.topicRepository = topicRepository;
@@ -74,12 +77,12 @@ public class CreateCommentUseCase {
             }
         }
 
-        CommentEntity newComment = new CommentEntity(requestDTO.content(), user, topic, parentComment);
+        CommentEntity newComment = commentMapper.toEntity(requestDTO, user, topic, parentComment);
         commentRepository.save(newComment);
 
         topic.incrementComments();
         topicRepository.save(topic);
 
-        return CommentMapper.toResponseDTO(newComment);
+        return commentMapper.toResponseDTO(newComment);
     }
 }
