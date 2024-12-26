@@ -57,6 +57,7 @@ public class HighTopicUseCase {
                 () -> new IllegalArgumentException("Topic not found")
         );
 
+        topicFound.incrementHighs();
         topicHighsRepository.save(new TopicHighsEntity(topicFound, authenticatedUserEntity));
     }
 }

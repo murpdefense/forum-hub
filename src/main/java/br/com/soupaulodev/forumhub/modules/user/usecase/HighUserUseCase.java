@@ -72,6 +72,7 @@ public class HighUserUseCase {
             return new ResourceNotFoundException("User not found");
         });
 
+        highedUserEntity.incrementHighs();
         logger.info("User with ID {} highed user with ID {}", authenticatedUserId, highedUser);
         userHighsRepository.save(new UserHighsEntity(highedUserEntity, authenticatedUserEntity));
     }

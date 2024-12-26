@@ -44,6 +44,7 @@ public class HighForumUseCase {
                 () -> new IllegalArgumentException("Forum not found")
         );
 
+        forumFound.incrementHighs();
         forumHighsRepository.save(new ForumHighsEntity(forumFound, authenticatedUserEntity));
     }
 }

@@ -57,6 +57,7 @@ public class HighCommentUseCase {
                 () -> new IllegalArgumentException("Comment not found")
         );
 
+        commentFound.incrementHighs();
         commentHighsRepository.save(new CommentHighsEntity(commentFound, authenticatedUserEntity));
     }
 }
