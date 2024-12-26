@@ -64,7 +64,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         String userId;
         try {
-            userId = jwtUtil.extractUserId(jwtToken.get()); // Alterei para extrair o userId ao invés do username
+            userId = jwtUtil.extractUserId(jwtToken.get());
         } catch (Exception e) {
             throw new UnauthorizedException("Unauthorized: Invalid token.");
         }
