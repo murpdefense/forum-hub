@@ -66,6 +66,17 @@ public class ExceptionHandlerController {
     }
 
     /**
+     * Handles IllegalStateException.
+     *
+     * @param e the exception to handle
+     * @return a ResponseEntity with a conflict status and the exception message
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    /**
      * Handles RateLimitExceededException.
      *
      * @param e the exception to handle
