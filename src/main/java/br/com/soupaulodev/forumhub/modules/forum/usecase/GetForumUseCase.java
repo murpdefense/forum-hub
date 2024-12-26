@@ -16,14 +16,12 @@ import java.util.UUID;
 public class GetForumUseCase {
 
     private final ForumRepository forumRepository;
+    private final ForumMapper forumMapper;
 
-    /**
-     * Constructs a new GetForumDetailsUsecase with the specified repository.
-     *
-     * @param forumRepository the repository for managing forums
-     */
-    public GetForumUseCase(ForumRepository forumRepository) {
+    public GetForumUseCase(ForumRepository forumRepository,
+                           ForumMapper forumMapper) {
         this.forumRepository = forumRepository;
+        this.forumMapper = forumMapper;
     }
 
     /**
@@ -38,6 +36,6 @@ public class GetForumUseCase {
         ForumEntity forumFound = forumRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Forum not found."));
 
-        return ForumMapper.toResponseDTO(forumFound);
+        return forumMapper.toResponseDTO(forumFound);
     }
 }

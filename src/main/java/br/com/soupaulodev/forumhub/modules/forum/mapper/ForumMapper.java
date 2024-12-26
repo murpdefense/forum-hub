@@ -5,6 +5,7 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper class for converting between {@link ForumEntity} and Data Transfer Objects (DTOs).
@@ -17,6 +18,7 @@ import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
  *
  * @author <a href="https://soupaulodev.com.br">soupaulodev</a>
  */
+@Component
 public class ForumMapper {
 
     /**
@@ -30,7 +32,7 @@ public class ForumMapper {
      * @param owner {@link UserEntity} the owner of the forum
      * @return a new {@link ForumEntity} with the data from the {@link ForumCreateRequestDTO}
      */
-    public static ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
+    public ForumEntity toEntity(ForumCreateRequestDTO dto, UserEntity owner) {
         if (owner == null) {
             throw new IllegalArgumentException("Owner cannot be null");
         }
@@ -55,7 +57,7 @@ public class ForumMapper {
      * @param owner {@link UserEntity} the owner of the forum
      * @return a new {@link ForumEntity} with the updated data from the {@link ForumUpdateRequestDTO}
      */
-    public static ForumEntity toEntity(ForumUpdateRequestDTO dto, UserEntity owner) {
+    public ForumEntity toEntity(ForumUpdateRequestDTO dto, UserEntity owner) {
         return new ForumEntity(
                 dto.name(),
                 dto.description(),
@@ -73,7 +75,7 @@ public class ForumMapper {
      * @param entity the {@link ForumEntity} object containing forum data to be converted
      * @return the corresponding {@link ForumResponseDTO} with the mapped forum data
      */
-    public static ForumResponseDTO toResponseDTO(ForumEntity entity) {
+    public ForumResponseDTO toResponseDTO(ForumEntity entity) {
         if (entity == null || entity.getOwner() == null) {
             throw new IllegalArgumentException("Forum owner cannot be null");
         }

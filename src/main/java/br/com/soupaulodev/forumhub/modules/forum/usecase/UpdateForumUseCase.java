@@ -19,14 +19,12 @@ import java.util.UUID;
 public class UpdateForumUseCase {
 
     private final ForumRepository forumRepository;
+    private final ForumMapper forumMapper;
 
-    /**
-     * Constructs a new UpdateForumUsecase with the specified repository.
-     *
-     * @param forumRepository the repository for managing forums
-     */
-    public UpdateForumUseCase(ForumRepository forumRepository) {
+    public UpdateForumUseCase(ForumRepository forumRepository,
+                              ForumMapper forumMapper) {
         this.forumRepository = forumRepository;
+        this.forumMapper = forumMapper;
     }
 
     /**
@@ -63,6 +61,6 @@ public class UpdateForumUseCase {
         forumFound.setDescription(requestDTO.description() != null ? requestDTO.description() : forumFound.getDescription());
         forumFound.setUpdatedAt(Instant.now());
 
-        return ForumMapper.toResponseDTO(forumRepository.save(forumFound));
+        return forumMapper.toResponseDTO(forumRepository.save(forumFound));
     }
 }

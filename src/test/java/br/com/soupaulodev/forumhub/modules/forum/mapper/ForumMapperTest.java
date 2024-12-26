@@ -6,10 +6,14 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateReque
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ForumMapperTest {
+
+    @InjectMocks
+    private ForumMapper forumMapper;
 
     @Test
     void shouldConvertForumCreateRequestDTOToForumEntity() {
@@ -21,7 +25,7 @@ class ForumMapperTest {
         ForumCreateRequestDTO dto = new ForumCreateRequestDTO(
                 "Forum Example",
                 "This is a example forum.");
-        ForumEntity forumEntity = ForumMapper.toEntity(dto, owner);
+        ForumEntity forumEntity = forumMapper.toEntity(dto, owner);
 
         assertInstanceOf(ForumEntity.class, forumEntity);
         assertEquals(dto.name(), forumEntity.getName());
@@ -37,7 +41,7 @@ class ForumMapperTest {
                 "Forum Example",
                 "This is a example forum.");
 
-        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, null));
+        assertThrows(IllegalArgumentException.class, () -> forumMapper.toEntity(dto, null));
     }
 
     @Test
@@ -51,7 +55,7 @@ class ForumMapperTest {
                 "",
                 "");
 
-        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
+        assertThrows(IllegalArgumentException.class, () -> forumMapper.toEntity(dto, owner));
     }
 
     @Test
@@ -65,7 +69,7 @@ class ForumMapperTest {
                 " ",
                 " ");
 
-        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toEntity(dto, owner));
+        assertThrows(IllegalArgumentException.class, () -> forumMapper.toEntity(dto, owner));
     }
 
     @Test
@@ -78,7 +82,7 @@ class ForumMapperTest {
         ForumUpdateRequestDTO dto = new ForumUpdateRequestDTO(
                 "Forum Example",
                 "This is a example forum.");
-        ForumEntity forumEntity = ForumMapper.toEntity(dto, owner);
+        ForumEntity forumEntity = forumMapper.toEntity(dto, owner);
 
         assertInstanceOf(ForumEntity.class, forumEntity);
         assertEquals(dto.name(), forumEntity.getName());
@@ -100,7 +104,7 @@ class ForumMapperTest {
                 "This is a example forum.",
                 owner);
 
-        ForumResponseDTO dto = ForumMapper.toResponseDTO(forumEntity);
+        ForumResponseDTO dto = forumMapper.toResponseDTO(forumEntity);
 
         assertInstanceOf(ForumResponseDTO.class, dto);
         assertEquals(forumEntity.getName(), dto.name());
@@ -110,7 +114,7 @@ class ForumMapperTest {
 
     @Test
     void shouldThrowExceptionWhenForumEntityIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toResponseDTO(null));
+        assertThrows(IllegalArgumentException.class, () -> forumMapper.toResponseDTO(null));
     }
 
     @Test
@@ -120,6 +124,6 @@ class ForumMapperTest {
                 "This is a example forum.",
                 null);
 
-        assertThrows(IllegalArgumentException.class, () -> ForumMapper.toResponseDTO(forumEntity));
+        assertThrows(IllegalArgumentException.class, () -> forumMapper.toResponseDTO(forumEntity));
     }
 }

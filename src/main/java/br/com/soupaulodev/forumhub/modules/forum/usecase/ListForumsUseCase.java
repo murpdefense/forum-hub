@@ -19,14 +19,12 @@ import java.util.List;
 public class ListForumsUseCase {
 
     private final ForumRepository forumRepository;
+    private final ForumMapper forumMapper;
 
-    /**
-     * Constructs a new ListForumsPageableUsecase with the specified repository.
-     *
-     * @param forumRepository the repository for managing forums
-     */
-    public ListForumsUseCase(ForumRepository forumRepository) {
+    public ListForumsUseCase(ForumRepository forumRepository,
+                             ForumMapper forumMapper) {
         this.forumRepository = forumRepository;
+        this.forumMapper = forumMapper;
     }
 
     /**
@@ -41,7 +39,7 @@ public class ListForumsUseCase {
         Page<ForumEntity> entities = forumRepository.findAll(pageable);
 
         return entities.getContent().stream()
-                .map(ForumMapper::toResponseDTO)
+                .map(forumMapper::toResponseDTO)
                 .toList();
     }
 }
