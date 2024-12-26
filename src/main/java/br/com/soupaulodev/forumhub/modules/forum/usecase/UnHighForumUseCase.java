@@ -2,7 +2,6 @@ package br.com.soupaulodev.forumhub.modules.forum.usecase;
 
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumHighsRepository;
 import br.com.soupaulodev.forumhub.modules.forum.repository.ForumRepository;
-import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,21 +16,11 @@ public class UnHighForumUseCase {
 
     private final ForumHighsRepository forumHighsRepository;
     private final ForumRepository forumRepository;
-    private final UserRepository userRepository;
 
-    /**
-     * Constructor
-     *
-     * @param forumHighsRepository forum highs repository
-     * @param forumRepository forum repository
-     * @param userRepository user repository
-     */
     public UnHighForumUseCase(ForumHighsRepository forumHighsRepository,
-                            ForumRepository forumRepository,
-                            UserRepository userRepository) {
+                            ForumRepository forumRepository) {
         this.forumHighsRepository = forumHighsRepository;
         this.forumRepository = forumRepository;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -48,5 +37,9 @@ public class UnHighForumUseCase {
                         throw new IllegalArgumentException("Forum not highed");
                     }
                 );
+        forumRepository.findById(forumId).ifPresent((forum) -> {
+            forum.decrementHighs();
+            forumRepository.save(forum);
+        });
     }
 }

@@ -2,7 +2,6 @@ package br.com.soupaulodev.forumhub.modules.topic.usecase;
 
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicHighsRepository;
 import br.com.soupaulodev.forumhub.modules.topic.repository.TopicRepository;
-import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,36 +16,36 @@ public class UnHighTopicUseCase {
 
     private final TopicHighsRepository topicHighsRepository;
     private final TopicRepository topicRepository;
-    private final UserRepository userRepository;
 
     /**
      * Constructor
      *
      * @param topicHighsRepository topic highs repository
-     * @param topicRepository topic repository
-     * @param userRepository user repository
+     * @param topicRepository      topic repository
      */
     public UnHighTopicUseCase(TopicHighsRepository topicHighsRepository,
-                            TopicRepository topicRepository,
-                            UserRepository userRepository) {
+                              TopicRepository topicRepository) {
         this.topicHighsRepository = topicHighsRepository;
         this.topicRepository = topicRepository;
-        this.userRepository = userRepository;
     }
 
     /**
      * Execute the use case
      *
-     * @param topicId topic id
+     * @param topicId             topic id
      * @param authenticatedUserId authenticated user id
      */
     public void execute(UUID topicId, UUID authenticatedUserId) {
         topicHighsRepository.findByTopic_IdAndUser_Id(topicId, authenticatedUserId)
                 .ifPresentOrElse(
                         topicHighsRepository::delete,
-                    () -> {
-                        throw new IllegalArgumentException("Topic not highed");
-                    }
+                        () -> {
+                            throw new IllegalArgumentException("Topic not highed");
+                        }
                 );
+        topicRepository.findById(topicId).ifPresent((topicEntity) -> {
+            topicEntity.decrementHighs();
+            topicRepository.save(topicEntity);
+        });
     }
 }

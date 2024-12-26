@@ -2,7 +2,6 @@ package br.com.soupaulodev.forumhub.modules.comment.usecase;
 
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentHighsRepository;
 import br.com.soupaulodev.forumhub.modules.comment.repository.CommentRepository;
-import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,21 +16,17 @@ public class UnHighCommentUseCase {
 
     private final CommentHighsRepository commentHighsRepository;
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
 
     /**
      * Constructor
      *
      * @param commentHighsRepository comment highs repository
      * @param commentRepository comment repository
-     * @param userRepository user repository
      */
     public UnHighCommentUseCase(CommentHighsRepository commentHighsRepository,
-                                CommentRepository commentRepository,
-                                UserRepository userRepository) {
+                                CommentRepository commentRepository) {
         this.commentHighsRepository = commentHighsRepository;
         this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -48,5 +43,10 @@ public class UnHighCommentUseCase {
                         throw new IllegalArgumentException("Comment not highed");
                     }
                 );
+
+        commentRepository.findById(commentId).ifPresent((comment) -> {
+            comment.decrementHighs();
+            commentRepository.save(comment);
+        });
     }
 }

@@ -2,8 +2,10 @@ package br.com.soupaulodev.forumhub.modules.user.usecase;
 
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
+import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserHighsEntity;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserHighsRepository;
+import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ class UnHighUserUseCaseTest {
 
     @Mock
     private UserHighsRepository userHighsRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private UnHighUserUseCase unHighUserUseCase;
@@ -48,6 +53,7 @@ class UnHighUserUseCaseTest {
         UserHighsEntity userHighsEntity = mock(UserHighsEntity.class);
         when(userHighsRepository.findByHighedUser_IdAndHighingUser_Id(unHighedUser, authenticatedUserId))
                 .thenReturn(Optional.of(userHighsEntity));
+        when(userRepository.findById(authenticatedUserId)).thenReturn(Optional.of(new UserEntity()));
 
         unHighUserUseCase.execute(unHighedUser, authenticatedUserId);
 

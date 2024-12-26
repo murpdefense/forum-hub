@@ -3,6 +3,7 @@ package br.com.soupaulodev.forumhub.modules.user.usecase;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.ResourceNotFoundException;
 import br.com.soupaulodev.forumhub.modules.exception.usecase.UnauthorizedException;
 import br.com.soupaulodev.forumhub.modules.user.repository.UserHighsRepository;
+import br.com.soupaulodev.forumhub.modules.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,12 @@ public class UnHighUserUseCase {
     private static final Logger logger = LoggerFactory.getLogger(UnHighUserUseCase.class);
 
     private final UserHighsRepository userHighsRepository;
+    private final UserRepository userRepository;
 
-    public UnHighUserUseCase(UserHighsRepository userHighsRepository) {
+    public UnHighUserUseCase(UserHighsRepository userHighsRepository,
+                             UserRepository userRepository) {
         this.userHighsRepository = userHighsRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -56,5 +60,9 @@ public class UnHighUserUseCase {
                         throw new ResourceNotFoundException("User not highed");
                     }
                 );
+        userRepository.findById(unHighedUser).ifPresent(userEntity -> {
+            userEntity.decrementHighs();
+            userRepository.save(userEntity);
+        });
     }
 }
