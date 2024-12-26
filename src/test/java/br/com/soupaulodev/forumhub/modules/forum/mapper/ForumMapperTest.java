@@ -5,15 +5,19 @@ import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumResponseDTO
 import br.com.soupaulodev.forumhub.modules.forum.controller.dto.ForumUpdateRequestDTO;
 import br.com.soupaulodev.forumhub.modules.forum.entity.ForumEntity;
 import br.com.soupaulodev.forumhub.modules.user.entity.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ForumMapperTest {
 
-    @InjectMocks
     private ForumMapper forumMapper;
+
+    @BeforeEach
+    void setUp() {
+        forumMapper = new ForumMapper();
+    }
 
     @Test
     void shouldConvertForumCreateRequestDTOToForumEntity() {
