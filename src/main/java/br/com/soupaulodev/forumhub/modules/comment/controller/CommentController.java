@@ -168,7 +168,7 @@ public class CommentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Comment not found")
     })
-    @DeleteMapping("/high/{id}")
+    @DeleteMapping("/unhigh/{id}")
     public ResponseEntity<Void> unHighComment(@Valid @PathVariable("id")
                                              @org.hibernate.validator.constraints.UUID String commentId) {
         UUID authenticatedUserId = getAuthenticatedUserId();
