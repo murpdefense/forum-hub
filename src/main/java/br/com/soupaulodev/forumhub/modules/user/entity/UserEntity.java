@@ -271,7 +271,7 @@ public class UserEntity implements Serializable {
      * @param forum the forum to check for ownership.
      * @return true if the user owns the forum, false otherwise.
      */
-    public boolean participatingInForum(ForumEntity forum) { return !participatingForums.contains(forum); }
+    public boolean participatingInForum(ForumEntity forum) { return participatingForums.contains(forum); }
 
     /**
      * Gets the list of forums in which the user is a participant.
@@ -298,7 +298,7 @@ public class UserEntity implements Serializable {
      * @param forum {@link ForumEntity} the forum to remove from the user's participating forums.
      */
     public void removeParticipatingForum(ForumEntity forum) {
-        if (participatingForums.contains(forum)) {
+        if (!participatingForums.contains(forum)) {
             participatingForums.remove(forum);
             forum.removeParticipant(this);
         }

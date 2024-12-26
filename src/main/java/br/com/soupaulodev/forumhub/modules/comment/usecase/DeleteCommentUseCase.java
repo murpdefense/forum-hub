@@ -60,7 +60,7 @@ public class DeleteCommentUseCase {
 
         TopicEntity topic = topicRepository.findById(commentFound.getTopic().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found."));
-        if (user.participatingInForum(topic.getForum())) {
+        if (!user.participatingInForum(topic.getForum())) {
             throw new ForbiddenException("You are not allowed to update a comment in a topic you do not participate in");
         }
 
