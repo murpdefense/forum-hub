@@ -22,17 +22,14 @@ public class CreateForumUseCase {
 
     private final ForumRepository forumRepository;
     private final UserRepository userRepository;
+    private final ForumMapper forumMapper;
 
-    /**
-     * Constructs a new CreateForumUsecase with the specified repositories.
-     *
-     * @param forumRepository the repository for managing forums
-     * @param userRepository  the repository for managing users
-     */
     public CreateForumUseCase(ForumRepository forumRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              ForumMapper forumMapper) {
         this.forumRepository = forumRepository;
         this.userRepository = userRepository;
+        this.forumMapper = forumMapper;
     }
 
     /**
@@ -52,11 +49,11 @@ public class CreateForumUseCase {
             throw new ResourceAlreadyExistsException("Forum already exists.");
         }
 
-        ForumEntity forum = ForumMapper.toEntity(requestDTO, user);
+        ForumEntity forum = forumMapper.toEntity(requestDTO, user);
         forum.addParticipant(user);
         user.addOwnedForum(forum);
 
         userRepository.save(user);
-        return ForumMapper.toResponseDTO(forum);
+        return forumMapper.toResponseDTO(forum);
     }
 }
