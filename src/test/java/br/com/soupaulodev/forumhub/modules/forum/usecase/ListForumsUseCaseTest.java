@@ -74,7 +74,7 @@ class ListForumsUseCaseTest {
 
         assertNotNull(responseList);
         assertEquals(1, responseList.size());
-        assertEquals("Test Forum", responseList.get(0).name());
+        assertEquals("Test Forum", responseList.getFirst().name());
 
         verify(forumRepository).findAll(pageable);
         verify(forumMapper).toResponseDTO(forumEntity);
