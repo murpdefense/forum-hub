@@ -18,6 +18,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author <a href="https://soupaulode.com.br>soupaulodev</a>
+ */
 class HighForumUseCaseTest {
 
     @Mock
