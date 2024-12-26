@@ -61,47 +61,112 @@ por meio de tópicos e comentários, e distribuam highs em tudo o que gostarem.
 
 ### Autenticação
 
-- POST /api/v1/auth/signup
-- POST /api/v1/auth/login
-- POST /api/v1/auth/logout
+- `POST /api/v1/auth/signup`  
+  **Descrição**: Cria e autentica um novo usuário no sistema.
+
+- `POST /api/v1/auth/login`  
+  **Descrição**: Realiza o login de um usuário no sistema.
+
+- `POST /api/v1/auth/logout`  
+  **Descrição**: Realiza o logout do usuário autenticado.
 
 ### Usuários
 
-- GET /api/v1/users/all?page={PageNumber}&size={ItemsPerPage}
-- GET /api/v1/users/{id}
-- PUT /api/v1/users/{id}
-- DELETE /api/v1/users/{id}
-- POST /api/v1/users/high/{id}
-- DELETE /api/v1/users/unhigh/{id}
+- `GET /api/v1/users/all?page={PageNumber}&size={ItemsPerPage}`  
+  **Descrição**: Obtém uma lista de usuários paginada.  
+  **Parâmetros**:
+  - `page`: Número da página.
+  - `size`: Quantidade de itens por página.
+
+- `GET /api/v1/users/{id}`  
+  **Descrição**: Obtém os dados de um usuário específico pelo ID.
+
+- `PUT /api/v1/users/{id}`  
+  **Descrição**: Atualiza as informações de um usuário específico pelo ID.
+
+- `DELETE /api/v1/users/{id}`  
+  **Descrição**: Exclui um usuário específico pelo ID.
+
+- `POST /api/v1/users/high/{id}`  
+  **Descrição**: Adiciona um high a um usuário, identificando-o com o ID.
+
+- `DELETE /api/v1/users/unhigh/{id}`  
+  **Descrição**: Remove o high dado a um usuário, identificando-o com o ID.
 
 ### Fóruns
 
-- GET /api/v1/forums/all?page={PageNumber}&size={ItemsPerPage}
-- GET /api/v1/forums/{id}
-- POST /api/v1/forums
-- PUT /api/v1/forums/{id}
-- DELETE /api/v1/forums/{id}
-- POST /api/v1/forums/high/{id}
-- DELETE /api/v1/forums/unhigh/{id}
+- `GET /api/v1/forums/all?page={PageNumber}&size={ItemsPerPage}`  
+  **Descrição**: Obtém uma lista de fóruns paginada.  
+  **Parâmetros**:
+  - `page`: Número da página.
+  - `size`: Quantidade de itens por página.
+
+- `GET /api/v1/forums/{id}`  
+  **Descrição**: Obtém os dados de um fórum específico pelo ID.
+
+- `POST /api/v1/forums`  
+  **Descrição**: Cria um novo fórum.
+
+- `PUT /api/v1/forums/{id}`  
+  **Descrição**: Atualiza as informações de um fórum específico pelo ID.
+
+- `DELETE /api/v1/forums/{id}`  
+  **Descrição**: Exclui um fórum específico pelo ID.
+
+- `POST /api/v1/forums/high/{id}`  
+  **Descrição**: Adiciona um high a um tópico, identificando-o com o ID.
+
+- `DELETE /api/v1/forums/unhigh/{id}`  
+  **Descrição**: Remove o high dado a um fórum, identificando-o com o ID.
 
 ### Tópicos
 
-- GET /api/v1/topics/all?page={PageNumber}&size={ItemsPerPage}
-- GET /api/v1/topics/{id}
-- POST /api/v1/topics
-- PUT /api/v1/topics/{id}
-- DELETE /api/v1/topics/{id}
-- POST /api/v1/topics/high/{id}
-- DELETE /api/v1/topics/unhigh/{id}
+- `GET /api/v1/topics/all?page={PageNumber}&size={ItemsPerPage}`  
+  **Descrição**: Obtém uma lista de tópicos paginada.  
+  **Parâmetros**:
+  - `page`: Número da página.
+  - `size`: Quantidade de itens por página.
+
+- `GET /api/v1/topics/{id}`  
+  **Descrição**: Obtém os dados de um tópico específico pelo ID.
+
+- `POST /api/v1/topics`  
+  **Descrição**: Cria um novo tópico.
+
+- `PUT /api/v1/topics/{id}`  
+  **Descrição**: Atualiza as informações de um tópico específico pelo ID.
+
+- `DELETE /api/v1/topics/{id}`  
+  **Descrição**: Exclui um tópico específico pelo ID.
+
+- `POST /api/v1/topics/high/{id}`  
+  **Descrição**: Adiciona um high a um tópico, identificando-o com o ID.
+
+- `DELETE /api/v1/topics/unhigh/{id}`  
+  **Descrição**: Remove o high dado a um tópico, identificando-o com o ID.
 
 ### Comentários
 
-- GET /api/v1/comments/all?page={PageNumber}&size={ItemsPerPage}
-- POST /api/v1/comments
-- PUT /api/v1/comments/{id}
-- DELETE /api/v1/comments/{id}
-- POST /api/v1/users/high/{id}
-- DELETE /api/v1/users/unhigh/{id}
+- `GET /api/v1/comments/all?page={PageNumber}&size={ItemsPerPage}`  
+  **Descrição**: Obtém uma lista de comentários paginada.  
+  **Parâmetros**:
+  - `page`: Número da página.
+  - `size`: Quantidade de itens por página.
+
+- `POST /api/v1/comments`  
+  **Descrição**: Cria um novo comentário.
+
+- `PUT /api/v1/comments/{id}`  
+  **Descrição**: Atualiza um comentário específico pelo ID.
+
+- `DELETE /api/v1/comments/{id}`  
+  **Descrição**: Exclui um comentário específico pelo ID.
+
+- `POST /api/v1/users/high/{id}`  
+  **Descrição**: Adiciona um high a um comentário, identificando-o com o ID.
+
+- `DELETE /api/v1/users/unhigh/{id}`  
+  **Descrição**: Remove o high dado a um comentário, identificando-o com o ID.
 
 ## Licença
 
