@@ -1,4 +1,5 @@
 # ForumHub
+
 ![Cover](./.github/cover.png)
 ![Java CI with Maven Status](https://github.com/soupaulodev/one-forumhub/actions/workflows/maven.yml/badge.svg)
 
@@ -15,6 +16,7 @@ por meio de tópicos e comentários, e distribuam highs em tudo o que gostarem.
 ## Tecnologias
 
 ### Core
+
 - Java 21
 - Spring Boot 3.4
 - Spring Data JPA
@@ -28,71 +30,89 @@ por meio de tópicos e comentários, e distribuam highs em tudo o que gostarem.
 - Json Web Token
 
 ### Testes
+
 - JUnit 5
 - Mockito
 - H2 Database
 
 ### Cache
+
 - Spring Data Redis
 - Spring Cache
 
 ### Documentação
+
 - SpringDoc OpenAPI
 
 ### DevOps
+
 - Spring Actuator
 
 ### Ferramentas de Desenvolvimento
+
 - Spring DevTools
 
 ## Endpoints
+
 ### Documentação
+
 - GET /swagger-ui.html
 - GET /v3/api-docs
 
 ### Autenticação
+
 - POST /api/v1/auth/signup
 - POST /api/v1/auth/login
-  
+- POST /api/v1/auth/logout
+
 ### Usuários
+
+- GET /api/v1/users/all?page={PageNumber}&size={ItemsPerPage}
 - GET /api/v1/users/{id}
 - PUT /api/v1/users/{id}
 - DELETE /api/v1/users/{id}
+- POST /api/v1/users/high/{id}
+- DELETE /api/v1/users/unhigh/{id}
 
 ### Fóruns
-- GET   /api/v1/forums
+
+- GET /api/v1/forums/all?page={PageNumber}&size={ItemsPerPage}
 - GET /api/v1/forums/{id}
 - POST /api/v1/forums
 - PUT /api/v1/forums/{id}
 - DELETE /api/v1/forums/{id}
+- POST /api/v1/forums/high/{id}
+- DELETE /api/v1/forums/unhigh/{id}
 
 ### Tópicos
 
-- GET /api/v1/topics
+- GET /api/v1/topics/all?page={PageNumber}&size={ItemsPerPage}
 - GET /api/v1/topics/{id}
 - POST /api/v1/topics
 - PUT /api/v1/topics/{id}
 - DELETE /api/v1/topics/{id}
-
-### Curtidas
-
-- POST /api/v1/likes
-- DELETE /api/v1/likes
+- POST /api/v1/topics/high/{id}
+- DELETE /api/v1/topics/unhigh/{id}
 
 ### Comentários
-- GET /api/v1/comments
-- GET /api/v1/comments/{id}
+
+- GET /api/v1/comments/all?page={PageNumber}&size={ItemsPerPage}
 - POST /api/v1/comments
 - PUT /api/v1/comments/{id}
 - DELETE /api/v1/comments/{id}
+- POST /api/v1/users/high/{id}
+- DELETE /api/v1/users/unhigh/{id}
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [license](https://github.com/soupaulodev/one-forumhub/blob/main/LICENSE) para detalhes
+Este projeto está licenciado sob a Licença MIT - veja o
+arquivo [license](https://github.com/soupaulodev/one-forumhub/blob/main/LICENSE) para detalhes
 
 ## Contribuindo
 
-Primeiramente, obrigado por considerar contribuir para este projeto. Toda ajuda é bem-vinda. Se você deseja contribuir, siga estas etapas:
+Primeiramente, obrigado por considerar contribuir para este projeto. Toda ajuda é bem-vinda. Se você deseja contribuir,
+siga estas etapas:
+
 1. Fork o projeto
 2. Crie uma nova branch (`git checkout -b feature/feature-name`)
 3. Realize as alterações
