@@ -116,7 +116,7 @@
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>jcache</artifactId>
-			<version>3.1.8</version>
+			<version>3.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.bucket4j</groupId>
